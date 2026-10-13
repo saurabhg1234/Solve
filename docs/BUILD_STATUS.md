@@ -82,3 +82,12 @@ Native W8 context and email-draft helpers verify actual source hashes and exact 
 **31 TypeScript tests**, the W8 native queue fixture, compiled desktop/mobile draft-preview checks and the existing Python cost-helper integration pass. Stored email files retain exact hashes; expired/wrong-stage/context/path requests fail; four synthetic reviewer packets exclude author workpapers and missing QC policy holds progression. Synthetic reviews are protocol evidence only. Source support, tone, real fresh reviews, final Outlook rendering and the complete pilot remain unaccepted. Read docs/NATIVE_EMAILS.md.
 
 The latest Advait-related reply check at **01:05 Dubai on 14 October** found no reply and no truncated continuation; the earlier follow-up was not repeated. A complete updated startup save again returned **INVALID_ARGUMENT**; readback confirms revision **16** unchanged. Repository handoff remains the startup authority; cloud recurrence remains unverified.
+
+
+## Template picture milestone
+
+Deployed from **c98b6d0**, deployment **dpl_EjHdCuZt7SPW7doL52shUQEjNu1m**, **READY**. Production verification at **01:19 Dubai on 14 October** confirms healthy source/storage/mailbox connections, an active subscription, unsigned API denial and unchanged nine draft sources/zero client pursuits, active jobs and human approvals.
+
+Approved Word/PPT template pictures now support explicit old/new hashes, retained-image decisions and private source/build notes. The helper replaces one picture relationship at a time, preserving shared artwork, geometry, aspect ratio and existing styles/themes. Cropped, linked/interactive and unsupported frames hold. Replaced descriptions/titles are cleared; QC inventory includes accessible image metadata and its words. The original twelve supplied files remain unchanged.
+
+**32 TypeScript tests**, **ten existing document tests** and **six picture tests** pass. Picture fixtures verify actual Word/PPT bytes, original frame/style retention, multi-template isolation, real supplied-template compatibility, rejected stale/hash/path/crop/ratio/retention decisions, unused-asset removal and rendered PDF pixels. The local native queue stores ten exact artifacts and checks tagged-PDF/picture metadata inventory and internal/RFI permissions. These remain synthetic transport/format checks, not a real client architecture or complete pilot. Read docs/NATIVE_DOCUMENTS.md.
