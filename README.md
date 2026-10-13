@@ -61,6 +61,7 @@ The database migration is repeatable and does not delete tables. Preserve provid
 - [Native source and document tools](docs/NATIVE_DOCUMENTS.md)
 - [Scanned PDF source transcripts and independent checks](docs/SOURCE_TRANSCRIPTS.md)
 - [Human gate feedback and correction routes](docs/GATE_FEEDBACK.md)
+- [Original drafter escalation explanations](docs/ESCALATION_EXPLANATIONS.md)
 - [Pilot roles and exact variable guidance](docs/PILOT_CONFIGURATION.md)
 
 The portal is deployed at `https://zora-mindmap.vercel.app`, retaining Vercel protection. Microsoft application authentication, folder access, local PostgreSQL intake/queue checks and deployed connector/access/webhook-validation checks pass. The approved Neon database is connected and its schema migration passes twice through supported HTTPS transport. The four cloud application secrets are securely aligned with Vercel. Advait has been emailed for inputs/team details. Interactive sign-in, actual recurring dispatch and all-eight outputs still need acceptance; a connected database or manually run bridge does not complete the pilot.

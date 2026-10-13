@@ -29,3 +29,6 @@ Scanned PDF source transcripts now have mandatory independent verification befor
 
 
 Human review feedback and ordinary correction routing need no additional input from you. The remaining fresh-drafter escalation sequence is engineering work; pending implementation is not an outstanding user approval or environment credential.
+
+
+The ESC-2 explanation step also adds no user setup requirement. Original-task resumption and the fresh whole-document trust reset remain engineering/platform work, not missing credentials from you. Existing pilot assets and sign-in/schedule acceptance remain the pending external inputs listed above.

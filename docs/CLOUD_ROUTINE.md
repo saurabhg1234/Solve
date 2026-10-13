@@ -51,3 +51,8 @@ The bridge is bounded and does not launch a model, CLI session or daemon. Stage 
 Required cloud bindings: `ZORA_APP_URL`, `ZORA_RUNNER_TOKEN`, `CRON_SECRET` and the existing `ZORA_NOTIFICATION_BYPASS` where protection applies. If that saved bypass is malformed, the native transport securely resolves the existing production value using the supplied `VERCEL_TOKEN` and verified Zora project/team IDs; a live check passes without rewriting the binding. Do not place credentials in the prompt. CODEX_THREAD_ID comes from the platform, not a user-provided secret. Publishing the environment and creating a schedule are separate actions.
 
 Test with **Run now**: confirm cloud access, a real Zora-only email, a queued stage, downloaded hashes, heartbeat and recorded completion/hold. Then verify recurrence. A manual check does not establish an active schedule or completion of all eight workflows.
+
+
+## Continuing an original drafter for ESC-2
+
+An escalated document finding can receive an immutable explanation from its original completed producer task. This is a continuation of that task, not a second claim. Read [ESCALATION_EXPLANATIONS.md](ESCALATION_EXPLANATIONS.md): use `routine escalations <original-private-workspace>` and `routine explain <original-private-workspace> explanation.json`. The real native identity must match; a fresh scheduled task cannot impersonate the producer. Automatic original-task resumption is not implemented. Missing history/workspaces hold explicitly. Fresh re-evaluation and later checks remain required after every explanation is recorded.

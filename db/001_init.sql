@@ -172,3 +172,5 @@ CREATE TABLE IF NOT EXISTS zora_gate_feedback (
   state text NOT NULL DEFAULT 'open' CHECK(state IN ('open','reworking','addressed','superseded')),
   created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(case_id,case_version,stage_id)
 );
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback ADD COLUMN IF NOT EXISTS explanations jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(explanations)='array');

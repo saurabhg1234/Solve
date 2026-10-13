@@ -1,4 +1,5 @@
 /** A bounded bridge for a native cloud Codex session. Never launches another model or daemon. */
+import { explanationBatchSchema } from '../lib/escalation-explanation';
 import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, realpath, stat, writeFile,access } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
@@ -77,6 +78,20 @@ async function claim() {
   await heartbeat(job);
   console.log(JSON.stringify({ workspace: dir,kind:job.kind,sources:manifest.length,next:job.kind==='review'?'Read only this isolated packet and inventory.json. Check every element in this fresh native session; complete with the review schema. Do not read other session directories or earlier reports.':'Read instructions.txt, request.json, sources.json and artifacts.json. Work on this stage, label drafts/references separately from workpapers, then save result.json and routine complete. QC stages enqueue fresh independent reviewers; they do not approve themselves.' }));
 }
+async function escalation(path:string,plan?:string){
+  const {dir,job}=await workspace(path);
+  if(job.kind!=='stage')throw new Error('Only the original drafting task can explain its output');
+  const identity={leaseId:job.leaseId,contextId:job.contextId};
+  if(!plan){
+    const packet=await(await request(`/api/worker/${job.id}/escalations`,'ZORA_RUNNER_TOKEN',{...identity,action:'read'})).json();
+    await writeFile(join(dir,'escalations.json'),JSON.stringify(packet,null,2),{mode:0o600});
+    await writeFile(join(dir,'explanation.schema.json'),JSON.stringify(z.toJSONSchema(explanationBatchSchema),null,2),{mode:0o600});
+    console.log(JSON.stringify({workspace:dir,escalations:packet.escalations.length,next:'Read escalations.json. Explain missed/added material, root cause, why checks missed it and intended correction; provide a concise account, not hidden reasoning. Save a JSON array matching explanation.schema.json and run explain in this original task. This does not resolve the escalation.'}));return;
+  }
+  const actual=await realpath(resolve(dir,plan));if(!actual.startsWith(dir+sep)||!(await stat(actual)).isFile())throw new Error('Explanation must stay inside the original private workspace');
+  const explanations=explanationBatchSchema.parse(JSON.parse(await readFile(actual,'utf8')));
+  const result=await(await request(`/api/worker/${job.id}/escalations`,'ZORA_RUNNER_TOKEN',{...identity,action:'explain',explanations})).json();console.log(JSON.stringify(result));
+}
 async function complete(path: string) {
   const { dir, job } = await workspace(path);
   if(job.kind==='review'){
@@ -124,7 +139,9 @@ async function main() {
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
+  if (action === 'escalations') return escalation(path);
+  if (action === 'explain') {if(!plan)throw new Error('Supply an explanation plan');return escalation(path,plan);}
   if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email'||action==='build-transcript') return documentTool(path,action,plan);
-  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript or complete');
+  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
 }
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });
