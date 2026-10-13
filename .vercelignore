@@ -1,0 +1,7 @@
+/AI_Solutioning_Agent_BRD_v1.0/
+/.zora/
+.env*
+!.env.example
+/tests/
+/worker/
+/scripts/

@@ -1,0 +1,3484 @@
+{
+  "source": "AI_Solutioning_Agent_BRD_v1.0/01_BRD/AI_Solutioning_Agent_BRD_v1.0.docx",
+  "source_sha256": "27671ca3e09fa5b7c501ed67e55a211c280bd5fa284244c8e177432cf65a9405",
+  "requirements": [
+    {
+      "#": "1",
+      "From the brief": "“build an AI agent which will do the solutioning work”",
+      "Requirement": "An agent that does the team’s solutioning work",
+      "Where the BRD covers it": "Section 1; Section 2",
+      "Status": "Covered"
+    },
+    {
+      "#": "2",
+      "From the brief": "“create a proper detailed BRD”",
+      "Requirement": "The output is a detailed BRD",
+      "Where the BRD covers it": "Section 1 (document control); whole document",
+      "Status": "Covered"
+    },
+    {
+      "#": "3",
+      "From the brief": "“break down the processes that we usually do”",
+      "Requirement": "Each process is broken down step by step",
+      "Where the BRD covers it": "Section 1 (how to read it); Sections 7 to 16",
+      "Status": "Covered"
+    },
+    {
+      "#": "4",
+      "From the brief": "“there is an introductory deck” … “that is on the exploratory side of things when it comes to a deck creation”",
+      "Requirement": "Intro (exploratory) deck deliverable",
+      "Where the BRD covers it": "Section 2 (W1 row); Section 7",
+      "Status": "Covered"
+    },
+    {
+      "#": "5",
+      "From the brief": "“cold approaching or warm approaching”",
+      "Requirement": "Cold or warm approach handled",
+      "Where the BRD covers it": "5.4 (W1 row); 7.2 cold and warm table; W1-1; W1-13",
+      "Status": "Covered"
+    },
+    {
+      "#": "6",
+      "From the brief": "“these are the use cases that can be done”",
+      "Requirement": "Show the use cases that can be done",
+      "Where the BRD covers it": "Section 7 intro; W1-7; 7.2 slide 2",
+      "Status": "Covered"
+    },
+    {
+      "#": "7",
+      "From the brief": "“top five use cases that are really, really useful to you”",
+      "Requirement": "Top five most useful highlighted",
+      "Where the BRD covers it": "W1-5; W1-8 (stars the five priority tiles); 7.2 slides 2 and 3",
+      "Status": "Covered"
+    },
+    {
+      "#": "8",
+      "From the brief": "“first study the company’s problems in depth”",
+      "Requirement": "Research company problems before mapping",
+      "Where the BRD covers it": "W1-1 to W1-4; W1-G1",
+      "Status": "Covered"
+    },
+    {
+      "#": "9",
+      "From the brief": "“cannot just overall give some high level use cases … applicable to that industry”",
+      "Requirement": "No generic industry use cases",
+      "Where the BRD covers it": "W1-6; W1-7 guard; 7.1 rubric (specificity gate); F2",
+      "Status": "Covered"
+    },
+    {
+      "#": "10",
+      "From the brief": "“really be mapped to that company’s problems”",
+      "Requirement": "Use cases mapped to the company’s own problems",
+      "Where the BRD covers it": "W1-6; W1-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "11",
+      "From the brief": "“public transcripts if it’s a publicly listed company”",
+      "Requirement": "Listed company: public transcripts as source",
+      "Where the BRD covers it": "W1-1; 6.4 Research",
+      "Status": "Covered"
+    },
+    {
+      "#": "12",
+      "From the brief": "“founders or the key personnel’s LinkedIn’s”",
+      "Requirement": "LinkedIn of founders and key personnel as source",
+      "Where the BRD covers it": "W1-1; 6.4 Research; Section 18 (Leadership posts row)",
+      "Status": "Covered"
+    },
+    {
+      "#": "13",
+      "From the brief": "“there are few ways to actually find this”",
+      "Requirement": "Multiple research routes",
+      "Where the BRD covers it": "W1-1",
+      "Status": "Covered"
+    },
+    {
+      "#": "14",
+      "From the brief": "“Claude can do with the research agent”",
+      "Requirement": "A research agent does it",
+      "Where the BRD covers it": "W1-2; 6.4 Research",
+      "Status": "Covered"
+    },
+    {
+      "#": "15",
+      "From the brief": "“map the top five biggest pain points”",
+      "Requirement": "Rank and select the five biggest",
+      "Where the BRD covers it": "W1-5; 7.1 rubric; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "16",
+      "From the brief": "“Claude usually messes up with one of the pain points … very basic thing”",
+      "Requirement": "Failure mode: one basic pain point",
+      "Where the BRD covers it": "Section 3 (F1); W1-6",
+      "Status": "Covered"
+    },
+    {
+      "#": "17",
+      "From the brief": "“four of the pain points it will give in depth”",
+      "Requirement": "All five held to the same depth bar",
+      "Where the BRD covers it": "Section 7 intro; W1-6",
+      "Status": "Covered"
+    },
+    {
+      "#": "18",
+      "From the brief": "“AI spend is going very heavy … models are not optimized”",
+      "Requirement": "Example of a specific, sourced pain point",
+      "Where the BRD covers it": "W1-6 (passing example); F1",
+      "Status": "Covered"
+    },
+    {
+      "#": "19",
+      "From the brief": "“solve through some sort of orchestrator agent”",
+      "Requirement": "Example of pain point to solution mapping",
+      "Where the BRD covers it": "W1-6 (passing example); F1",
+      "Status": "Covered"
+    },
+    {
+      "#": "20",
+      "From the brief": "“randomly come to some fifth use case … invoice processing”",
+      "Requirement": "Example of a failing generic item",
+      "Where the BRD covers it": "W1-6 (failing example); F1",
+      "Status": "Covered"
+    },
+    {
+      "#": "21",
+      "From the brief": "“give no explanation … this is a real pain point that they’ve listed”",
+      "Requirement": "Every pain point explained as one the company itself listed",
+      "Where the BRD covers it": "W1-6 output; 7.2 slide 3",
+      "Status": "Covered"
+    },
+    {
+      "#": "22",
+      "From the brief": "“we create one periodic table”",
+      "Requirement": "Periodic table slide",
+      "Where the BRD covers it": "W1-7; 7.2 slide 2; B.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "23",
+      "From the brief": "“displays a lot of use cases which can be employed to them”",
+      "Requirement": "Many company-applicable use cases",
+      "Where the BRD covers it": "W1-7; 7.2 slide 2",
+      "Status": "Covered"
+    },
+    {
+      "#": "24",
+      "From the brief": "“five of the real pain points … list them out as the real problems”",
+      "Requirement": "Slide listing the five real problems",
+      "Where the BRD covers it": "7.2 slide 3 (Problems template, B.3)",
+      "Status": "Covered"
+    },
+    {
+      "#": "25",
+      "From the brief": "“along with the sources where the problems came from”",
+      "Requirement": "Source per problem",
+      "Where the BRD covers it": "7.2 slide 3; W1-2; W1-3; D8",
+      "Status": "Covered"
+    },
+    {
+      "#": "26",
+      "From the brief": "“expand on the solutions in the next five slides”",
+      "Requirement": "Five solution slides",
+      "Where the BRD covers it": "W1-8; 7.2 slides 4 to 13; B.3 (agents slide)",
+      "Status": "Covered"
+    },
+    {
+      "#": "27",
+      "From the brief": "“after each solution, we give a solution architecture in a very specific format”",
+      "Requirement": "Architecture slide after each solution, in the house format",
+      "Where the BRD covers it": "W1-9; 7.2 slides 4 to 13; B.1; B.6",
+      "Status": "Covered"
+    },
+    {
+      "#": "28",
+      "From the brief": "“that format I will attach … just put it as insert”",
+      "Requirement": "Format inserted",
+      "Where the BRD covers it": "Appendix B intro; B.1",
+      "Status": "Covered"
+    },
+    {
+      "#": "29",
+      "From the brief": "“a lot of the times the client even asks ki you show me what you have”",
+      "Requirement": "Showcase trigger",
+      "Where the BRD covers it": "Section 8 (W2); 5.3 rule 1; 5.5",
+      "Status": "Covered"
+    },
+    {
+      "#": "30",
+      "From the brief": "“few videos … few demos … relevant to whatever the topic is”",
+      "Requirement": "Pick relevant demos and videos",
+      "Where the BRD covers it": "W2-1; W2-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "31",
+      "From the brief": "“we also create some detailed proposals”",
+      "Requirement": "Proposal deliverable",
+      "Where the BRD covers it": "Section 2 (W3 row); Section 9",
+      "Status": "Covered"
+    },
+    {
+      "#": "32",
+      "From the brief": "“proposals are actually fragmented into different parts”",
+      "Requirement": "Proposals come in several types or parts",
+      "Where the BRD covers it": "Section 2 (W3, W4); 5.4; 9.2; Section 21 (open question)",
+      "Status": "Covered; confirm there are no other types (Section 21)"
+    },
+    {
+      "#": "33",
+      "From the brief": "“One can be a simple transcript based proposal”",
+      "Requirement": "Transcript-based proposal (“simple” read as built from the call transcript alone; W3 itself can be complex or simple, 5.4)",
+      "Where the BRD covers it": "Section 9 (W3)",
+      "Status": "Covered"
+    },
+    {
+      "#": "34",
+      "From the brief": "“transcript is the most important thing”",
+      "Requirement": "Transcript is the primary input",
+      "Where the BRD covers it": "Section 4 (W3 row); W3 inputs",
+      "Status": "Covered"
+    },
+    {
+      "#": "35",
+      "From the brief": "“integrate with TLDV or … the recording part”",
+      "Requirement": "tl;dv or recording integration",
+      "Where the BRD covers it": "6.4 Transcription; 5.2; W3-1; Section 18 (tl;dv row)",
+      "Status": "Covered"
+    },
+    {
+      "#": "36",
+      "From the brief": "“generate the transcript from a video”",
+      "Requirement": "Video to transcript",
+      "Where the BRD covers it": "6.4 Transcription; W3-1 to W3-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "37",
+      "From the brief": "“video needs to be converted to MP3, which we do separately”",
+      "Requirement": "Video to MP3 step",
+      "Where the BRD covers it": "W3-2; Section 18 (Video to MP3 row)",
+      "Status": "Covered"
+    },
+    {
+      "#": "38",
+      "From the brief": "“take that MP3 and we convert it into transcript separately”",
+      "Requirement": "MP3 to transcript step",
+      "Where the BRD covers it": "W3-3; Section 18 (MP3 to transcript row)",
+      "Status": "Covered"
+    },
+    {
+      "#": "39",
+      "From the brief": "“take the transcript and then we create a proposal”",
+      "Requirement": "Proposal built from the transcript",
+      "Where the BRD covers it": "W3-5 to W3-14",
+      "Status": "Covered"
+    },
+    {
+      "#": "40",
+      "From the brief": "“there are a few metrics that need to be considered … is the proposal supposed to be complex or … simple”",
+      "Requirement": "Proposal parameters set before drafting, complexity first",
+      "Where the BRD covers it": "5.4 (W3 rows: complexity, output format, ROI, revenue share); RT6; Section 9 opening",
+      "Status": "Covered"
+    },
+    {
+      "#": "41",
+      "From the brief": "“that depends on which stakeholders we’re talking to”",
+      "Requirement": "Complexity set by stakeholders",
+      "Where the BRD covers it": "5.4; W3-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "42",
+      "From the brief": "“technical people … really care about the business logic in depth”",
+      "Requirement": "Complex variant leads with business logic in depth",
+      "Where the BRD covers it": "5.4 audience profiles",
+      "Status": "Covered"
+    },
+    {
+      "#": "43",
+      "From the brief": "“higher level people, like let’s say finance … don’t understand anything about technicals”",
+      "Requirement": "Simple variant for higher-level and business stakeholders",
+      "Where the BRD covers it": "5.4 (W3 complexity row and audience profiles); Section 2",
+      "Status": "Covered"
+    },
+    {
+      "#": "44",
+      "From the brief": "“purely be focused on what here is the value that you’re getting”",
+      "Requirement": "Simple variant leads with value",
+      "Where the BRD covers it": "5.4 audience profiles",
+      "Status": "Covered"
+    },
+    {
+      "#": "45",
+      "From the brief": "“This is how it will work”",
+      "Requirement": "Simple variant explains how it works",
+      "Where the BRD covers it": "5.4 audience profiles",
+      "Status": "Covered"
+    },
+    {
+      "#": "46",
+      "From the brief": "“We do keep the technicals, but we don’t emphasize”",
+      "Requirement": "Technicals kept but de-emphasised",
+      "Where the BRD covers it": "5.4 audience profiles and the format note below it",
+      "Status": "Covered"
+    },
+    {
+      "#": "47",
+      "From the brief": "“a high level solution architecture”",
+      "Requirement": "HLSA in every proposal",
+      "Where the BRD covers it": "W3-9; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "48",
+      "From the brief": "“a technical architecture”",
+      "Requirement": "Technical architecture in every proposal",
+      "Where the BRD covers it": "W3-9; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "49",
+      "From the brief": "“a few process flows that show how each user gets value”",
+      "Requirement": "Process flows per user showing value",
+      "Where the BRD covers it": "W3-11; 9.2; 9.3; B.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "50",
+      "From the brief": "“the process flow should be as is and to be”",
+      "Requirement": "As-is and to-be",
+      "Where the BRD covers it": "W3-11; 9.2; B.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "51",
+      "From the brief": "“as is obviously will be estimated most of the times”",
+      "Requirement": "As-is is usually estimated",
+      "Where the BRD covers it": "9.4; W3-11; W4-11",
+      "Status": "Covered"
+    },
+    {
+      "#": "52",
+      "From the brief": "“Gantt chart for the timeline”",
+      "Requirement": "Gantt",
+      "Where the BRD covers it": "W3-12; W4-11; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "53",
+      "From the brief": "“We also have a RACI matrix”",
+      "Requirement": "RACI",
+      "Where the BRD covers it": "W3-12; W4-11; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "54",
+      "From the brief": "“how many FTEs … DSO … Some KPI metrics”",
+      "Requirement": "ROI inputs: FTEs, DSO, KPIs",
+      "Where the BRD covers it": "5.4 (ROI row, RT6); W3-5; W3-13",
+      "Status": "Covered"
+    },
+    {
+      "#": "55",
+      "From the brief": "“create a waterfall chart to show the ROI”",
+      "Requirement": "ROI waterfall when data exists",
+      "Where the BRD covers it": "W3-13; W4-11; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "56",
+      "From the brief": "“all the visuals are cohesive”",
+      "Requirement": "Cohesive visuals",
+      "Where the BRD covers it": "W3-15; W4-11; D5; F11",
+      "Status": "Covered"
+    },
+    {
+      "#": "57",
+      "From the brief": "“RACI matrix also … there in the governance”",
+      "Requirement": "RACI sits in governance",
+      "Where the BRD covers it": "W3-12; 9.2; 9.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "58",
+      "From the brief": "“the client will look at diagrams more than reading the text”",
+      "Requirement": "Diagram-first design",
+      "Where the BRD covers it": "9.3 intro",
+      "Status": "Covered"
+    },
+    {
+      "#": "59",
+      "From the brief": "“incorporate as many diagrams as possible without losing the actual content”",
+      "Requirement": "Maximise diagrams, keep all content",
+      "Where the BRD covers it": "9.3 (both tables and the no-content-lost rule); W3-15; W4-11; D5",
+      "Status": "Covered"
+    },
+    {
+      "#": "60",
+      "From the brief": "“solution architecture and technical architecture … comes in a format that we have”",
+      "Requirement": "Both architectures in house formats",
+      "Where the BRD covers it": "W3-9; W4-8; B.1; B.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "61",
+      "From the brief": "“that format I will again upload in that insert part”",
+      "Requirement": "Formats inserted",
+      "Where the BRD covers it": "Appendix B intro; B.1; B.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "62",
+      "From the brief": "“that is there on the non-RFP side”",
+      "Requirement": "Non-RFP vs RFP distinction",
+      "Where the BRD covers it": "5.3 rules 1, 3, 4",
+      "Status": "Covered"
+    },
+    {
+      "#": "63",
+      "From the brief": "“When we have an RFP … strict set of technical requirements … process changes”",
+      "Requirement": "Separate RFP workflow",
+      "Where the BRD covers it": "Section 10 intro (W4)",
+      "Status": "Covered"
+    },
+    {
+      "#": "64",
+      "From the brief": "“we have to really, really think about and comply with all of the requirements”",
+      "Requirement": "Full compliance",
+      "Where the BRD covers it": "W4-4 and W4-5 (the requirement understood in depth); W4-10 (full compliance the default; a deviation only with the bid owner’s approval, Section 19); D1 (13.1); Section 20 (Requirement coverage, 100%; approved deviations reported per bid)",
+      "Status": "Covered"
+    },
+    {
+      "#": "65",
+      "From the brief": "“everything is cohesively gelling together”",
+      "Requirement": "Everything consistent",
+      "Where the BRD covers it": "D3; D5; W4-11",
+      "Status": "Covered"
+    },
+    {
+      "#": "66",
+      "From the brief": "“First is the RFP itself”",
+      "Requirement": "Consolidate input 1: RFP",
+      "Where the BRD covers it": "W4-1; W4-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "67",
+      "From the brief": "“Second is any updates based on any transcripts or calls”",
+      "Requirement": "Consolidate input 2: call updates",
+      "Where the BRD covers it": "W4-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "68",
+      "From the brief": "“third is the RFI … answers … to the questions that we’ve asked”",
+      "Requirement": "Consolidate input 3: RFI answers",
+      "Where the BRD covers it": "W4-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "69",
+      "From the brief": "“After consolidating all three together”",
+      "Requirement": "Merge the three",
+      "Where the BRD covers it": "W4-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "70",
+      "From the brief": "“understanding what is the core, core benefit of the RFP”",
+      "Requirement": "Identify core benefit",
+      "Where the BRD covers it": "W4-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "71",
+      "From the brief": "“a platform which does X, but they also want AI features on top … focus on the core platform”",
+      "Requirement": "Platform-vs-AI-features rule",
+      "Where the BRD covers it": "W4-4 guard; W4-7",
+      "Status": "Covered"
+    },
+    {
+      "#": "72",
+      "From the brief": "“we should have probably two agents”",
+      "Requirement": "Two agents",
+      "Where the BRD covers it": "10.1 (Agent 1); 10.2 (Agent 2)",
+      "Status": "Covered"
+    },
+    {
+      "#": "73",
+      "From the brief": "“consolidate all the information together, structure it”",
+      "Requirement": "Agent 1 consolidates and structures",
+      "Where the BRD covers it": "W4-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "74",
+      "From the brief": "“give a preliminary requirement … core, core preliminary requirement”",
+      "Requirement": "Agent 1 outputs the core preliminary requirement",
+      "Where the BRD covers it": "W4-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "75",
+      "From the brief": "“double, triple quality check”",
+      "Requirement": "Agent 2 multi-pass check",
+      "Where the BRD covers it": "W4-5",
+      "Status": "Covered"
+    },
+    {
+      "#": "76",
+      "From the brief": "“properly understood the requirements based on all of the information”",
+      "Requirement": "Understanding checked against all sources",
+      "Where the BRD covers it": "W4-5",
+      "Status": "Covered"
+    },
+    {
+      "#": "77",
+      "From the brief": "“on an unbiased basis”",
+      "Requirement": "Unbiased reviews",
+      "Where the BRD covers it": "W4-5; 6.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "78",
+      "From the brief": "“taking all the information into consideration”",
+      "Requirement": "All information used",
+      "Where the BRD covers it": "W4-5",
+      "Status": "Covered"
+    },
+    {
+      "#": "79",
+      "From the brief": "“from blank, right? From scratch … every time”",
+      "Requirement": "Fresh context every review",
+      "Where the BRD covers it": "W4-5; 6.3 items 1 and 2",
+      "Status": "Covered"
+    },
+    {
+      "#": "80",
+      "From the brief": "“otherwise it keeps giving the same answer to the same input”",
+      "Requirement": "Avoid convergent reviews",
+      "Where the BRD covers it": "W4-5; W3-7; 6.3 item 2; F6",
+      "Status": "Covered"
+    },
+    {
+      "#": "81",
+      "From the brief": "“two to three different unbiased and detailed reviews”",
+      "Requirement": "2 to 3 reviews",
+      "Where the BRD covers it": "W4-5; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "82",
+      "From the brief": "“once the requirement is understood, after that we build out the preliminary proposal”",
+      "Requirement": "Preliminary proposal after understanding is locked",
+      "Where the BRD covers it": "W4-G1; W4-7 to W4-10",
+      "Status": "Covered"
+    },
+    {
+      "#": "83",
+      "From the brief": "“then … incorporate all the diagrams”",
+      "Requirement": "Diagrams after preliminary proposal",
+      "Where the BRD covers it": "W4-11",
+      "Status": "Covered"
+    },
+    {
+      "#": "84",
+      "From the brief": "“and actually proofread things”",
+      "Requirement": "Proofreading stage",
+      "Where the BRD covers it": "10.4; 10.5",
+      "Status": "Covered"
+    },
+    {
+      "#": "85",
+      "From the brief": "“there are two things when it comes to proofreading”",
+      "Requirement": "Two components of proofreading",
+      "Where the BRD covers it": "Section 3; 10.4; Section 21",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "86",
+      "From the brief": "“proofreading is one of the most important parts … takes a lot and lot of time”",
+      "Requirement": "Context: proofreading is costly",
+      "Where the BRD covers it": "Section 3; Section 20 (Senior review time)",
+      "Status": "Covered"
+    },
+    {
+      "#": "87",
+      "From the brief": "“first, second, third, fourth, fifth checks usually are done through AI”",
+      "Requirement": "Five AI checks",
+      "Where the BRD covers it": "10.4; W4-12 to W4-15; W3-16; Section 18; Section 21",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "88",
+      "From the brief": "“check every line, check every word, check every image, check every table”",
+      "Requirement": "Every element checked",
+      "Where the BRD covers it": "6.3 item 3; 13.1 coverage rule; W4-12",
+      "Status": "Covered"
+    },
+    {
+      "#": "89",
+      "From the brief": "“Otherwise it doesn’t check tables or it doesn’t check images”",
+      "Requirement": "Failure mode: tables and images skipped",
+      "Where the BRD covers it": "F5; 6.3 item 3; 13.1 coverage rule",
+      "Status": "Covered"
+    },
+    {
+      "#": "90",
+      "From the brief": "“check everything for first compliance of requirements based on all of the RFP transcript”",
+      "Requirement": "Check 1: compliance",
+      "Where the BRD covers it": "W4-12; W3-16",
+      "Status": "Covered"
+    },
+    {
+      "#": "91",
+      "From the brief": "“second is again, a same compliance check … nothing is missed out”",
+      "Requirement": "Check 2: same compliance check again",
+      "Where the BRD covers it": "W4-13; W3-16",
+      "Status": "Covered"
+    },
+    {
+      "#": "92",
+      "From the brief": "“third is when we actually start proofreading on our own and we find some sort of contradiction”",
+      "Requirement": "Check 3: the team’s own proofreading finds a contradiction; the contradiction agent now does this check (a human read can be added after W4-14, Section 21)",
+      "Where the BRD covers it": "10.4 intro; W4-14; Section 3; Section 21",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "93",
+      "From the brief": "“This always happens. I’ve never seen it actually not happen”",
+      "Requirement": "Design assumes contradictions",
+      "Where the BRD covers it": "Section 3; D2 (13.1), which runs in every W3 and W4 QC loop; 13.4 (trigger 1)",
+      "Status": "Covered"
+    },
+    {
+      "#": "94",
+      "From the brief": "“we create a contradiction agent”",
+      "Requirement": "Contradiction agent",
+      "Where the BRD covers it": "D2 (13.1); W4-14; W3-16",
+      "Status": "Covered"
+    },
+    {
+      "#": "95",
+      "From the brief": "“which takes the requirements understanding”",
+      "Requirement": "D2 input: requirement understanding",
+      "Where the BRD covers it": "D2 (13.1); W4-14",
+      "Status": "Covered"
+    },
+    {
+      "#": "96",
+      "From the brief": "“reads the document for any sort of contradictions”",
+      "Requirement": "D2 reads whole document",
+      "Where the BRD covers it": "D2 (13.1); 13.1 coverage rule",
+      "Status": "Covered"
+    },
+    {
+      "#": "97",
+      "From the brief": "“brings that up and says, this is a contradiction”",
+      "Requirement": "Finding raised",
+      "Where the BRD covers it": "W4-14; Finding object (6.2)",
+      "Status": "Covered"
+    },
+    {
+      "#": "98",
+      "From the brief": "“explain why this even landed in the document after you did all the proofreading”",
+      "Requirement": "Drafter explains how it landed",
+      "Where the BRD covers it": "ESC-2 (13.4); 10.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "99",
+      "From the brief": "“reevaluates everything … I missed this or … I added this”",
+      "Requirement": "Explanation names missed vs added",
+      "Where the BRD covers it": "ESC-2; 6.2 Finding (how it got in)",
+      "Status": "Covered"
+    },
+    {
+      "#": "100",
+      "From the brief": "“since you missed this, I cannot trust what you’ve given”",
+      "Requirement": "Trust reset",
+      "Where the BRD covers it": "ESC-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "101",
+      "From the brief": "“Again, reevaluate everything in depth”",
+      "Requirement": "Full re-evaluation",
+      "Where the BRD covers it": "ESC-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "102",
+      "From the brief": "“Don’t just give me … the same thought process”",
+      "Requirement": "No reuse of earlier reasoning",
+      "Where the BRD covers it": "ESC-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "103",
+      "From the brief": "“after that, we usually get a first draft”",
+      "Requirement": "First draft after re-evaluation",
+      "Where the BRD covers it": "W4-17; W3-16; 10.4 escalation paragraph",
+      "Status": "Covered"
+    },
+    {
+      "#": "104",
+      "From the brief": "“two to three QCs … complying with the requirements”",
+      "Requirement": "2 to 3 compliance QCs on first draft",
+      "Where the BRD covers it": "W4-18; W3-17",
+      "Status": "Covered"
+    },
+    {
+      "#": "105",
+      "From the brief": "“again look for any contradictions”",
+      "Requirement": "Contradiction check again",
+      "Where the BRD covers it": "W4-19; W3-17",
+      "Status": "Covered"
+    },
+    {
+      "#": "106",
+      "From the brief": "“if we find any, then we’ll ask it again to revise”",
+      "Requirement": "Revise on contradiction",
+      "Where the BRD covers it": "W4-19; W3-17; 13.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "107",
+      "From the brief": "“finally, we proofread every word”",
+      "Requirement": "Final every-word proofread",
+      "Where the BRD covers it": "W4-21; W4-G3; W3-18; W3-G3",
+      "Status": "Covered"
+    },
+    {
+      "#": "108",
+      "From the brief": "“it’ll randomly promise a mobile app”",
+      "Requirement": "Block unrequested scope",
+      "Where the BRD covers it": "D4 (13.1); HR-02; W4-16; F4",
+      "Status": "Covered"
+    },
+    {
+      "#": "109",
+      "From the brief": "“or it’ll randomly contradict itself”",
+      "Requirement": "Block self-contradiction",
+      "Where the BRD covers it": "D3 (13.1); F3",
+      "Status": "Covered"
+    },
+    {
+      "#": "110",
+      "From the brief": "“contradiction, consistency across the document”",
+      "Requirement": "Document-wide consistency",
+      "Where the BRD covers it": "D3 (13.1)",
+      "Status": "Covered"
+    },
+    {
+      "#": "111",
+      "From the brief": "“SMS service for XYZ … secure because we are not following SMS”",
+      "Requirement": "SMS example",
+      "Where the BRD covers it": "W4-15; F3",
+      "Status": "Covered"
+    },
+    {
+      "#": "112",
+      "From the brief": "“an agent to check for contradiction within the document itself … and consistency”",
+      "Requirement": "Internal consistency agent",
+      "Where the BRD covers it": "D3 (13.1)",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "113",
+      "From the brief": "“This check is done two times”",
+      "Requirement": "Consistency check run twice",
+      "Where the BRD covers it": "W4-15; W4-19; W3-16; W3-17; 13.3",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "114",
+      "From the brief": "“ensure that all of our … commercial terms are in place”",
+      "Requirement": "Commercial terms check",
+      "Where the BRD covers it": "D7 (13.1); W3-20; W4-23",
+      "Status": "Covered"
+    },
+    {
+      "#": "115",
+      "From the brief": "“one time implementation fee”",
+      "Requirement": "Implementation fee line",
+      "Where the BRD covers it": "12.3; 12.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "116",
+      "From the brief": "“compulsory AMC of 20% on the implementation fee”",
+      "Requirement": "AMC 20%, compulsory",
+      "Where the BRD covers it": "12.3; 12.4; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "117",
+      "From the brief": "“infra costs, which will be charged to the client as actuals”",
+      "Requirement": "Infra at actuals",
+      "Where the BRD covers it": "12.3; 12.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "118",
+      "From the brief": "“platform build like a SaaS … some sort of revenue share”",
+      "Requirement": "Revenue share for platform builds",
+      "Where the BRD covers it": "S1-8; 12.3; 12.4; S1-G2; 5.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "119",
+      "From the brief": "“if it’s a standard build, then this is the usual”",
+      "Requirement": "Standard build uses standard structure",
+      "Where the BRD covers it": "12.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "120",
+      "From the brief": "“most of the times we actually give a indicative cost”",
+      "Requirement": "Indicative infra cost given",
+      "Where the BRD covers it": "S1-7; 12.3; 12.4; HR-06; S1-G2 (12.2, Sections 4 and 19) decides whether the indicative amount is shown",
+      "Status": "Covered"
+    },
+    {
+      "#": "121",
+      "From the brief": "“highlighted and it is bold that this is charged as actuals”",
+      "Requirement": "Infra line highlighted and bold",
+      "Where the BRD covers it": "12.4 rules and table; HR-06",
+      "Status": "Covered"
+    },
+    {
+      "#": "122",
+      "From the brief": "“this is not given to us”",
+      "Requirement": "Infra not paid to Mindmap",
+      "Where the BRD covers it": "12.4 table wording",
+      "Status": "Covered"
+    },
+    {
+      "#": "123",
+      "From the brief": "“we don’t have any margins on it”",
+      "Requirement": "No margin on infra",
+      "Where the BRD covers it": "12.3; S1-7",
+      "Status": "Covered"
+    },
+    {
+      "#": "124",
+      "From the brief": "“how big is the deal and how big is the client”",
+      "Requirement": "Format by deal and client size",
+      "Where the BRD covers it": "5.4 (W3 output format row, RT6); Section 18 (format bands)",
+      "Status": "Covered"
+    },
+    {
+      "#": "125",
+      "From the brief": "“15 lakhs or 25 lakhs, from an international standpoint … just make a PPT”",
+      "Requirement": "Small international deal: PPT",
+      "Where the BRD covers it": "5.4 format bands; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "126",
+      "From the brief": "“we don’t really need … a detailed technical document”",
+      "Requirement": "No detailed document for small deals",
+      "Where the BRD covers it": "5.4; 9.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "127",
+      "From the brief": "“fifteen to twenty lakhs is big for an Indian enterprise … detailed document”",
+      "Requirement": "Indian enterprise 15 to 20 lakhs: detailed document",
+      "Where the BRD covers it": "5.4 format bands; Section 18 (15 lakhs and above; the range above 20 lakhs is an extension, A.2)",
+      "Status": "Covered"
+    },
+    {
+      "#": "128",
+      "From the brief": "“after we have the PPT or the technical document and the QC is done and the commercials are checked”",
+      "Requirement": "Order: document, QC, then commercials",
+      "Where the BRD covers it": "Section 12 intro; W3-16 to W3-20; W4 stages D to F",
+      "Status": "Covered"
+    },
+    {
+      "#": "129",
+      "From the brief": "“how do we usually calculate commercials? … incorporate that agent”",
+      "Requirement": "Commercials agent",
+      "Where the BRD covers it": "Section 12 (S1)",
+      "Status": "Covered"
+    },
+    {
+      "#": "130",
+      "From the brief": "“understanding the man hours needed”",
+      "Requirement": "Man hours estimated",
+      "Where the BRD covers it": "S1-1; S1-2 (inside W3-19 and W4-22)",
+      "Status": "Covered"
+    },
+    {
+      "#": "131",
+      "From the brief": "“after we have the PPT or the technical document and the QC is done and the commercials are checked” and “how do we usually calculate commercials? … One is … understanding the man hours needed”",
+      "Requirement": "Commercials, starting with man hours, come after the document and its QC",
+      "Where the BRD covers it": "12.1 (S1-1 to S1-G1) run at W3-19 and W4-22; provisional phase plan W3-10, W4-9; reconciled at W3-20, W4-23",
+      "Status": "Covered"
+    },
+    {
+      "#": "132",
+      "From the brief": "“usually the Claude does not give correctly the first time”",
+      "Requirement": "Failure mode: first-pass man hours wrong",
+      "Where the BRD covers it": "Section 3, F7; S1-3, S1-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "133",
+      "From the brief": "“QC one agent, QC two agent to ensure that the man hours are correct”",
+      "Requirement": "QC-1 and QC-2 on man hours",
+      "Where the BRD covers it": "S1-3, S1-4, S1-5, S1-G1; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "134",
+      "From the brief": "“multiply it into a seven fifty blended hourly rate”",
+      "Requirement": "Rate 750",
+      "Where the BRD covers it": "12.2 formula legend; S1-6; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "135",
+      "From the brief": "“That will give us the cost of humans”",
+      "Requirement": "Human cost = hours x rate",
+      "Where the BRD covers it": "S1-6; 12.2 formula",
+      "Status": "Covered"
+    },
+    {
+      "#": "136",
+      "From the brief": "“estimate a cost based on AI … use AI in development”",
+      "Requirement": "Estimate the AI-in-development saving",
+      "Where the BRD covers it": "S1-6; S1-G2; Section 18 (AI reduction ranges per task type)",
+      "Status": "Covered"
+    },
+    {
+      "#": "137",
+      "From the brief": "“how much will it bring us in terms of ROI … cost will reduce”",
+      "Requirement": "Cost reduced by the AI saving",
+      "Where the BRD covers it": "12.2 formula and legend",
+      "Status": "Covered"
+    },
+    {
+      "#": "138",
+      "From the brief": "“incorporate some overhead … 20 to 30%”",
+      "Requirement": "Overhead 20% to 30%",
+      "Where the BRD covers it": "S1-6; 12.2 legend; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "139",
+      "From the brief": "“how much will the client actually pay for”",
+      "Requirement": "Price set by what the client will pay",
+      "Where the BRD covers it": "S1-9; S1-G2",
+      "Status": "Covered"
+    },
+    {
+      "#": "140",
+      "From the brief": "“How much … might the client be willing to move ahead with”",
+      "Requirement": "Price set by willingness to proceed",
+      "Where the BRD covers it": "S1-9; 12.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "141",
+      "From the brief": "“once the costs … are ready … deep QC to ensure consistency”",
+      "Requirement": "Deep QC after costs",
+      "Where the BRD covers it": "W3-20, W4-23; 13.2 Deep QC",
+      "Status": "Covered"
+    },
+    {
+      "#": "142",
+      "From the brief": "“costs are not there anywhere in the executive summary”",
+      "Requirement": "No prices in executive summary",
+      "Where the BRD covers it": "HR-05; 12.4; 9.2 executive summary row; B.6 slide 6",
+      "Status": "Covered"
+    },
+    {
+      "#": "143",
+      "From the brief": "“in the table of the commercials and not anywhere else”",
+      "Requirement": "Prices only in commercials table",
+      "Where the BRD covers it": "HR-05; 13.1 D7; W3-20, W4-23",
+      "Status": "Covered"
+    },
+    {
+      "#": "144",
+      "From the brief": "“keep one simple table … otherwise it confuses the customer”",
+      "Requirement": "One simple table",
+      "Where the BRD covers it": "12.4",
+      "Status": "Covered"
+    },
+    {
+      "#": "145",
+      "From the brief": "“between the cost that we charge and the cost that is charged by all these different things … two to three blank rows”",
+      "Requirement": "Gap of 2 to 3 blank rows between our charges and every third-party charge",
+      "Where the BRD covers it": "12.4 (rule and layout); Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "146",
+      "From the brief": "“very clear within the table itself that this is not charged to us … actuals directly to you”",
+      "Requirement": "Wording inside the table",
+      "Where the BRD covers it": "12.4 bullet and table; HR-06",
+      "Status": "Covered"
+    },
+    {
+      "#": "147",
+      "From the brief": "“billed directly to you, not by us”",
+      "Requirement": "Exact message",
+      "Where the BRD covers it": "12.4 table, infrastructure row",
+      "Status": "Covered"
+    },
+    {
+      "#": "148",
+      "From the brief": "“That thing needs to be very ensured … clients get confused”",
+      "Requirement": "Checked every time",
+      "Where the BRD covers it": "13.1 D7; D7 runs in every deep QC (13.3, W3 and W4 stage F)",
+      "Status": "Covered"
+    },
+    {
+      "#": "149",
+      "From the brief": "“demo is impressive to a client, not just functional”",
+      "Requirement": "Demo must impress",
+      "Where the BRD covers it": "Section 14 intro; W6-4; 14.3 acceptance; W6-G2",
+      "Status": "Covered"
+    },
+    {
+      "#": "150",
+      "From the brief": "“UI is very important. It needs to look very good”",
+      "Requirement": "UI quality",
+      "Where the BRD covers it": "W6-5; 14.3 checklist and acceptance; 13.3 W6 D5",
+      "Status": "Covered"
+    },
+    {
+      "#": "151",
+      "From the brief": "“It needs to be functional”",
+      "Requirement": "Functional demo",
+      "Where the BRD covers it": "W6-6; W6-8; 14.3 Functional",
+      "Status": "Covered"
+    },
+    {
+      "#": "152",
+      "From the brief": "“needs to bring real business value”",
+      "Requirement": "Real business value",
+      "Where the BRD covers it": "W6-2; 14.3 acceptance criteria (real business value)",
+      "Status": "Covered"
+    },
+    {
+      "#": "153",
+      "From the brief": "“show real depth in terms of the process”",
+      "Requirement": "Process depth",
+      "Where the BRD covers it": "W6-3; 14.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "154",
+      "From the brief": "“broken down into 10 or 12 different sub agents”",
+      "Requirement": "10 to 12 sub-agents",
+      "Where the BRD covers it": "W6-3; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "155",
+      "From the brief": "“all of those sub agents need to actually be built into the platform”",
+      "Requirement": "Every sub-agent built",
+      "Where the BRD covers it": "W6-6",
+      "Status": "Covered"
+    },
+    {
+      "#": "156",
+      "From the brief": "“solving some real business problems”",
+      "Requirement": "Real problems solved",
+      "Where the BRD covers it": "W6-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "157",
+      "From the brief": "“not just take a tender and send out a proposal”",
+      "Requirement": "Tender agent is not a one-step flow",
+      "Where the BRD covers it": "14.4 opening; F10",
+      "Status": "Covered"
+    },
+    {
+      "#": "158",
+      "From the brief": "“we first need to study the domain”",
+      "Requirement": "Domain study first",
+      "Where the BRD covers it": "W6-1; W6-G1",
+      "Status": "Covered"
+    },
+    {
+      "#": "159",
+      "From the brief": "“first is soil investigation, then … excavation, then … dewatering or shoring, then … flooring”",
+      "Requirement": "Domain sequence",
+      "Where the BRD covers it": "14.4 domain sequence; Section 21 (the word “flooring” to confirm)",
+      "Status": "Covered; confirm the word “flooring” (Section 21)"
+    },
+    {
+      "#": "160",
+      "From the brief": "“the flooring is decided on the basis of the soil investigation”",
+      "Requirement": "Soil decides flooring",
+      "Where the BRD covers it": "14.4 domain sequence; soil branching table; Section 21 (the word “flooring” to confirm)",
+      "Status": "Covered; confirm the word “flooring” (Section 21)"
+    },
+    {
+      "#": "161",
+      "From the brief": "“then … substructure, superstructure”",
+      "Requirement": "Sequence end",
+      "Where the BRD covers it": "14.4 domain sequence",
+      "Status": "Covered"
+    },
+    {
+      "#": "162",
+      "From the brief": "“you need to understand how it works because Claude will not do that”",
+      "Requirement": "Team’s domain knowledge is primary",
+      "Where the BRD covers it": "W6-1 guard",
+      "Status": "Covered"
+    },
+    {
+      "#": "163",
+      "From the brief": "“It will give you some very generic solution … floor the client like what is this”",
+      "Requirement": "Failure mode: generic demo",
+      "Where the BRD covers it": "F10; W6-1 guard; W6-8 guard",
+      "Status": "Covered"
+    },
+    {
+      "#": "164",
+      "From the brief": "“focus on real business problems in that domain”",
+      "Requirement": "Problem selection",
+      "Where the BRD covers it": "W6-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "165",
+      "From the brief": "“documentation is a huge problem”",
+      "Requirement": "Documentation pain",
+      "Where the BRD covers it": "14.4 opening; document compliance sub-agent",
+      "Status": "Covered"
+    },
+    {
+      "#": "166",
+      "From the brief": "“Biggest problem … planning … margins get decided, the actual pricing gets decided”",
+      "Requirement": "Planning drives pricing and margin",
+      "Where the BRD covers it": "14.4 opening; construction scheduling and pricing sub-agents",
+      "Status": "Covered"
+    },
+    {
+      "#": "167",
+      "From the brief": "“the margins are very thin … less room for error”",
+      "Requirement": "Accuracy matters",
+      "Where the BRD covers it": "14.4 opening; pricing and BOQ sub-agents (tolerances)",
+      "Status": "Covered"
+    },
+    {
+      "#": "168",
+      "From the brief": "“document compliance”",
+      "Requirement": "Sub-agent: document compliance",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "169",
+      "From the brief": "“the construction scheduling”",
+      "Requirement": "Sub-agent: scheduling",
+      "Where the BRD covers it": "14.4 sub-agent table; soil branching table",
+      "Status": "Covered"
+    },
+    {
+      "#": "170",
+      "From the brief": "“the construction pricing”",
+      "Requirement": "Sub-agent: pricing",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "171",
+      "From the brief": "“the BOQ estimation”",
+      "Requirement": "Sub-agent: BOQ",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "172",
+      "From the brief": "“the drawings”",
+      "Requirement": "Sub-agent: drawings",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "173",
+      "From the brief": "“turning the drawings into specifications”",
+      "Requirement": "Sub-agent: drawings to specifications",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "174",
+      "From the brief": "“each sub agent also needs to be broken down into the … depth that it deserves”",
+      "Requirement": "Per-sub-agent depth",
+      "Where the BRD covers it": "14.2 template; W6-3; 14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "175",
+      "From the brief": "“even if you upload a tender you don’t know how the construction will flow”",
+      "Requirement": "Flow not derivable from tender alone",
+      "Where the BRD covers it": "14.4 domain paragraph",
+      "Status": "Covered"
+    },
+    {
+      "#": "176",
+      "From the brief": "“multiple branching paths depending on the soil investigation”",
+      "Requirement": "Soil-dependent branching",
+      "Where the BRD covers it": "14.4 domain paragraph; soil branching table; scheduling sub-agent",
+      "Status": "Covered"
+    },
+    {
+      "#": "177",
+      "From the brief": "“which sort of soil are we expecting? Or … want to calculate with?”",
+      "Requirement": "User selects soil type",
+      "Where the BRD covers it": "14.4 soil branching table, Branch point",
+      "Status": "Covered"
+    },
+    {
+      "#": "178",
+      "From the brief": "“it allows us to create the branching paths for all the rest of the flow”",
+      "Requirement": "Downstream re-plans per branch",
+      "Where the BRD covers it": "14.4 soil branching table (What changes downstream, Propagation)",
+      "Status": "Covered"
+    },
+    {
+      "#": "179",
+      "From the brief": "“there are multiple subflows … just this sub agent”",
+      "Requirement": "Sub-flows within scheduling",
+      "Where the BRD covers it": "14.4 soil branching table, Sub-flows",
+      "Status": "Covered"
+    },
+    {
+      "#": "180",
+      "From the brief": "“walk through all of these things in depth”",
+      "Requirement": "In-depth walkthrough",
+      "Where the BRD covers it": "W6-3; W6-10 run sheet; 14.3 Depth",
+      "Status": "Covered"
+    },
+    {
+      "#": "181",
+      "From the brief": "“very important to impress the client also”",
+      "Requirement": "Impress",
+      "Where the BRD covers it": "W6-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "182",
+      "From the brief": "“anything that is 3D is very impressive … not seen in a lot of applications”",
+      "Requirement": "3D as impact feature",
+      "Where the BRD covers it": "W6-4; 14.3 Something rarely seen",
+      "Status": "Covered"
+    },
+    {
+      "#": "183",
+      "From the brief": "“seeing their tender turn into a 3D representation along with the plan”",
+      "Requirement": "Tender to 3D with plan",
+      "Where the BRD covers it": "14.4 sub-agent table, 3D agent",
+      "Status": "Covered"
+    },
+    {
+      "#": "184",
+      "From the brief": "“3D agent is something that is added”",
+      "Requirement": "3D agent",
+      "Where the BRD covers it": "14.4 sub-agent table",
+      "Status": "Covered"
+    },
+    {
+      "#": "185",
+      "From the brief": "“I’ll actually upload the whole code itself so that you can review”",
+      "Requirement": "Code review of reference build",
+      "Where the BRD covers it": "14.4 last row (insert); B.5; Appendix B insert placeholder",
+      "Status": "Covered; code upload pending (B.5)"
+    },
+    {
+      "#": "186",
+      "From the brief": "“that kind of depth needs to go”",
+      "Requirement": "Reference depth applied",
+      "Where the BRD covers it": "W6-3; 14.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "187",
+      "From the brief": "“Especially document parsing”",
+      "Requirement": "Parsing must work",
+      "Where the BRD covers it": "W6-7 guard; W6-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "188",
+      "From the brief": "“test it with some out of samples, some in sample data”",
+      "Requirement": "In-sample and out-of-sample tests",
+      "Where the BRD covers it": "W6-7; 14.2 Test cases",
+      "Status": "Covered"
+    },
+    {
+      "#": "189",
+      "From the brief": "“outputs … of all of the different agents are actually what we’re looking for”",
+      "Requirement": "Expected outputs per sub-agent",
+      "Where the BRD covers it": "W6-7; W6-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "190",
+      "From the brief": "“Playwright plus Claude and Chrome MCP”",
+      "Requirement": "Test tooling",
+      "Where the BRD covers it": "W6-8; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "191",
+      "From the brief": "“only serves to a certain extent … it is us who can actually review”",
+      "Requirement": "Human output review",
+      "Where the BRD covers it": "W6-8 guard; W6-G2",
+      "Status": "Covered"
+    },
+    {
+      "#": "192",
+      "From the brief": "“depending on the requirement … make the video”",
+      "Requirement": "Video when required",
+      "Where the BRD covers it": "Section 15 opening; W7 router row",
+      "Status": "Covered"
+    },
+    {
+      "#": "193",
+      "From the brief": "“put an AI voiceover”",
+      "Requirement": "AI voiceover",
+      "Where the BRD covers it": "W7-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "194",
+      "From the brief": "“edit it”",
+      "Requirement": "Editing",
+      "Where the BRD covers it": "W7-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "195",
+      "From the brief": "“base 44 is not seen in the URL”",
+      "Requirement": "Platform hidden in URL",
+      "Where the BRD covers it": "W7-5; 14.3; HR-03",
+      "Status": "Covered"
+    },
+    {
+      "#": "196",
+      "From the brief": "“At the bottom, if it is sometimes it is shown at the bottom”",
+      "Requirement": "Platform hidden at page bottom",
+      "Where the BRD covers it": "W7-5; 14.3 (footer)",
+      "Status": "Covered"
+    },
+    {
+      "#": "197",
+      "From the brief": "“either we send the video or we do the demo live”",
+      "Requirement": "Send video or live demo",
+      "Where the BRD covers it": "W7-G1; W6-10; 5.5",
+      "Status": "Covered"
+    },
+    {
+      "#": "198",
+      "From the brief": "“email drafts are mostly done by AI only”",
+      "Requirement": "AI drafts emails",
+      "Where the BRD covers it": "Section 16 opening",
+      "Status": "Covered"
+    },
+    {
+      "#": "199",
+      "From the brief": "“But they do need to be proofread”",
+      "Requirement": "Email proofread",
+      "Where the BRD covers it": "W8-3 (D6); W8-G1 (human proofreads every word); HR-01",
+      "Status": "Covered"
+    },
+    {
+      "#": "200",
+      "From the brief": "“AI definitely sends out some very weird emails”",
+      "Requirement": "Prevent odd emails",
+      "Where the BRD covers it": "Section 16 opening and pattern table; W8-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "201",
+      "From the brief": "“It always promises a free demo … for every client, right? So that cannot be trusted”",
+      "Requirement": "No free demo",
+      "Where the BRD covers it": "HR-01; 13.1 D4; W8-3; pattern table",
+      "Status": "Covered"
+    },
+    {
+      "#": "202",
+      "From the brief": "“a free POC … it always promises … We need to remove that”",
+      "Requirement": "No free POC",
+      "Where the BRD covers it": "HR-01; D4; pattern table",
+      "Status": "Covered"
+    },
+    {
+      "#": "203",
+      "From the brief": "“Tone can be better … in the emails”",
+      "Requirement": "Better tone",
+      "Where the BRD covers it": "W8-2; HR-10; pattern table (Tone off)",
+      "Status": "Covered"
+    },
+    {
+      "#": "204",
+      "From the brief": "“RFIs also we spend a lot of time in”",
+      "Requirement": "RFI question workflow",
+      "Where the BRD covers it": "Section 11 (W5); Section 3; Section 4; 5.4 Pursuit type",
+      "Status": "Covered"
+    },
+    {
+      "#": "205",
+      "From the brief": "“study the details of all of the documents, all the transcripts, everything … first”",
+      "Requirement": "Study all sources first",
+      "Where the BRD covers it": "W5-1",
+      "Status": "Covered"
+    },
+    {
+      "#": "206",
+      "From the brief": "“then we need to actually check the questions”",
+      "Requirement": "Check questions",
+      "Where the BRD covers it": "W5-3 to W5-8; Section 11 opening",
+      "Status": "Covered"
+    },
+    {
+      "#": "207",
+      "From the brief": "“horribly stupid and … inconsistent questions, which are already answered”",
+      "Requirement": "Failure mode: poor, answered questions",
+      "Where the BRD covers it": "F9; W5-3; W5-4; W5-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "208",
+      "From the brief": "“gives thousands of questions … some hundred or 200”",
+      "Requirement": "Failure mode: too many questions",
+      "Where the BRD covers it": "Section 11 opening; W5-2; W5-9; F9",
+      "Status": "Covered"
+    },
+    {
+      "#": "209",
+      "From the brief": "“first agent needs to actually check whether those questions are already answered”",
+      "Requirement": "Agent 1: answered check",
+      "Where the BRD covers it": "W5-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "210",
+      "From the brief": "“second agent … check … if the questions are really relevant and which ones are actually needed”",
+      "Requirement": "Agent 2: relevance",
+      "Where the BRD covers it": "W5-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "211",
+      "From the brief": "“Third agent needs to … simulate building the proposal and see where it’s getting stuck”",
+      "Requirement": "Agent 3: simulation",
+      "Where the BRD covers it": "W5-5",
+      "Status": "Covered"
+    },
+    {
+      "#": "212",
+      "From the brief": "“we actually get into the solution itself … then we take out those questions”",
+      "Requirement": "Stuck points become questions",
+      "Where the BRD covers it": "W5-5",
+      "Status": "Covered"
+    },
+    {
+      "#": "213",
+      "From the brief": "“the agents need to simplify the English … very complex English”",
+      "Requirement": "Simplify wording",
+      "Where the BRD covers it": "W5-7",
+      "Status": "Covered"
+    },
+    {
+      "#": "214",
+      "From the brief": "“there needs to be simple English column”",
+      "Requirement": "Simple English column",
+      "Where the BRD covers it": "11.2 buyer question sheet",
+      "Status": "Covered"
+    },
+    {
+      "#": "215",
+      "From the brief": "“complex column so that people can actually track … where the question is coming from”",
+      "Requirement": "Complex column with source reference",
+      "Where the BRD covers it": "W5-7 guard; 11.2",
+      "Status": "Covered"
+    },
+    {
+      "#": "216",
+      "From the brief": "“the same question is not asked twice”",
+      "Requirement": "No duplicates",
+      "Where the BRD covers it": "W5-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "217",
+      "From the brief": "“It’s not contradictory”",
+      "Requirement": "No contradictory questions",
+      "Where the BRD covers it": "W5-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "218",
+      "From the brief": "“do some two to three QC checks”",
+      "Requirement": "2 to 3 QC rounds",
+      "Where the BRD covers it": "W5-10; 13.3 W5 column; Section 18 (RFI QC repeats)",
+      "Status": "Covered"
+    },
+    {
+      "#": "219",
+      "From the brief": "“manually review the questions and see if they’re already answered and … relevant”",
+      "Requirement": "Human review",
+      "Where the BRD covers it": "W5-G1",
+      "Status": "Covered"
+    },
+    {
+      "#": "220",
+      "From the brief": "“a manual cross-check agent … doesn’t just parse and check. Or even if it does parse and check, it does that very properly”",
+      "Requirement": "Cross-check that is not a shallow parse-and-check",
+      "Where the BRD covers it": "W5-11 (briefed to prove the question unnecessary; pass rule); W5-6",
+      "Status": "Covered"
+    },
+    {
+      "#": "221",
+      "From the brief": "“the problems are really there in the sections that it has brought out”",
+      "Requirement": "Cited section verified",
+      "Where the BRD covers it": "W5-6; W5-11 pass rule",
+      "Status": "Covered"
+    },
+    {
+      "#": "222",
+      "From the brief": "“the questions are not answered already”",
+      "Requirement": "Not-answered verified",
+      "Where the BRD covers it": "W5-11; W5-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "223",
+      "From the brief": "“even after doing a lot of QC checks, these questions still remain”",
+      "Requirement": "Residual bad questions caught",
+      "Where the BRD covers it": "W5-11 (brief and fallback); ESC-4",
+      "Status": "Covered"
+    },
+    {
+      "#": "224",
+      "From the brief": "“I don’t know if a parsing agent will work”",
+      "Requirement": "Doubt about parsing",
+      "Where the BRD covers it": "W5-11 pass rule and fallback; Section 18 (fallback rate)",
+      "Status": "Covered"
+    },
+    {
+      "#": "225",
+      "From the brief": "Msg 2 “it looks too basic”",
+      "Requirement": "Depth",
+      "Where the BRD covers it": "Whole BRD (Sections 5 to 21)",
+      "Status": "Covered"
+    },
+    {
+      "#": "226",
+      "From the brief": "Msg 2 “properly broken down each and every flow”",
+      "Requirement": "Every flow broken down",
+      "Where the BRD covers it": "Sections 7 to 16",
+      "Status": "Covered"
+    },
+    {
+      "#": "227",
+      "From the brief": "Msg 2 “different types … exploratory decks, proposals and all”",
+      "Requirement": "Separate deliverables",
+      "Where the BRD covers it": "Section 2 table; Section 4 catalogue",
+      "Status": "Covered"
+    },
+    {
+      "#": "228",
+      "From the brief": "Msg 2 “a general solutioning agent which can do everything at once”",
+      "Requirement": "Not one general agent",
+      "Where the BRD covers it": "Section 2, first sentence; architecture diagram (Section 6)",
+      "Status": "Covered"
+    },
+    {
+      "#": "229",
+      "From the brief": "Msg 2 “how will it distinguish … what it’s supposed to make?”",
+      "Requirement": "Routing logic",
+      "Where the BRD covers it": "Section 5 (5.1 to 5.5); routing diagram (5.5)",
+      "Status": "Covered"
+    },
+    {
+      "#": "230",
+      "From the brief": "Msg 2 “reevaluate if this BRD … is actually … fully covering all the requirements”",
+      "Requirement": "Full coverage",
+      "Where the BRD covers it": "Whole BRD; Appendix A.1",
+      "Status": "Covered"
+    },
+    {
+      "#": "231",
+      "From the brief": "Msg 3 “really do a coverage matrix check … every single word, every single line”",
+      "Requirement": "Coverage matrix",
+      "Where the BRD covers it": "Appendix A.1",
+      "Status": "Covered"
+    },
+    {
+      "#": "232",
+      "From the brief": "Msg 3 “check all your diagrams, your tables, your lines, your words”",
+      "Requirement": "Self-check of all elements",
+      "Where the BRD covers it": "Section 1 review record; Appendix A.1",
+      "Status": "Covered"
+    },
+    {
+      "#": "233",
+      "From the brief": "Msg 4 “100% sure you’re complying with all requirements? Check every line, word, table, image”",
+      "Requirement": "Full compliance",
+      "Where the BRD covers it": "Whole BRD; Appendix A.1",
+      "Status": "Covered"
+    },
+    {
+      "#": "234",
+      "From the brief": "Msg 5 “These are solution/technical architecture diagram format”",
+      "Requirement": "Architecture formats used",
+      "Where the BRD covers it": "B.1 and B.2 (both format images attached); W1-9; W3-9; W4-8",
+      "Status": "Covered"
+    },
+    {
+      "#": "235",
+      "From the brief": "Msg 5 “I’ve also attached the slide templates”",
+      "Requirement": "Five templates included",
+      "Where the BRD covers it": "B.3 table (File column: package path and the name each was supplied under) and the five template previews",
+      "Status": "Covered"
+    },
+    {
+      "#": "236",
+      "From the brief": "Msg 5 “we ask claude to edit these slides and not make new slides”",
+      "Requirement": "Edit templates, never create slides",
+      "Where the BRD covers it": "HR-12; W1-11; W3-14; W4-10; 7.2; 9.3; B.3; B.6; Section 20 metric",
+      "Status": "Covered"
+    },
+    {
+      "#": "237",
+      "From the brief": "Msg 5 “make sure to also attach these things”",
+      "Requirement": "Attachments in the BRD",
+      "Where the BRD covers it": "Appendix B (image previews); B.3 (the five template .pptx files, the reference deck .pptx and the two architecture .png files travel as separate files)",
+      "Status": "Covered"
+    },
+    {
+      "#": "238",
+      "From the brief": "Msg 5 “give me the final BRD”",
+      "Requirement": "Final BRD",
+      "Where the BRD covers it": "Section 1 Document and Status rows",
+      "Status": "Covered"
+    },
+    {
+      "#": "239",
+      "From the brief": "Msg 5 “here is a deck which shows how process flows look”",
+      "Requirement": "Process flow format followed",
+      "Where the BRD covers it": "B.4; B.6 (slides 8 to 12 previews); 9.3; W3-11",
+      "Status": "Covered"
+    },
+    {
+      "#": "240",
+      "From the brief": "Attachment: process summary slide per process",
+      "Requirement": "Summary slide",
+      "Where the BRD covers it": "B.4 Process summary row; B.6 slides 9 and 11",
+      "Status": "Covered"
+    },
+    {
+      "#": "241",
+      "From the brief": "Attachment: current-process swimlane slide",
+      "Requirement": "As-is swimlane",
+      "Where the BRD covers it": "B.4 Current process row; B.6 slide 10",
+      "Status": "Covered"
+    },
+    {
+      "#": "242",
+      "From the brief": "Attachment: target-process swimlane slide",
+      "Requirement": "To-be swimlane",
+      "Where the BRD covers it": "B.4 Target process row; B.6 slide 12",
+      "Status": "Covered"
+    },
+    {
+      "#": "243",
+      "From the brief": "Attachment: solution heat map",
+      "Requirement": "Heat map",
+      "Where the BRD covers it": "B.4 heat map row; W3-11; B.6 slide 8",
+      "Status": "Covered"
+    },
+    {
+      "#": "244",
+      "From the brief": "Pref: calm, measured, consultant tone",
+      "Requirement": "Tone rule",
+      "Where the BRD covers it": "HR-10; W8-2",
+      "Status": "Covered"
+    },
+    {
+      "#": "245",
+      "From the brief": "Pref: nothing hardcoded",
+      "Requirement": "All values in config",
+      "Where the BRD covers it": "HR-13; N-06; 6.4 Config store; Section 18",
+      "Status": "Covered"
+    },
+    {
+      "#": "246",
+      "From the brief": "Pref: Base44 never named in client outputs",
+      "Requirement": "Platform name hidden",
+      "Where the BRD covers it": "HR-03; 13.1 D4; W2-4; W7-5; 14.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "247",
+      "From the brief": "Pref: no POC content or timings in use case slides",
+      "Requirement": "No POC in use case slides",
+      "Where the BRD covers it": "HR-07; 7.2 slide 14 and paragraph below the slide table; 13.1 D4",
+      "Status": "Covered"
+    },
+    {
+      "#": "248",
+      "From the brief": "Pref: use cases not labelled illustrative or hypothetical",
+      "Requirement": "Direct use cases",
+      "Where the BRD covers it": "HR-08; 7.2 paragraph below the slide table",
+      "Status": "Covered"
+    },
+    {
+      "#": "249",
+      "From the brief": "Pref: no em dashes in slide content",
+      "Requirement": "No em dashes",
+      "Where the BRD covers it": "HR-09; 7.2; the BRD itself contains no em dash",
+      "Status": "Covered"
+    },
+    {
+      "#": "250",
+      "From the brief": "Pref: technical architecture documents go deep",
+      "Requirement": "Deep tech architecture",
+      "Where the BRD covers it": "9.2 Technical architecture row; W3-9; W4-8; 5.4 audience profiles",
+      "Status": "Covered"
+    },
+    {
+      "#": "251",
+      "From the brief": "Pref: each use case its own standalone flow; explain each technology",
+      "Requirement": "Standalone flows, technologies explained",
+      "Where the BRD covers it": "W3-9 guard; W4-8 guard; B.2 note",
+      "Status": "Covered"
+    },
+    {
+      "#": "252",
+      "From the brief": "Pref: no internal cost basis or stretch notes in proposals",
+      "Requirement": "No internal basis",
+      "Where the BRD covers it": "HR-04; 12.4; 13.1 D7; N-04",
+      "Status": "Covered"
+    },
+    {
+      "#": "253",
+      "From the brief": "Pref: anonymised Q&A, never name the company",
+      "Requirement": "“we”/“our” only",
+      "Where the BRD covers it": "HR-11; 5.4 W5 Anonymised Q&A; 11.2; W5-10",
+      "Status": "Covered"
+    },
+    {
+      "#": "254",
+      "From the brief": "Pref: files individually, never zipped",
+      "Requirement": "No zips",
+      "Where the BRD covers it": "HR-14; W7 output",
+      "Status": "Covered"
+    },
+    {
+      "#": "255",
+      "From the brief": "Pref: decks as PowerPoint files",
+      "Requirement": "PowerPoint decks",
+      "Where the BRD covers it": "HR-15; W1 output",
+      "Status": "Covered"
+    },
+    {
+      "#": "256",
+      "From the brief": "Order: RFP checks 1 compliance, 2 compliance again, 3 contradiction agent, 4 and 5 internal consistency, escalation, first draft",
+      "Requirement": "Stage D order",
+      "Where the BRD covers it": "10.4 (W4-12 to W4-17 and the escalation paragraph); W4 flow diagram (10.6)",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "257",
+      "From the brief": "Order: first draft, then 2 to 3 QCs, contradictions again, revise, proofread every word",
+      "Requirement": "Stage E order",
+      "Where the BRD covers it": "10.5 (W4-18 to W4-G3); W4 flow diagram (10.6)",
+      "Status": "Covered"
+    },
+    {
+      "#": "258",
+      "From the brief": "Order: consistency/contradiction agent run two times",
+      "Requirement": "D3 twice",
+      "Where the BRD covers it": "W4-15; W4-19; 13.3",
+      "Status": "Covered; confirm this reading (Section 21)"
+    },
+    {
+      "#": "259",
+      "From the brief": "Order: commercials after QC",
+      "Requirement": "Cost and price after QC and proofread",
+      "Where the BRD covers it": "W3-19 after W3-G3; W4-22 after W4-G3; Section 12 opening",
+      "Status": "Covered"
+    },
+    {
+      "#": "260",
+      "From the brief": "Order: deep QC after costs",
+      "Requirement": "Deep QC after commercials",
+      "Where the BRD covers it": "W3-20; W4-23; S1-10 guard",
+      "Status": "Covered"
+    },
+    {
+      "#": "261",
+      "From the brief": "Order: RFI agents 1 answered, 2 relevant, 3 simulate",
+      "Requirement": "Agent order",
+      "Where the BRD covers it": "W5-3, W5-4, W5-5, then W5-7 and W5-8; Section 11 opening",
+      "Status": "Covered"
+    },
+    {
+      "#": "262",
+      "From the brief": "Msg 6 “What about RFP based proposals”",
+      "Requirement": "RFP-based proposal as the second proposal type, with the full proposal contents",
+      "Where the BRD covers it": "Section 2 (W4 row); Section 4 (W4 output); Section 5.3 rule 1; Section 10 (opening and Output row); Section 21 (proposal types)",
+      "Status": "Covered"
+    },
+    {
+      "#": "263",
+      "From the brief": "Msg 6 “all solution architecture diagrams should have named data sources”",
+      "Requirement": "Every solution architecture names its data sources",
+      "Where the BRD covers it": "HR-17; B.1 (Data sources row and note); B.2 (Integrations row); W1-9; 7.2 (architecture slides); 7.3; W3-9; 9.2; 9.3; W4-8; W4-11; D5 (13.1); Section 20 (Unnamed data sources); Section 6 diagram (named data sources band)",
+      "Status": "Covered"
+    },
+    {
+      "#": "264",
+      "From the brief": "Msg 7 “data sources from the web such as price catalogues and news apis should be explicitly named”",
+      "Requirement": "Web data sources named by provider and feed",
+      "Where the BRD covers it": "B.1 (Data sources row); B.2 (Integrations row); HR-17; D5 (13.1); Section 20 (Unnamed data sources); 12.4 (paid data feeds on their own row); Section 18 (Company research and Infrastructure cost inputs: named providers); 6.4 Research; Section 6 diagram (named data sources band: Claude web search, NewsAPI.org and cloud price list tiles)",
+      "Status": "Covered"
+    },
+    {
+      "#": "265",
+      "From the brief": "Msg 8 “GO INTO DEPTH ABOUT USAGE OF BRD AND TEMPLATES VIA A READ ME”",
+      "Requirement": "An in-depth READ ME on how to use the BRD and the templates",
+      "Where the BRD covers it": "00_READ_ME_FIRST (travels with this BRD); Section 1 (Formats and templates row); B.3",
+      "Status": "Covered"
+    },
+    {
+      "#": "266",
+      "From the brief": "“unless that is like one, some of the drawing applications”",
+      "Requirement": "A feature impresses only if this audience does not already see it in its own tools",
+      "Where the BRD covers it": "W6-4; 14.3 (something rarely seen)",
+      "Status": "Covered"
+    },
+    {
+      "#": "267",
+      "From the brief": "“when we actually consider these things together at once”",
+      "Requirement": "The sub-agents are designed as one connected flow, not separate tools",
+      "Where the BRD covers it": "14.2 (Inputs from the earlier sub-agent, Outputs to the next, Branching); 14.4 sub-agent table; W6-3",
+      "Status": "Covered"
+    },
+    {
+      "#": "268",
+      "From the brief": "Order: study the company’s problems, then the periodic table, then the five real problems with sources, then five solutions each followed by its architecture",
+      "Requirement": "Intro deck order",
+      "Where the BRD covers it": "W1-1 to W1-9; 7.2 slide order",
+      "Status": "Covered"
+    },
+    {
+      "#": "269",
+      "From the brief": "Order: video to MP3, MP3 to transcript, transcript to proposal",
+      "Requirement": "Transcript pipeline order",
+      "Where the BRD covers it": "W3-1 to W3-3, then W3-4 onward; 6.4 Transcription",
+      "Status": "Covered"
+    },
+    {
+      "#": "270",
+      "From the brief": "Order: solution and technical architectures, process flows, then the Gantt, RACI and ROI waterfall",
+      "Requirement": "Proposal contents order",
+      "Where the BRD covers it": "9.2 section order; W3-9 to W3-13; W4-8, W4-11",
+      "Status": "Covered"
+    },
+    {
+      "#": "271",
+      "From the brief": "Order: man hours, QC-1 and QC-2, times the 750 blended rate, the AI reduction, overhead, the client price, then the deep QC",
+      "Requirement": "Commercials calculation order",
+      "Where the BRD covers it": "S1-1 to S1-10; 12.2 formula; W3-20, W4-23",
+      "Status": "Covered"
+    },
+    {
+      "#": "272",
+      "From the brief": "Order: study the domain, pick the real problems, break the process into sub-agents in depth, build, test in and out of sample, human output review, then the video or a live demo",
+      "Requirement": "Demo order",
+      "Where the BRD covers it": "W6-1 to W6-10 with W6-G1 and W6-G2; Section 15 (W7)",
+      "Status": "Covered"
+    }
+  ],
+  "steps": {
+    "W1": [
+      {
+        "id": "W1-1",
+        "title": "Research planner",
+        "instruction": "Plans where to look. For every company: founders’ and key personnel’s LinkedIn posts and interviews, press, job posts. For a publicly listed company, also: public transcripts (earnings calls, investor calls), investor presentations, annual reports. For a warm approach, also the notes, emails and transcripts of the earlier contact in the Case File",
+        "output": "Research plan",
+        "guard": "Names the people to cover (founders, CEO, CFO, CTO, function heads)",
+        "source_table": 15
+      },
+      {
+        "id": "W1-2",
+        "title": "Research agent",
+        "instruction": "Collects passages where the company or its leaders describe problems, priorities, spend, failures and targets",
+        "output": "Evidence records",
+        "guard": "Each record keeps URL, date, speaker and exact passage",
+        "source_table": 15
+      },
+      {
+        "id": "W1-3",
+        "title": "Evidence verifier",
+        "instruction": "Re-opens every source and confirms the passage exists, is attributed correctly and is within the recency window",
+        "output": "Verified evidence",
+        "guard": "Unverifiable evidence is dropped, never paraphrased into a claim",
+        "source_table": 15
+      },
+      {
+        "id": "W1-4",
+        "title": "Pain point extractor",
+        "instruction": "Turns evidence into candidate pain points in the company’s own terms",
+        "output": "Candidate pool (more than 5)",
+        "guard": "No candidate without at least one verified evidence record",
+        "source_table": 15
+      },
+      {
+        "id": "W1-5",
+        "title": "Pain point ranker",
+        "instruction": "Scores every candidate on the rubric below and picks the five biggest; fit to Mindmap only breaks ties",
+        "output": "Top 5, with scores per factor and reasons",
+        "guard": "The count of five and the weights are configuration values (Section 18)",
+        "source_table": 15
+      },
+      {
+        "id": "W1-6",
+        "title": "Specificity checker (fresh context)",
+        "instruction": "Tests all five on the same bar: stated by this company? would it read the same for any company in the industry? how strong is the evidence?",
+        "output": "Pass or fail per item, with an explanation of why it is a real problem the company itself has listed, citing the evidence",
+        "guard": "A passing example: the founder says AI spend is running heavy and the models are not optimised, which an orchestrator agent can address. A failing example: a fifth item such as invoice processing with no evidence or explanation. A failed item is replaced from the pool; if the pool runs out, the consultant decides whether to show fewer than five (added; see A.2)",
+        "source_table": 15
+      },
+      {
+        "id": "W1-G1",
+        "title": "Consultant gate",
+        "instruction": "Approves the five pain points and their sources",
+        "output": "Approved pain points",
+        "guard": "Nothing downstream starts before this gate",
+        "source_table": 15
+      },
+      {
+        "id": "W1-7",
+        "title": "Periodic table builder",
+        "instruction": "Builds the periodic table of the many use cases that can be employed at this company. Candidate tiles come from the accelerator catalogue in the knowledge base, filtered to the functions and processes the research shows this company runs; the tile count fills the periodic table template’s grid (read from the template, not fixed). Tiles are grouped by function. If fewer applicable tiles remain than the grid holds, the grid is filled from applicable catalogue items for adjacent functions, never with generic tiles; if none remain, the consultant decides at W1-G2",
+        "output": "Periodic table",
+        "guard": "A fresh-context check removes any tile that does not apply to this company’s business (for example a function it does not have) and any generic AI item; each tile carries a one-line description written for this company",
+        "source_table": 15
+      },
+      {
+        "id": "W1-8",
+        "title": "Solution designer",
+        "instruction": "For each pain point: the solution, how it works in three to five steps, the accelerator it uses, the value it brings. Then stars and numbers the five priority tiles on the periodic table to match slide 3, adding and starring a tile for any priority solution that is a new build with no catalogue accelerator",
+        "output": "Five solution specs; priority tiles starred",
+        "guard": "Each spec opens by restating its pain point and source; new builds are flagged where no accelerator fits",
+        "source_table": 15
+      },
+      {
+        "id": "W1-9",
+        "title": "Solution architect agent",
+        "instruction": "Draws one solution architecture per solution in the Mindmap format",
+        "output": "Five architectures",
+        "guard": "In the solution architecture format (Appendix B.1); component names identical to the solution spec; every data source named, web sources included: the system or file the W1 research shows the company runs or, where the research does not show it, the most likely one, proposed and flagged for W1-G2; never a generic tile (HR-17, B.1)",
+        "source_table": 15
+      },
+      {
+        "id": "W1-10",
+        "title": "Demo shortlister",
+        "instruction": "Uses the W2 matching logic to pick one to three demos or videos for the next-steps slide",
+        "output": "Demo shortlist",
+        "guard": "No step-specific rule",
+        "source_table": 15
+      },
+      {
+        "id": "W1-11",
+        "title": "Deck assembler",
+        "instruction": "Builds each slide by duplicating its template slide from the template library and editing it (7.2, Appendix B.3). Never creates a new slide. If a slide type has no template in the library, the deck holds here and the consultant is asked for the template",
+        "output": "Draft deck",
+        "guard": "Text and images change; font sizes and formatting untouched (HR-12)",
+        "source_table": 15
+      },
+      {
+        "id": "W1-12",
+        "title": "S2 QC, W1 profile",
+        "instruction": "Runs the W1 checks (13.3) until two consecutive clean loops",
+        "output": "QC report",
+        "guard": "No step-specific rule",
+        "source_table": 15
+      },
+      {
+        "id": "W1-G2",
+        "title": "Consultant gate",
+        "instruction": "Final review",
+        "output": "Release",
+        "guard": "No step-specific rule",
+        "source_table": 15
+      },
+      {
+        "id": "W1-13",
+        "title": "Follow-on",
+        "instruction": "Proposes a W8 email as a follow-on (5.5): cold outreach for a cold approach, follow-up for a warm one",
+        "output": "Follow-on proposal",
+        "guard": "The email is drafted only once the consultant accepts the follow-on; it then runs through W8 with its own QC and gate",
+        "source_table": 15
+      }
+    ],
+    "W2": [
+      {
+        "id": "W2-1",
+        "title": "Library matcher",
+        "instruction": "Searches the demo and video library by industry, function, process and the client’s pain points",
+        "output": "Ranked candidates with match scores",
+        "guard": "Library entries are tagged by industry, process, sub-agents and the client each was built for",
+        "source_table": 20
+      },
+      {
+        "id": "W2-2",
+        "title": "Fit reviewer",
+        "instruction": "Checks each candidate against the client: does it show the topic or problem they raised? would anything in it confuse or contradict the W1 story?",
+        "output": "One to three picks, or none",
+        "guard": "Below the match threshold nothing is shown and W6 is proposed (added; see A.2)",
+        "source_table": 20
+      },
+      {
+        "id": "W2-3",
+        "title": "Talk track writer",
+        "instruction": "Per pick: which problem it answers, which screens to show, what result to point to",
+        "output": "Talk track",
+        "guard": "No step-specific rule",
+        "source_table": 20
+      },
+      {
+        "id": "W2-4",
+        "title": "Branding and data check",
+        "instruction": "Confirms the build platform is not visible and no other client’s data appears in the chosen demo or video",
+        "output": "Pass or fail",
+        "guard": "No step-specific rule",
+        "source_table": 20
+      },
+      {
+        "id": "W2-5",
+        "title": "S2 QC, W2 profile",
+        "instruction": "D8 on every claim in the talk track; D4 for free demo or POC offers and price or timeline promises",
+        "output": "QC report",
+        "guard": "No step-specific rule",
+        "source_table": 20
+      },
+      {
+        "id": "W2-G1",
+        "title": "Consultant gate",
+        "instruction": "Approves the picks and the talk track",
+        "output": "Release",
+        "guard": "No step-specific rule",
+        "source_table": 20
+      }
+    ],
+    "W3": [
+      {
+        "id": "W3-1",
+        "title": "Recording intake (Transcription service)",
+        "instruction": "Pulls the recording, and tl;dv’s own transcript where one exists, by tl;dv meeting link, or takes an upload. W3-1 to W3-3 run once, at intake (RT2), for every workflow that receives a recording; they are listed here because W3 depends on them most",
+        "output": "Recording in the Case File",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-2",
+        "title": "Media converter (Transcription service)",
+        "instruction": "Converts the video to MP3",
+        "output": "Audio file",
+        "guard": "Done as a separate step today; the agent automates it",
+        "source_table": 22
+      },
+      {
+        "id": "W3-3",
+        "title": "Transcriber (Transcription service)",
+        "instruction": "Converts the MP3 to a transcript with speaker labels and timestamps",
+        "output": "Raw transcript",
+        "guard": "Also a separate step today. When tl;dv supplies a usable transcript, W3-2 and W3-3 are both skipped (added; see A.2)",
+        "source_table": 22
+      },
+      {
+        "id": "W3-4",
+        "title": "Transcript preparer",
+        "instruction": "Maps speakers to attendees and their titles; segments by topic (added; see A.2)",
+        "output": "Clean transcript",
+        "guard": "Titles feed the complexity parameter",
+        "source_table": 22
+      },
+      {
+        "id": "W3-5",
+        "title": "Requirement extractor",
+        "instruction": "Pulls requirements, pain points, user roles, current process cues, volumes, FTEs, KPIs (for example DSO), constraints, budget and timeline signals, decision makers",
+        "output": "Requirement records with timestamps",
+        "guard": "Nothing extracted without a timestamp",
+        "source_table": 22
+      },
+      {
+        "id": "W3-6",
+        "title": "Consolidator",
+        "instruction": "Merges all calls, emails and documents; later statements supersede earlier ones and conflicts are flagged (added; see A.2)",
+        "output": "Requirement register",
+        "guard": "Both statements kept and cited where they conflict",
+        "source_table": 22
+      },
+      {
+        "id": "W3-7",
+        "title": "Understanding reviewers (2 by default, 3 if the consultant sets it; fresh context)",
+        "instruction": "Each rebuilds the requirement summary from the sources alone by a different method (6.3): one call by call; one as the client’s decision maker deciding what they are buying; when a third runs, one for delivery feasibility, read as the team that must build it. Each then compares its summary with the register",
+        "output": "Gaps and misreads",
+        "guard": "Differences go to the consultant",
+        "source_table": 22
+      },
+      {
+        "id": "W3-G1",
+        "title": "Consultant gate",
+        "instruction": "Confirms the requirement summary and re-confirms the parameters",
+        "output": "Locked baseline and parameters",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-8",
+        "title": "Solution designer",
+        "instruction": "Designs the solution per requirement, reusing accelerators",
+        "output": "Solution spec",
+        "guard": "Every element maps to a baseline requirement; nothing unrequested",
+        "source_table": 22
+      },
+      {
+        "id": "W3-9",
+        "title": "Architects",
+        "instruction": "High-level solution architecture and technical architecture in the Mindmap formats",
+        "output": "Architectures",
+        "guard": "Formats in Appendix B.1 and B.2. Depth set by complexity. Team standing preferences: where no source tech stack exists, the real production technology is specified; each named technology is explained; each use case is its own standalone flow (data origin, steps, technology); every data source in both architectures is named, the system or file and the data taken from it, never a generic tile (HR-17, B.1)",
+        "source_table": 22
+      },
+      {
+        "id": "W3-G2",
+        "title": "Architect gate",
+        "instruction": "Approves the technical design",
+        "output": "Approved design",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-10",
+        "title": "Provisional phase plan (delivery lead, with agent support)",
+        "instruction": "Phases, durations, dependencies and milestones for the Gantt, from the approved design and comparable past projects",
+        "output": "Provisional phase plan",
+        "guard": "Not man hours. Man hours are estimated in the commercials step (W3-19), in the order the brief gives; the deep QC (W3-20) reconciles the two",
+        "source_table": 22
+      },
+      {
+        "id": "W3-11",
+        "title": "Process flow builder",
+        "instruction": "As-is and to-be flows per process in the B.4 format: one swimlane per sub-process; as-is cards tagged with the user role or system that does the step; to-be cards tagged with the platform component, as in the reference deck, and with the user role that acts on or receives the step’s output, so each user’s value is visible; a process summary per process; a solution heat map when the solution spans several areas (B.4)",
+        "output": "Flow diagrams",
+        "guard": "Format in Appendix B.4. As-is is usually estimated, by the method in 9.4",
+        "source_table": 22
+      },
+      {
+        "id": "W3-12",
+        "title": "Plan and governance builder",
+        "instruction": "Gantt chart for the timeline from the provisional phase plan; RACI matrix in the governance section",
+        "output": "Gantt, RACI",
+        "guard": "Roles match the delivery team; durations are reconciled with the reviewed man hours at W3-20",
+        "source_table": 22
+      },
+      {
+        "id": "W3-13",
+        "title": "ROI builder",
+        "instruction": "Waterfall from today’s cost to the future state, one bar per lever. Baseline bars come from client-stated FTE counts, costs and KPIs (for example DSO), each cited; FTEs become cost only with a client-stated or consultant-confirmed cost per FTE. Each lever’s improvement is estimated from the approved solution design and comparable past deployments in the knowledge base, recorded internally with its basis, and shown to the client as approximate",
+        "output": "ROI waterfall",
+        "guard": "Only if FTE or KPI baselines exist; every number cites its source or its recorded basis; shows the client’s own cost levers only, never Mindmap’s price, fees or a payback on them (HR-05)",
+        "source_table": 22
+      },
+      {
+        "id": "W3-14",
+        "title": "Drafting agent",
+        "instruction": "Writes the proposal in the variant structure (9.2) and the audience profile (5.4): a detailed document in the Mindmap proposal template (until that template is uploaded, B.5, a detailed document holds at this step and the consultant is asked for it; the agent never invents a layout), or a PPT proposal by duplicating and editing the provided template slides",
+        "output": "Preliminary proposal",
+        "guard": "Never creates a slide (HR-12); a slide type with no template holds the draft and the consultant is asked for one; the Word template for detailed documents is pending (B.5)",
+        "source_table": 22
+      },
+      {
+        "id": "W3-15",
+        "title": "Visual planner and cohesion pass",
+        "instruction": "Incorporates the diagrams from W3-9 to W3-13; scans every section for further diagram opportunities and adds them (9.3) without dropping any content; then checks one style and one set of component and role names across every diagram and the text",
+        "output": "Proposal with diagrams; cohesion report",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-16",
+        "title": "QC before the first draft",
+        "instruction": "D1 twice; D2, then D3 twice, where any contradiction triggers the escalation protocol (13.4); then D4, D5 and D8, whose findings are fixed without escalation",
+        "output": "First draft after two consecutive clean loops",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-17",
+        "title": "QC on the first draft",
+        "instruction": "D1 2 to 3 passes (a third pass runs whenever pass 2 raises a finding); D2, then D3 twice, with any contradiction revised and the loop re-run; D4 and D5",
+        "output": "Two consecutive clean loops",
+        "guard": "Mirrors W4 Stage E (added; see A.2)",
+        "source_table": 22
+      },
+      {
+        "id": "W3-18",
+        "title": "D6 proofread",
+        "instruction": "Every word, by AI; minor findings fixed",
+        "output": "Clean text",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-G3",
+        "title": "Human proofread",
+        "instruction": "The consultant reads every word. A critical or major issue, or any issue QC did not log, triggers the escalation protocol and the work returns to W3-17",
+        "output": "Proofread proposal",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-19",
+        "title": "S1: effort, cost, price, commercials table",
+        "instruction": "Man hours estimated and checked by the QC-1 and QC-2 agents (12.1, S1-G1); then cost, indicative infrastructure cost, revenue share where it applies, recommended price and its approval (12.2, S1-G2); then the one commercials table (12.4)",
+        "output": "Commercials section",
+        "guard": "No step-specific rule",
+        "source_table": 22
+      },
+      {
+        "id": "W3-20",
+        "title": "Deep QC",
+        "instruction": "D7, D3 and D6 on the whole document, checking the commercials section and every change since W3-G3 first: all commercial terms in place; prices only in the one commercials table, none in the executive summary or anywhere else; numbers consistent everywhere; the Gantt reconciled with the reviewed man hours (a mismatch updates the Gantt); the approved price checked against the format bands, with a band change sent to the consultant before release",
+        "output": "QC report",
+        "guard": "Revise and re-run until clean",
+        "source_table": 22
+      },
+      {
+        "id": "W3-G4",
+        "title": "Release gate",
+        "instruction": "The consultant reads the commercials section and every change since W3-G3, then releases. A critical or major issue, or any issue QC did not log: escalation protocol (13.4), back to W3-20, or to W3-17 if it lies outside the commercials",
+        "output": "Release",
+        "guard": "A W8 cover email is proposed as a follow-on (5.5)",
+        "source_table": 22
+      }
+    ],
+    "W4": [
+      {
+        "id": "W4-1",
+        "title": "RFP parser",
+        "instruction": "Splits the RFP and annexures into clauses, including tables, forms and scoring grids",
+        "output": "Clause set",
+        "guard": "Clause count reconciled against the RFP’s own numbering; gaps shown",
+        "source_table": 28
+      },
+      {
+        "id": "W4-2",
+        "title": "Source collector",
+        "instruction": "Gathers call transcripts with updates (recordings go through the Transcription service, 6.4), the buyer’s answers to the questions we asked (RFI answers), corrigenda and addenda",
+        "output": "Source set",
+        "guard": "No step-specific rule",
+        "source_table": 28
+      },
+      {
+        "id": "W4-3",
+        "title": "Consolidation agent",
+        "instruction": "Consolidates the three together into one structured requirement register",
+        "output": "Register",
+        "guard": "Where a later source changes a clause, both are kept, the prevailing one marked, both cited",
+        "source_table": 28
+      },
+      {
+        "id": "W4-4",
+        "title": "Core requirement analyst",
+        "instruction": "Separates the core benefit the RFP is buying from supporting features, mandatory compliance and evaluation weights; writes the core preliminary requirement",
+        "output": "Preliminary requirement statement",
+        "guard": "An RFP for a platform that does X, with AI features on top, is a platform bid: the focus is the core platform; the AI features are answered but not emphasised",
+        "source_table": 28
+      },
+      {
+        "id": "W4-5",
+        "title": "Unbiased reviewers (3 by default; 2 if the bid owner sets it at RT7)",
+        "instruction": "Each starts from blank, takes all the information into consideration, writes its own detailed understanding first, then compares it with the preliminary statement",
+        "output": "Independent understanding and gap list each",
+        "guard": "Different methods (clause by clause; the evaluator’s scoring view; the requirements as read by the delivery team that must build them, the method dropped when only two run) so the same input does not produce the same answer; no access to Agent 1’s reasoning; each returns a coverage log of every clause, transcript and RFI answer it read (6.3 item 3)",
+        "source_table": 29
+      },
+      {
+        "id": "W4-6",
+        "title": "Reconciler",
+        "instruction": "Sets the reviews side by side: agreements, disagreements, misreads, emphasis errors",
+        "output": "Reconciliation table",
+        "guard": "No averaging; every disagreement goes to the bid owner",
+        "source_table": 29
+      },
+      {
+        "id": "W4-G1",
+        "title": "Bid owner gate",
+        "instruction": "Resolves disagreements and locks the requirement baseline",
+        "output": "Locked baseline",
+        "guard": "Every later check measures against it",
+        "source_table": 29
+      },
+      {
+        "id": "W4-7",
+        "title": "Response planner",
+        "instruction": "Outline in the buyer’s order, compliance matrix skeleton, page budget weighted to the core requirement and the scoring",
+        "output": "Outline",
+        "guard": "Buyer section order, page limits and forms followed exactly",
+        "source_table": 30
+      },
+      {
+        "id": "W4-8",
+        "title": "Solution designer and architects",
+        "instruction": "Solution, high-level solution architecture, technical architecture",
+        "output": "Design",
+        "guard": "Same guards as W3-9: Mindmap formats, real production technology where no source stack exists, each technology explained, each use case its own standalone flow; every element maps to a baseline requirement; every data source named, as in W3-9 (HR-17, B.1)",
+        "source_table": 30
+      },
+      {
+        "id": "W4-G2",
+        "title": "Architect gate",
+        "instruction": "Approves the technical design",
+        "output": "Approved design",
+        "guard": "No step-specific rule",
+        "source_table": 30
+      },
+      {
+        "id": "W4-9",
+        "title": "Provisional phase plan (delivery lead, with agent support)",
+        "instruction": "Phases, durations, dependencies and milestones for the Gantt",
+        "output": "Provisional phase plan",
+        "guard": "Not man hours. Man hours come in the commercials step (W4-22), in the order the brief gives; the deep QC (W4-23) reconciles the two",
+        "source_table": 30
+      },
+      {
+        "id": "W4-10",
+        "title": "Drafting agent",
+        "instruction": "Builds the preliminary proposal in the buyer’s format; where none is prescribed, in the format the bands select (5.4): the Mindmap detailed document template (pending, B.5; until it is uploaded, a detailed document holds here and the bid owner is asked for it, and the agent never invents a layout), or a PPT built by duplicating and editing the provided template slides. Fills the compliance matrix (added; see A.2)",
+        "output": "Preliminary proposal",
+        "guard": "Full compliance is the default and the target: every requirement is answered as complies wherever it can be met; where one cannot be met, the drafting agent records a proposed partial compliance or deviation with its reason; the bid owner decides it as soon as it is raised (a decision on that requirement, which does not hold the stage), and only approved ones appear, each stated once; never creates a slide (HR-12)",
+        "source_table": 30
+      },
+      {
+        "id": "W4-11",
+        "title": "Visual engine",
+        "instruction": "Incorporates all diagrams: architectures, as-is and to-be flows (as-is estimated by the method in 9.4), Gantt from the provisional phase plan, RACI, ROI waterfall if data exists; then adds a diagram wherever a section’s content calls for one (9.3)",
+        "output": "Proposal with diagrams",
+        "guard": "Same rules as W3-11 to W3-13 and W3-15: as-is and to-be tagging (B.4); Gantt and RACI reconciled with the reviewed man hours at W4-23; ROI only from cited baselines, shown as approximate; same component and role names as the text; every data source named (HR-17); no content dropped",
+        "source_table": 30
+      },
+      {
+        "id": "W4-12",
+        "title": "Check 1: D1 compliance, pass 1",
+        "instruction": "Checks every line, word, image and table for compliance with the requirements, against the RFP, transcripts, RFI answers and the baseline",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-13",
+        "title": "Check 2: D1 compliance, pass 2",
+        "instruction": "The same compliance check by a new instance, briefed to make sure nothing is missed",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-14",
+        "title": "Check 3: D2 contradiction agent",
+        "instruction": "Takes the requirement understanding and reads the document for any sort of contradiction, flagging each one",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-15",
+        "title": "Checks 4 and 5: D3 internal contradiction and consistency, run two times",
+        "instruction": "Contradiction within the document itself and consistency, for example SMS used for a flow, then “secure because we do not use SMS”; each run by a new instance",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-16",
+        "title": "D4, D5 and D8",
+        "instruction": "Unrequested scope such as a mobile app; diagrams and tables against the text; sources of claims about the client. These findings are fixed without escalation; the loop re-runs until two consecutive clean loops (13.2, 13.5)",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-17",
+        "title": "First draft",
+        "instruction": "Reached after two consecutive clean loops of W4-12 to W4-16",
+        "output": "",
+        "guard": "",
+        "source_table": 31
+      },
+      {
+        "id": "W4-18",
+        "title": "D1 compliance, 2 to 3 passes (a third pass runs whenever pass 2 raises a finding)",
+        "instruction": "New instances check that everything complies with the requirements",
+        "output": "",
+        "guard": "",
+        "source_table": 32
+      },
+      {
+        "id": "W4-19",
+        "title": "D2, then D3 twice",
+        "instruction": "Looks for contradictions again; any found is revised and the stage restarts at W4-18",
+        "output": "",
+        "guard": "",
+        "source_table": 32
+      },
+      {
+        "id": "W4-20",
+        "title": "D4 and D5",
+        "instruction": "Findings fixed without escalation; the stage repeats until two consecutive clean loops",
+        "output": "",
+        "guard": "",
+        "source_table": 32
+      },
+      {
+        "id": "W4-21",
+        "title": "D6 proofread",
+        "instruction": "Every word, by AI; minor findings fixed",
+        "output": "",
+        "guard": "",
+        "source_table": 32
+      },
+      {
+        "id": "W4-G3",
+        "title": "Human proofread",
+        "instruction": "The bid owner proofreads every word. A critical or major issue, or any issue QC did not log, is a QC escape: the escalation protocol runs and the work returns to W4-18",
+        "output": "",
+        "guard": "",
+        "source_table": 32
+      },
+      {
+        "id": "W4-22",
+        "title": "S1: effort, cost, price, commercials table",
+        "instruction": "Man hours estimated and checked by the QC-1 and QC-2 agents (12.1, S1-G1); then cost, indicative infrastructure cost, revenue share where it applies, recommended price and its approval (12.2, S1-G2); then the one commercials table (12.4). Where the buyer mandates a price schedule, it is filled instead",
+        "output": "",
+        "guard": "",
+        "source_table": 33
+      },
+      {
+        "id": "W4-23",
+        "title": "Deep QC",
+        "instruction": "D7, D3 and D6 on the whole document, checking the commercials section and every change since W4-G3 first: all commercial terms in place, prices only in the commercials table and nowhere else (including the executive summary), numbers consistent across the document, the Gantt reconciled with the reviewed man hours; where the buyer set no format, the approved price checked against the format bands, with a band change sent to the bid owner; revise and re-run until clean",
+        "output": "",
+        "guard": "",
+        "source_table": 33
+      },
+      {
+        "id": "W4-24",
+        "title": "Submission check",
+        "instruction": "Buyer submission instructions: forms, declarations, signatures, file naming, page limits, number of copies (added; see A.2). Any change it makes goes back through the deep QC (W4-23) for the changed parts before sign-off",
+        "output": "",
+        "guard": "",
+        "source_table": 33
+      },
+      {
+        "id": "W4-G4",
+        "title": "Bid owner sign-off",
+        "instruction": "Reads the commercials section and every change since W4-G3, then releases. A critical or major issue, or any issue QC did not log: escalation protocol (13.4), back to W4-23, or to W4-18 if it lies outside the commercials. A W8 submission note is proposed as a follow-on (5.5)",
+        "output": "",
+        "guard": "",
+        "source_table": 33
+      }
+    ],
+    "W5": [
+      {
+        "id": "W5-1",
+        "title": "Context study",
+        "instruction": "Studies the details of every document, transcript and earlier answer the client has sent; builds a provisional requirement register, using the W4 Stage A agents (W4-1 to W4-4) for an RFP, or the W3 extractor and consolidator (W3-5, W3-6) otherwise; recordings go through the Transcription service (6.4)",
+        "output": "Indexed sources, provisional register",
+        "guard": "No question is written before this completes",
+        "source_table": 35
+      },
+      {
+        "id": "W5-2",
+        "title": "Question drafter",
+        "instruction": "Drafts candidate questions from the documents",
+        "output": "Candidate questions",
+        "guard": "Each tied to a clause or passage; no target to produce many",
+        "source_table": 35
+      },
+      {
+        "id": "W5-3",
+        "title": "Agent 1: already-answered check",
+        "instruction": "For each question, searches all sources for the answer. Found: the question is dropped, citing where. Not found: the sections searched are recorded",
+        "output": "Kept and dropped lists with evidence",
+        "guard": "No step-specific rule",
+        "source_table": 35
+      },
+      {
+        "id": "W5-4",
+        "title": "Agent 2: relevance check",
+        "instruction": "Keeps a question only if it is really needed: its answer changes design, effort, price, compliance or risk; states which",
+        "output": "Relevant set",
+        "guard": "No step-specific rule",
+        "source_table": 35
+      },
+      {
+        "id": "W5-5",
+        "title": "Agent 3: solution simulation",
+        "instruction": "Simulates building the proposal (architecture, effort, plan, commercials) and records where it gets stuck; those stuck points become questions, and questions that unblock nothing are dropped (added; see A.2)",
+        "output": "Simulation-backed set",
+        "guard": "Questions added here also pass W5-3 and W5-4",
+        "source_table": 35
+      },
+      {
+        "id": "W5-6",
+        "title": "Section verifier",
+        "instruction": "Re-opens the section each question cites and confirms the problem is really there, as described",
+        "output": "Verified set",
+        "guard": "Misattributed questions fixed or dropped",
+        "source_table": 35
+      },
+      {
+        "id": "W5-7",
+        "title": "Simplifier",
+        "instruction": "Writes each question in simple English beside the complex version",
+        "output": "Two-column set",
+        "guard": "The complex column keeps the document reference so people can trace where each question comes from",
+        "source_table": 35
+      },
+      {
+        "id": "W5-8",
+        "title": "Duplicate and contradiction check",
+        "instruction": "Merges questions asking the same thing; removes questions that contradict each other or the provisional register",
+        "output": "Clean set",
+        "guard": "The same question is never asked twice",
+        "source_table": 35
+      },
+      {
+        "id": "W5-9",
+        "title": "Ranker",
+        "instruction": "Ranks by impact and trims to the configured cap (added; see A.2); questions cut by the cap are listed for the approver at W5-G1",
+        "output": "Final set",
+        "guard": "Never exceeds the cap",
+        "source_table": 35
+      },
+      {
+        "id": "W5-10",
+        "title": "S2 QC, W5 profile",
+        "instruction": "W5-3, W5-4, W5-6 and W5-8 repeated 2 to 3 times by new instances; D6 proofread; the anonymised Q&A rule (HR-11) and the build platform rule (HR-03)",
+        "output": "QC report",
+        "guard": "No step-specific rule",
+        "source_table": 35
+      },
+      {
+        "id": "W5-11",
+        "title": "Manual cross-check assist",
+        "instruction": "For each question, shows side by side: the question, the section it cites with the passage quoted, the closest answering passage found anywhere in the sources, and the sections searched. It is briefed to prove the question unnecessary, not to confirm it",
+        "output": "Review sheet",
+        "guard": "Pass rule: a question reaches W5-G1 only with either its cited passage quoted word for word and located, or, for a gap found by the W5-5 simulation, the stuck point described and the list of sections searched showing the information is absent; a question with neither is dropped. Fallback: if, over the first pursuits, the approver still finds already-answered or irrelevant questions above the configured rate, the consultant or bid owner switches the cross-check at W5-G1 to human-led, with the agent supplying search hits only; each escape is added to the W5-3 and W5-4 checklists (ESC-4). The pass rule is tested on two past RFPs with their RFI question sets and final responses (pending, B.5)",
+        "source_table": 35
+      },
+      {
+        "id": "W5-G1",
+        "title": "Approver gate (bid owner for an RFP; presales consultant otherwise)",
+        "instruction": "Manually reviews every question: already answered? relevant? is the problem really in the cited section?",
+        "output": "Approved list",
+        "guard": "No step-specific rule",
+        "source_table": 35
+      }
+    ],
+    "W6": [
+      {
+        "id": "W6-1",
+        "title": "Domain capture, with research support",
+        "instruction": "The domain owner, the team member who studied the domain, records how the work really flows: sequence, decision points, branches. A research agent supports with sources and fills gaps, each flagged for review",
+        "output": "Domain process map",
+        "guard": "The team’s understanding is the primary input, because Claude alone gives a generic process that will not impress a client",
+        "source_table": 49
+      },
+      {
+        "id": "W6-G1",
+        "title": "Domain owner gate",
+        "instruction": "Approves the process map before anything is built",
+        "output": "Approved map",
+        "guard": "No step-specific rule",
+        "source_table": 49
+      },
+      {
+        "id": "W6-2",
+        "title": "Business problem selector",
+        "instruction": "Picks the real business problems in that domain that the demo must solve",
+        "output": "Problem list with reasons",
+        "guard": "Tied to the client’s pain points where known",
+        "source_table": 49
+      },
+      {
+        "id": "W6-3",
+        "title": "Process decomposer",
+        "instruction": "Breaks the process into 10 to 12 sub-agents and specifies each to the depth it deserves (14.2)",
+        "output": "Sub-agent specs",
+        "guard": "The count range comes from config. Each spec covers its sub-flows and branching, not a single step",
+        "source_table": 49
+      },
+      {
+        "id": "W6-4",
+        "title": "Impact feature designer",
+        "instruction": "Proposes features that impress this audience because they are rarely seen in applications, such as a 3D view; a feature counts only if this audience does not already see it in its own tools (the brief’s exception: drawing applications already show 3D)",
+        "output": "Feature list",
+        "guard": "No step-specific rule",
+        "source_table": 49
+      },
+      {
+        "id": "W6-5",
+        "title": "UI designer",
+        "instruction": "Designs an interface that looks very good and passes the UI checklist (14.3)",
+        "output": "UI design",
+        "guard": "UI checklist (14.3)",
+        "source_table": 49
+      },
+      {
+        "id": "W6-6",
+        "title": "Builder",
+        "instruction": "Builds every sub-agent as functional, inside the platform",
+        "output": "Working demo",
+        "guard": "Nothing hardcoded; values come from uploaded documents and configuration (HR-13)",
+        "source_table": 49
+      },
+      {
+        "id": "W6-7",
+        "title": "Test data preparer",
+        "instruction": "Assembles in-sample and out-of-sample documents, with expected outputs for each sub-agent",
+        "output": "Test set",
+        "guard": "Document parsing gets the widest test set",
+        "source_table": 49
+      },
+      {
+        "id": "W6-8",
+        "title": "Test agent",
+        "instruction": "Runs every sub-agent end to end through the browser (Playwright and Claude in Chrome) and compares outputs with expected; document parsing is tested on every document type",
+        "output": "Test log per sub-agent",
+        "guard": "Empty, wrong or generic outputs fail; a failed sub-agent returns to W6-6 with its test log. Automated testing only serves to a certain extent",
+        "source_table": 49
+      },
+      {
+        "id": "W6-9",
+        "title": "S2 QC, W6 profile",
+        "instruction": "D1 (spec against build, including a check for hardcoded values), D4 (no build platform name, no unagreed claims), D5 (UI checklist)",
+        "output": "QC report",
+        "guard": "No step-specific rule",
+        "source_table": 49
+      },
+      {
+        "id": "W6-G2",
+        "title": "Output review",
+        "instruction": "The domain owner, consultant and demo builder review the outputs themselves, confirm they are what they expect, and check the demo against the acceptance criteria in 14.3",
+        "output": "Demo ready",
+        "guard": "Automated tests never replace this review",
+        "source_table": 49
+      },
+      {
+        "id": "W6-10",
+        "title": "Run sheet writer",
+        "instruction": "The demo path, the data to load, talking points tied to the pain points",
+        "output": "Run sheet",
+        "guard": "Used for a live demo or by W7",
+        "source_table": 49
+      }
+    ],
+    "W7": [
+      {
+        "id": "W7-1",
+        "title": "Script writer",
+        "instruction": "Writes a run sheet first if W6-10 has none; then the script, scene by scene: the client problem, what the sub-agent does, the result",
+        "output": "Script",
+        "guard": "Each scene tied to a pain point",
+        "source_table": 55
+      },
+      {
+        "id": "W7-2",
+        "title": "Recorder",
+        "instruction": "Records the scripted path, driven by browser automation so takes repeat",
+        "output": "Raw footage",
+        "guard": "No step-specific rule",
+        "source_table": 55
+      },
+      {
+        "id": "W7-3",
+        "title": "Voiceover",
+        "instruction": "AI voiceover from the script; voice, accent and pace set per client region",
+        "output": "Audio track",
+        "guard": "No step-specific rule",
+        "source_table": 55
+      },
+      {
+        "id": "W7-4",
+        "title": "Editor",
+        "instruction": "Cuts, zooms on key outputs, captions, Mindmap title and end cards",
+        "output": "Edited video",
+        "guard": "No step-specific rule",
+        "source_table": 55
+      },
+      {
+        "id": "W7-5",
+        "title": "Build platform frame check",
+        "instruction": "Checks every frame: the platform name in the URL bar, at the bottom of the page (where it sometimes appears), in the tab title, on loading screens",
+        "output": "Pass, or frames to crop or mask",
+        "guard": "Mandatory",
+        "source_table": 55
+      },
+      {
+        "id": "W7-6",
+        "title": "S2 QC, W7 profile",
+        "instruction": "D3 (script against screens), D4, D5 (frames), D6 (captions)",
+        "output": "QC report",
+        "guard": "No step-specific rule",
+        "source_table": 55
+      },
+      {
+        "id": "W7-G1",
+        "title": "Consultant gate",
+        "instruction": "The consultant and the demo builder watch the final cut",
+        "output": "Release; the video is sent with a W8 cover note as a follow-on (5.5), or the demo is shown live from the W6-10 run sheet",
+        "guard": "No step-specific rule",
+        "source_table": 55
+      }
+    ],
+    "W8": [
+      {
+        "id": "W8-1",
+        "title": "Context reader",
+        "instruction": "Pulls only the facts the email may use from the Case File",
+        "output": "Sourced facts only",
+        "guard": "Sourced facts only",
+        "source_table": 58
+      },
+      {
+        "id": "W8-2",
+        "title": "Drafter",
+        "instruction": "Writes the email, short by default",
+        "output": "Calm, measured, consultant tone; no hype (HR-10)",
+        "guard": "Calm, measured, consultant tone; no hype (HR-10)",
+        "source_table": 58
+      },
+      {
+        "id": "W8-3",
+        "title": "S2 QC, W8 profile",
+        "instruction": "D8 on every claim; D4 removes any free demo, free POC, price or timeline commitment; D6 proofreads every word and the tone; every pattern in the table below is checked",
+        "output": "No exceptions (HR-01)",
+        "guard": "No exceptions (HR-01)",
+        "source_table": 58
+      },
+      {
+        "id": "W8-G1",
+        "title": "Consultant gate",
+        "instruction": "Proofreads every word, edits and sends",
+        "output": "Sending is always a human action",
+        "guard": "Sending is always a human action",
+        "source_table": 58
+      }
+    ],
+    "S1": [
+      {
+        "id": "S1-1",
+        "title": "Work breakdown agent",
+        "instruction": "Breaks the approved solution into work packages: each module and sub-agent, integrations, data work, testing, deployment, project management",
+        "output": "Work packages",
+        "guard": "Every package maps to a baseline requirement",
+        "source_table": 38
+      },
+      {
+        "id": "S1-2",
+        "title": "Estimator",
+        "instruction": "Estimates the man hours needed per package and role",
+        "output": "Effort estimate",
+        "guard": "Assumptions recorded per package",
+        "source_table": 38
+      },
+      {
+        "id": "S1-3",
+        "title": "QC-1 agent (fresh context)",
+        "instruction": "Reviews the estimate package by package: missing packages, wrong roles, hours too high or too low, weak assumptions",
+        "output": "Findings and a corrected estimate",
+        "guard": "No step-specific rule",
+        "source_table": 38
+      },
+      {
+        "id": "S1-4",
+        "title": "QC-2 agent (fresh context)",
+        "instruction": "Reviews the corrected estimate independently to make sure the man hours are correct",
+        "output": "Findings",
+        "guard": "Never sees QC-1’s reasoning",
+        "source_table": 38
+      },
+      {
+        "id": "S1-5",
+        "title": "Reconciler",
+        "instruction": "Applies agreed changes; differences above the configured tolerance go to the solution architect and the delivery lead with reasons; compares the total effort with the provisional phase plan and flags any gap for the Gantt",
+        "output": "Reviewed man hours",
+        "guard": "No step-specific rule",
+        "source_table": 38
+      },
+      {
+        "id": "S1-G1",
+        "title": "Architect and delivery lead",
+        "instruction": "Approve the man hours",
+        "output": "Locked effort",
+        "guard": "No step-specific rule",
+        "source_table": 38
+      },
+      {
+        "id": "S1-6",
+        "title": "Cost calculator",
+        "instruction": "Human cost = reviewed man hours × blended hourly rate. Then estimates the reduction from using AI in development, per work package: which tasks AI speeds up (for example code generation, test writing, documentation, data mapping), by how much, and why, checked by a fresh-context reviewer. Then overhead",
+        "output": "Internal cost",
+        "guard": "All values from config; nothing hardcoded. The overhead within the 20% to 30% range is proposed by the delivery lead from the engagement’s load (travel and onsite time, project management and governance, compliance and documentation, number of client stakeholders), with the reason recorded. The overhead and the AI reduction are approved at S1-G2; reduction ranges per task type come from config",
+        "source_table": 39
+      },
+      {
+        "id": "S1-7",
+        "title": "Infrastructure estimator",
+        "instruction": "Estimates the indicative infrastructure cost from the approved technical architecture: hosting option (cloud, client data centre or on-premise), compute and GPU, storage, model or API usage at the expected volumes, third-party licences",
+        "output": "Indicative infrastructure cost with its assumptions",
+        "guard": "Given most of the time; charged to the client at actuals with no Mindmap margin; the assumptions stay internal and a one-line basis appears in the table; a licence or paid data feed billed directly by its provider is shown on its own row instead (12.4)",
+        "source_table": 39
+      },
+      {
+        "id": "S1-8",
+        "title": "Revenue share modeller",
+        "instruction": "Platform or SaaS builds only: proposes a revenue share from the models in config (for example a percentage of platform revenue, a fee per transaction, or a fee per active user), with the basis, the rate, the term, and any floor, cap or reduced implementation fee it trades against",
+        "output": "Revenue share proposal",
+        "guard": "Not run for a standard build",
+        "source_table": 39
+      },
+      {
+        "id": "S1-9",
+        "title": "Price recommender",
+        "instruction": "Recommends the client price from the internal cost, client size, deal size, budget signals from calls and comparable past deals, with its reasoning on what the client is likely to pay and move ahead with",
+        "output": "Recommended price and reasoning",
+        "guard": "No step-specific rule",
+        "source_table": 39
+      },
+      {
+        "id": "S1-G2",
+        "title": "Pricing owner",
+        "instruction": "Approves or sets the client price, the AI reduction, the overhead, whether the infrastructure line shows the indicative amount from S1-7 or reads “At actuals” (reason recorded) and, for platform builds, the revenue share (added; see A.2)",
+        "output": "Approved price",
+        "guard": "No step-specific rule",
+        "source_table": 39
+      },
+      {
+        "id": "S1-10",
+        "title": "Commercials table builder",
+        "instruction": "Builds the single client commercials table (12.4)",
+        "output": "Commercials section",
+        "guard": "The calling workflow then runs the deep QC (W3-20, W4-23)",
+        "source_table": 39
+      }
+    ]
+  },
+  "house_rules": [
+    {
+      "ID": "HR-01",
+      "Rule": "Never offer a free demo or a free POC",
+      "Applies to": "W1, W2, W3, W4, W7, W8",
+      "Checked by": "D4",
+      "Source": "Brief"
+    },
+    {
+      "ID": "HR-02",
+      "Rule": "No deliverable outside the baseline or agreed scope (for example a mobile app, extra integrations, SLAs)",
+      "Applies to": "W3, W4",
+      "Checked by": "D4",
+      "Source": "Brief (mobile app); rest added"
+    },
+    {
+      "ID": "HR-03",
+      "Rule": "The build platform (Base44), its functions and integrations are never named or visible in client content",
+      "Applies to": "W1 to W8",
+      "Checked by": "D4, W2-4, W5-10, W7-5",
+      "Source": "Brief (video); team preference"
+    },
+    {
+      "ID": "HR-04",
+      "Rule": "No internal cost basis in client outputs: man hours, hourly rates, overhead, AI reduction, margin, notes on where the team is stretched. Where a buyer-mandated price schedule (W4) requires effort or rates, the pricing owner decides at S1-G2 what is shown, and D7 checks against that decision",
+      "Applies to": "W1, W2, W3, W4, W8",
+      "Checked by": "D7 in W3 and W4; D4 elsewhere",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-05",
+      "Rule": "Prices only in the one commercials table; never in the executive summary or anywhere else. In W4, where the buyer mandates a price schedule, that schedule replaces the commercials table and this rule applies wherever its format allows (12.4)",
+      "Applies to": "W3, W4",
+      "Checked by": "D7",
+      "Source": "Brief"
+    },
+    {
+      "ID": "HR-06",
+      "Rule": "The infrastructure line always appears, highlighted and bold, stating that it is charged as actuals and billed directly to the client, not by Mindmap. Most of the time it carries an indicative amount; where none is given (the pricing owner decides at S1-G2, with the reason recorded), the amount reads “At actuals”. In W4, where the buyer mandates a price schedule, the infrastructure line follows that schedule wherever its format allows (12.4)",
+      "Applies to": "W3, W4",
+      "Checked by": "D7",
+      "Source": "Brief"
+    },
+    {
+      "ID": "HR-07",
+      "Rule": "No POC content or POC timings in use case slides",
+      "Applies to": "W1; W3 and W4 when delivered as a PPT",
+      "Checked by": "D4",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-08",
+      "Rule": "Use cases presented directly; never labelled illustrative, hypothetical or “not a client case”",
+      "Applies to": "W1; W3 and W4 when delivered as a PPT",
+      "Checked by": "D6",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-09",
+      "Rule": "No em dashes in slide content",
+      "Applies to": "W1; W3 and W4 when delivered as a PPT",
+      "Checked by": "D6",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-10",
+      "Rule": "Calm, measured, consultant tone; logic-first; no hype",
+      "Applies to": "W1, W3, W4, W5, W7, W8",
+      "Checked by": "D6",
+      "Source": "Brief (email tone); team preference"
+    },
+    {
+      "ID": "HR-11",
+      "Rule": "In anonymised bidder Q&A, never name the company; “we” and “our” only",
+      "Applies to": "W5",
+      "Checked by": "W5-10",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-12",
+      "Rule": "Never create a new slide. Every slide is a duplicate of a provided template slide (Appendix B.3 and B.6, held in the template library), edited by changing or removing text and images only; font sizes and formatting stay as they are. A slide type with no template in the library holds the deck until the consultant supplies one",
+      "Applies to": "W1; W3 and W4 when delivered as a PPT",
+      "Checked by": "W1-11, W3-14, W4-10 (template library lookup); D6 (formatting unchanged)",
+      "Source": "Brief (templates); team preference"
+    },
+    {
+      "ID": "HR-13",
+      "Rule": "Nothing hardcoded: every value comes from source documents or configuration",
+      "Applies to": "All workflows, demos, S1, router thresholds",
+      "Checked by": "D1 in W6 for demo code; for S1 and the router, a design rule reviewed at S1-G1, S1-G2 and RT7",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-14",
+      "Rule": "Files delivered individually, never zipped",
+      "Applies to": "All deliverables",
+      "Checked by": "Orchestrator",
+      "Source": "Team preference"
+    },
+    {
+      "ID": "HR-15",
+      "Rule": "Decks delivered as PowerPoint files built from the provided templates",
+      "Applies to": "W1; W3 and W4 when delivered as a PPT",
+      "Checked by": "Orchestrator",
+      "Source": "Team preference; brief (templates)"
+    },
+    {
+      "ID": "HR-16",
+      "Rule": "Company facts, badges and certifications (offices, client count, accelerator count, awards) only from the approved company profile; an expired badge or certification on a template slide is removed",
+      "Applies to": "W1, W3, W4, W8",
+      "Checked by": "D8",
+      "Source": "Added"
+    },
+    {
+      "ID": "HR-17",
+      "Rule": "Every solution architecture names its data sources: the system or file and the data taken from it; no generic source tile (“ERP”, “Data sources”, “Enterprise systems”, “Web data”, “Price catalogue”, “News API”, “Third-party APIs”); sources from the web are named too, by provider and feed (each price catalogue, market or price feed and news API); the technical architecture uses the same names",
+      "Applies to": "W1, W3, W4",
+      "Checked by": "D5; consultant gate W1-G2; architect gates W3-G2, W4-G2",
+      "Source": "Brief (Messages 6 and 7)"
+    }
+  ],
+  "human_gates": [
+    {
+      "Gate": "RT7",
+      "Approver": "Presales consultant (the bid owner for W4, and for W5 in an RFP pursuit)",
+      "Approves": "Workflow and parameters (W1, W3, W4, W5, W6, W7 wait; W2 and W8 proceed and show the card)"
+    },
+    {
+      "Gate": "W1-G1",
+      "Approver": "Presales consultant",
+      "Approves": "The five pain points and their sources"
+    },
+    {
+      "Gate": "W1-G2",
+      "Approver": "Presales consultant",
+      "Approves": "Final deck"
+    },
+    {
+      "Gate": "W2-G1",
+      "Approver": "Presales consultant",
+      "Approves": "Demo shortlist and talk track"
+    },
+    {
+      "Gate": "W3-G1",
+      "Approver": "Presales consultant",
+      "Approves": "Requirement summary and parameters (baseline)"
+    },
+    {
+      "Gate": "W3-G2",
+      "Approver": "Solution architect",
+      "Approves": "Technical design"
+    },
+    {
+      "Gate": "W3-G3",
+      "Approver": "Presales consultant",
+      "Approves": "Every word of the proposal, including the as-is flows"
+    },
+    {
+      "Gate": "W3-G4",
+      "Approver": "Presales consultant",
+      "Approves": "Release, after reading the commercials and every change since W3-G3"
+    },
+    {
+      "Gate": "W4-G1",
+      "Approver": "Bid owner",
+      "Approves": "Locked requirement baseline"
+    },
+    {
+      "Gate": "W4-G2",
+      "Approver": "Solution architect",
+      "Approves": "Technical design"
+    },
+    {
+      "Gate": "W4-10 (deviation decision)",
+      "Approver": "Bid owner",
+      "Approves": "Each proposed partial compliance or deviation, with its reason; undecided items are listed at W4-G3 and block W4-G4"
+    },
+    {
+      "Gate": "W4-G3",
+      "Approver": "Bid owner",
+      "Approves": "Every word of the RFP-based proposal, including the as-is flows"
+    },
+    {
+      "Gate": "W4-G4",
+      "Approver": "Bid owner",
+      "Approves": "Release and submission, after reading the commercials and every change since W4-G3"
+    },
+    {
+      "Gate": "W5-G1",
+      "Approver": "Bid owner for an RFP; presales consultant otherwise",
+      "Approves": "Every question"
+    },
+    {
+      "Gate": "S1-G1",
+      "Approver": "Solution architect and delivery lead",
+      "Approves": "Reviewed man hours"
+    },
+    {
+      "Gate": "S1-G2",
+      "Approver": "Pricing owner",
+      "Approves": "Client price, AI reduction, overhead, infrastructure amount shown, revenue share"
+    },
+    {
+      "Gate": "W6-G1",
+      "Approver": "Domain owner",
+      "Approves": "Domain process map"
+    },
+    {
+      "Gate": "W6-G2",
+      "Approver": "Domain owner, consultant, demo builder",
+      "Approves": "Demo outputs, readiness and the acceptance criteria (14.3)"
+    },
+    {
+      "Gate": "W7-G1",
+      "Approver": "Presales consultant and demo builder",
+      "Approves": "Final video"
+    },
+    {
+      "Gate": "W8-G1",
+      "Approver": "Presales consultant",
+      "Approves": "Email; sending is a human action"
+    }
+  ],
+  "qc_profiles": [
+    {
+      "Checker": "D1",
+      "W1": "-",
+      "W2": "-",
+      "W3": "2, then 2 to 3",
+      "W4 stage D": "2",
+      "W4 stage E": "2 to 3",
+      "W4 stage F": "-",
+      "W5": "-",
+      "W6": "1 (spec against build, hardcoded values)",
+      "W7": "-",
+      "W8": "-"
+    },
+    {
+      "Checker": "D2",
+      "W1": "-",
+      "W2": "-",
+      "W3": "1, then 1",
+      "W4 stage D": "1",
+      "W4 stage E": "1",
+      "W4 stage F": "-",
+      "W5": "-",
+      "W6": "-",
+      "W7": "-",
+      "W8": "-"
+    },
+    {
+      "Checker": "D3",
+      "W1": "1",
+      "W2": "-",
+      "W3": "2, then 2; plus 1 after pricing",
+      "W4 stage D": "2",
+      "W4 stage E": "2",
+      "W4 stage F": "1",
+      "W5": "-",
+      "W6": "-",
+      "W7": "1 (script against screens)",
+      "W8": "-"
+    },
+    {
+      "Checker": "D4",
+      "W1": "1",
+      "W2": "1",
+      "W3": "1, then 1",
+      "W4 stage D": "1",
+      "W4 stage E": "1",
+      "W4 stage F": "-",
+      "W5": "-",
+      "W6": "1",
+      "W7": "1",
+      "W8": "1"
+    },
+    {
+      "Checker": "D5",
+      "W1": "1",
+      "W2": "-",
+      "W3": "1, then 1",
+      "W4 stage D": "1",
+      "W4 stage E": "1",
+      "W4 stage F": "-",
+      "W5": "-",
+      "W6": "1 (UI checklist)",
+      "W7": "1 (frames)",
+      "W8": "-"
+    },
+    {
+      "Checker": "D6",
+      "W1": "1",
+      "W2": "-",
+      "W3": "1; plus 1 after pricing",
+      "W4 stage D": "-",
+      "W4 stage E": "1",
+      "W4 stage F": "1",
+      "W5": "1",
+      "W6": "-",
+      "W7": "1 (captions)",
+      "W8": "1"
+    },
+    {
+      "Checker": "D7",
+      "W1": "-",
+      "W2": "-",
+      "W3": "1 after pricing",
+      "W4 stage D": "-",
+      "W4 stage E": "-",
+      "W4 stage F": "1",
+      "W5": "-",
+      "W6": "-",
+      "W7": "-",
+      "W8": "-"
+    },
+    {
+      "Checker": "D8",
+      "W1": "1",
+      "W2": "1",
+      "W3": "1",
+      "W4 stage D": "1",
+      "W4 stage E": "-",
+      "W4 stage F": "-",
+      "W5": "-",
+      "W6": "-",
+      "W7": "-",
+      "W8": "1"
+    },
+    {
+      "Checker": "Workflow-specific",
+      "W1": "Periodic table relevance check (W1-7); second specificity check (W1-12)",
+      "W2": "Branding and data check (W2-4)",
+      "W3": "Visual cohesion and diagram opportunities (W3-15)",
+      "W4 stage D": "-",
+      "W4 stage E": "-",
+      "W4 stage F": "Submission check (W4-24)",
+      "W5": "W5-3, W5-4, W5-6, W5-8 repeated 2 to 3 times; HR-11; HR-03; W5-11 pass rule",
+      "W6": "Tests (W6-8); acceptance criteria (14.3)",
+      "W7": "Frame check (W7-5)",
+      "W8": "Weird-email patterns (Section 16)"
+    }
+  ],
+  "configuration": [
+    {
+      "Parameter": "Blended hourly rate",
+      "Current value": "750 (currency to confirm)",
+      "Used by": "S1-6"
+    },
+    {
+      "Parameter": "AMC",
+      "Current value": "20% of the implementation fee",
+      "Used by": "S1-10"
+    },
+    {
+      "Parameter": "Overhead range",
+      "Current value": "20% to 30%; the value per deal proposed by the delivery lead and approved at S1-G2",
+      "Used by": "S1-6"
+    },
+    {
+      "Parameter": "AI reduction ranges per task type",
+      "Current value": "To set from the team’s experience (for example code generation, test writing, documentation)",
+      "Used by": "S1-6"
+    },
+    {
+      "Parameter": "Effort reconciliation tolerance",
+      "Current value": "To set",
+      "Used by": "S1-5"
+    },
+    {
+      "Parameter": "Revenue share models",
+      "Current value": "The models the team offers, with default ranges (to set)",
+      "Used by": "S1-8"
+    },
+    {
+      "Parameter": "Infrastructure cost inputs",
+      "Current value": "Unit rates per hosting option, compute, storage and model usage (to set; refreshed from each provider’s published pricing, named per provider, for example the AWS Price List API, the Azure Retail Prices API and the model vendor’s API pricing page)",
+      "Used by": "S1-7"
+    },
+    {
+      "Parameter": "Proposal format bands",
+      "Current value": "International, smaller client: up to 25 lakhs gets a PPT. Indian enterprise: 15 lakhs and above gets a detailed document. Any other case: the consultant decides at RT7. Client-size threshold (smaller client or enterprise): to set",
+      "Used by": "RT6, W3-20, W4-23"
+    },
+    {
+      "Parameter": "Number of pain points",
+      "Current value": "5",
+      "Used by": "W1-5, W1-6"
+    },
+    {
+      "Parameter": "Pain point scoring weights",
+      "Current value": "Defaults to set (7.1)",
+      "Used by": "W1-5"
+    },
+    {
+      "Parameter": "Periodic table tile count",
+      "Current value": "Read from the periodic table template’s grid",
+      "Used by": "W1-7"
+    },
+    {
+      "Parameter": "Demos or videos per pick",
+      "Current value": "1 to 3",
+      "Used by": "W1-10, W2-2"
+    },
+    {
+      "Parameter": "Sub-agents per demo",
+      "Current value": "10 to 12",
+      "Used by": "W6-3"
+    },
+    {
+      "Parameter": "Blank rows before charges billed by others",
+      "Current value": "2 to 3",
+      "Used by": "S1-10, D7"
+    },
+    {
+      "Parameter": "Man-hour QC agents",
+      "Current value": "2 (QC-1, QC-2)",
+      "Used by": "S1-3, S1-4"
+    },
+    {
+      "Parameter": "Requirement-understanding reviews",
+      "Current value": "3 in W4-5 (2 if the bid owner sets it); 2 in W3-7 (3 if the consultant sets it)",
+      "Used by": "W3, W4"
+    },
+    {
+      "Parameter": "AI proofreading checks before the first draft",
+      "Current value": "5: compliance twice, the contradiction agent, the consistency check twice",
+      "Used by": "W3-16, W4 stage D"
+    },
+    {
+      "Parameter": "Classifier confidence threshold",
+      "Current value": "To set",
+      "Used by": "RT2"
+    },
+    {
+      "Parameter": "Library match threshold",
+      "Current value": "To set",
+      "Used by": "W2-2"
+    },
+    {
+      "Parameter": "Evidence recency window",
+      "Current value": "To set",
+      "Used by": "W1-3"
+    },
+    {
+      "Parameter": "RFI question cap",
+      "Current value": "To set",
+      "Used by": "W5-9"
+    },
+    {
+      "Parameter": "RFI cross-check fallback rate",
+      "Current value": "To set",
+      "Used by": "W5-11"
+    },
+    {
+      "Parameter": "Email length and hype-word list",
+      "Current value": "To set",
+      "Used by": "W8-3"
+    },
+    {
+      "Parameter": "Passes per checker",
+      "Current value": "Per the QC profile (13.3)",
+      "Used by": "S2"
+    },
+    {
+      "Parameter": "QC exit rule",
+      "Current value": "Two consecutive clean loops (proposed)",
+      "Used by": "S2"
+    },
+    {
+      "Parameter": "House rules",
+      "Current value": "Section 17",
+      "Used by": "S2"
+    },
+    {
+      "Parameter": "RFI QC repeats",
+      "Current value": "2 to 3",
+      "Used by": "W5-10"
+    },
+    {
+      "Parameter": "Steps per solution on a solution slide",
+      "Current value": "3 to 5",
+      "Used by": "W1-8"
+    },
+    {
+      "Parameter": "Demo test tolerances (BOQ, pricing)",
+      "Current value": "Set by the domain owner for each demo",
+      "Used by": "W6-7, W6-8, 14.4"
+    },
+    {
+      "Parameter": "Maximum loops per stage",
+      "Current value": "To set (5 proposed); when reached, the stage stops and a human decides (13.5)",
+      "Used by": "S2, every workflow"
+    },
+    {
+      "Parameter": "Specificity bar",
+      "Current value": "To set: the pass mark for the specificity test (7.1)",
+      "Used by": "W1-5, W1-6"
+    }
+  ],
+  "pending_inputs": [
+    {
+      "Item": "Tender bidding agent code (full sub-agent list and depth review)",
+      "Referenced in": "14.4",
+      "Status": "Awaiting upload"
+    },
+    {
+      "Item": "Detailed proposal document template (Word)",
+      "Referenced in": "W3-14, W4-10",
+      "Status": "Awaiting upload"
+    },
+    {
+      "Item": "Two past RFPs with their RFI question sets and final responses, for testing",
+      "Referenced in": "W5-11; Section 21 (testing W4 and W5 before go-live)",
+      "Status": "Awaiting upload"
+    }
+  ],
+  "template_mapping": [
+    {
+      "Proposal slide": "Title",
+      "Slide to duplicate and edit": "Reference deck slide 1"
+    },
+    {
+      "Proposal slide": "About Mindmap",
+      "Slide to duplicate and edit": "Reference deck slide 2 (figures from the approved company profile, HR-16)"
+    },
+    {
+      "Proposal slide": "Leadership (optional, when the client asks who leads the work)",
+      "Slide to duplicate and edit": "Reference deck slide 3"
+    },
+    {
+      "Proposal slide": "Executive summary",
+      "Slide to duplicate and edit": "Reference deck slide 6"
+    },
+    {
+      "Proposal slide": "Understanding of the need",
+      "Slide to duplicate and edit": "Reference deck slide 5"
+    },
+    {
+      "Proposal slide": "Solution overview",
+      "Slide to duplicate and edit": "Reference deck slide 4, and the agents slide template (B.3) once per solution"
+    },
+    {
+      "Proposal slide": "Agent landscape (when the solution spans several areas)",
+      "Slide to duplicate and edit": "Reference deck slide 7"
+    },
+    {
+      "Proposal slide": "High-level solution architecture",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the architecture in the B.1 format"
+    },
+    {
+      "Proposal slide": "Technical architecture",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the architecture in the B.2 format"
+    },
+    {
+      "Proposal slide": "Process flows",
+      "Slide to duplicate and edit": "Reference deck slides 9 to 12, repeated per process; the heat map on slide 8 when the solution spans several areas"
+    },
+    {
+      "Proposal slide": "Timeline",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the Gantt as the visual"
+    },
+    {
+      "Proposal slide": "Governance",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the RACI as the visual"
+    },
+    {
+      "Proposal slide": "ROI (if data exists)",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the waterfall as the visual"
+    },
+    {
+      "Proposal slide": "Commercials",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the one commercials table in the visual area (12.4)"
+    },
+    {
+      "Proposal slide": "Compliance matrix (W4)",
+      "Slide to duplicate and edit": "Reference deck slide 8, with the matrix as a native table in the visual area, continued over as many duplicates as it needs"
+    },
+    {
+      "Proposal slide": "Assumptions and exclusions",
+      "Slide to duplicate and edit": "Reference deck slide 6"
+    },
+    {
+      "Proposal slide": "Engagement approach",
+      "Slide to duplicate and edit": "Engagement methodology template (B.3); phase timing labels set from the approved Gantt and reconciled at the deep QC"
+    },
+    {
+      "Proposal slide": "Capabilities (optional)",
+      "Slide to duplicate and edit": "Reference deck slide 39"
+    },
+    {
+      "Proposal slide": "Close",
+      "Slide to duplicate and edit": "Reference deck slide 40"
+    }
+  ]
+}
