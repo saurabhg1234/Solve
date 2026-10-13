@@ -2,11 +2,15 @@
 
 The deployed application is a tested foundation. It is not a completed solutions agent, and none of W1–W8 has passed full end-to-end acceptance.
 
+The file/team/revision milestone is deployed from commit `8719989` on `codex/zora-foundation`, Vercel deployment `dpl_BV2Ayry8pHgCoKBdDAyD2ttyxB7A` (`READY`). Production verification confirms 12 tables, the new file revision columns, mailbox authentication, active subscription and unsigned case/file/worker-upload denial. The stable URL shows a public preview; case data requires work-account sign-in. Vercel's deployment protection remains configured and protects the deployment URL.
+
+At verification, production held **zero pursuits, zero active jobs and zero unlinked requests**. The local transport/browser fixtures were removed; no fake proposal or test pursuit was published. Open a signed-in pursuit to view source/generated files, team assignments, revision controls and its recent activity. The Activity view records pursuit events, not ongoing engineering edits.
+
 | Area | Current state |
 |---|---|
 | Branded portal | Deployed at https://zora-mindmap.vercel.app, with magenta orb identity and Vercel protection |
 | Company/BRD sources | Company deck/site research and indexed 272 BRD requirements/120 stages available; original source assets preserved |
-| Production database | Neon connected; additive file/team/revision schema migrated; repeatable migrations and deployed schema checks verified |
+| Production database | Neon connected; 12 tables and additive file/team/revision columns verified; repeatable migrations and deployed connection/schema checks pass |
 | Microsoft mailbox connection | Authentication and dedicated Zora-folder reads verified; Graph subscription registered; manual renewal/catch-up works |
 | Request and approval foundation | Pursuit tracking, queued stages, leases, evidence/source schema and role/version-bound human gates implemented and tested |
 | Work-account sign-in | Implemented; user confirms Entra callback setup; full interactive sign-in acceptance unverified |
@@ -19,7 +23,7 @@ The deployed application is a tested foundation. It is not a completed solutions
 | Demos and videos | Full W6/W7 production paths and acceptance unfinished; real assets, team names and tool preferences requested from Advait |
 | Pilot scope | All eight workflows remain required; a workflow card/index does not demonstrate delivery |
 
-Latest implementation evidence: TypeScript and 16 domain tests pass. Local authenticated API checks cover chunked file round trips, inline-only attachment intake, provenance, hash/offset/path denial, team isolation, internal-file restrictions, revision conflicts, lease/replay checks, QC holds and origin enforcement. Browser checks on the compiled production build with a local HTTPS origin pass for authenticated reviewer downloads, safe text preview, owner controls, mobile width and zero page errors. Supplied PDF/DOCX/PPTX files are used only as byte-preserving transport fixtures, not presented as generated proposals. Local fixtures are deleted after checks. Production database queries work; there were no real pursuits, queued jobs or unlinked requests at the previous startup check.
+Latest implementation evidence: TypeScript, 16 domain tests and the production build pass. Local authenticated API checks cover chunked file round trips, inline-only attachment intake, provenance, hash/offset/path denial, team isolation, internal-file restrictions, revision conflicts, stale-upload rejection, matching-output retry, lease/replay checks, QC holds and origin enforcement. Browser checks on the compiled production build with a local HTTPS origin pass for authenticated reviewer downloads, repeated output persistence, safe text preview, owner controls, mobile width and zero page errors. Supplied PDF/DOCX/PPTX files are used only as byte-preserving transport fixtures, not presented as generated proposals. Local fixtures are deleted after checks.
 
 Manual mailbox/queue checks pass with the project's valid existing Vercel automation token. The saved cloud `ZORA_NOTIFICATION_BYPASS` binding remains malformed, and the cloud allowlist was missing Ganesh. A temporary private override is not a repaired saved binding or active schedule. Updating the environment's saved start-instructions draft returned `INVALID_ARGUMENT`; draft persistence is unconfirmed. Current startup instructions are committed in `docs/ZORA_HANDOFF.md`.
 
