@@ -58,7 +58,7 @@ test('Microsoft continuation links cannot send credentials to another host',()=>
   assert.equal(safeGraphUrl('users/test/mailFolders/f/messages'),'https://graph.microsoft.com/v1.0/users/test/mailFolders/f/messages');for(const url of ['https://evil.example/v1.0/messages','http://graph.microsoft.com/v1.0/messages','https://graph.microsoft.com.evil.example/v1.0/messages'])assert.throws(()=>safeGraphUrl(url));
 });
 test('worker result cannot claim release or omit evidence fields',()=>{
-  assert.equal(resultSchema.safeParse({status:'released',summary:'Looks good',outputFiles:[]}).success,false);assert.equal(resultSchema.safeParse({status:'blocked',summary:'The Word template is missing.',missingInputs:['Word template'],outputFiles:[],citations:[],reviewReports:[]}).success,true);for(const stage of ['W1-13','W2-5','W3-16','W4-16','W5-10','W6-9','W7-6','W8-3'])assert.equal(needsIndependentReview(stage),true);
+  assert.equal(resultSchema.safeParse({status:'released',summary:'Looks good',outputFiles:[]}).success,false);assert.equal(resultSchema.safeParse({status:'blocked',summary:'The Word template is missing.',missingInputs:['Word template'],outputFiles:[],citations:[],reviewReports:[]}).success,true);for(const stage of ['W1-12','W2-5','W3-16','W4-16','W5-10','W6-9','W7-6','W8-3'])assert.equal(needsIndependentReview(stage),true);
 });
 test('authentication comparisons reject missing or mismatched values',()=>{assert.equal(constantTimeEqual('abc','abc'),true);assert.equal(constantTimeEqual('abc','abd'),false);assert.equal(constantTimeEqual('abc',''),false);});
 test('protected-hosting callback retains only its own path and encoded automation bypass',()=>{

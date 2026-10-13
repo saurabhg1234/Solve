@@ -2,7 +2,7 @@
 
 Zora’s content engine uses Codex sessions. Do **not** add `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, model endpoints or an AI SDK. Microsoft Graph and hosting/queue transport remain infrastructure connections.
 
-**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. Neon is migrated and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). Manual maintenance/empty-queue checks pass and the Graph subscription is registered; scheduled recurrence still needs verification. Outlook routing and Entra callback are confirmed. Attachment/file storage, team assignments and revision/resume are implemented; reviewer orchestration, complete document/demo/video production and all-eight acceptance remain unfinished.
+**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. Neon is migrated and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). Manual maintenance/empty-queue checks pass and the Graph subscription is registered; scheduled recurrence still needs verification. Outlook routing and Entra callback are confirmed. Attachment/file storage, team assignments and revision/resume are implemented; The independent review protocol is implemented; actual fresh native reviews, full ESC/fix automation, complete document/demo/video production and all-eight acceptance remain pending.
 
 ## Current verified deployment
 
@@ -102,7 +102,7 @@ The chosen pilot uses [native cloud scheduling](CLOUD_ROUTINE.md). The separate 
 6. Complete independent QC orchestration and all-eight acceptance before allowing automatic delivery progression.
 7. Run `npm run worker` under an OS service manager and monitor lease loss, failures and queued jobs. Do not use sandbox bypass flags or expose infrastructure secrets inside content-generation sessions.
 
-The optional CLI runner uses a new `codex exec` session per stage, structured results and five-minute leases renewed every minute. It withholds infrastructure credentials from child sessions, validates paths and imports actual files through the same chunked transport as the native bridge. QC remains blocked until independent reviewer orchestration/coverage is verified.
+The optional CLI runner uses a new `codex exec` session per stage, structured results and five-minute leases renewed every minute. It withholds infrastructure credentials from child sessions, validates paths and imports actual files through the same chunked transport as the native bridge. This optional legacy runner does not attest a native task identity; use the chosen native bridge for the new independent reviewer queue. Missing identity/evidence/policy holds QC.
 
 For a manual pilot, an authorised user can download a Codex request pack and open a session themselves. A result/approval import path still needs completion before the portal can reflect that work. Manual handoff is not automatic email-to-Codex dispatch.
 

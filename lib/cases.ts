@@ -9,7 +9,7 @@ import { FILE_LIMIT } from './files';
 
 export function mapCase(row: Record<string, unknown>): CaseRecord {
   return { id: String(row.id), title: String(row.title), client: String(row.client), workflow: row.workflow as WorkflowId,
-    status: row.status as CaseRecord['status'], stageIndex: Number(row.stage_index), version: Number(row.version), sourceRevision:Number(row.source_revision||1),
+    status: row.status as CaseRecord['status'], stageIndex: Number(row.stage_index), version: Number(row.version), sourceRevision:Number(row.source_revision||1),qcPolicy:{cleanLoops:row.qc_clean_loops?Number(row.qc_clean_loops):null,maxLoops:row.qc_max_loops?Number(row.qc_max_loops):null},
     source: row.source as CaseRecord['source'], requestedBy: String(row.requested_by), briefing: String(row.briefing),
     createdAt: new Date(row.created_at as string).toISOString(), updatedAt: new Date(row.updated_at as string).toISOString() };
 }

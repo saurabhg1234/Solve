@@ -27,7 +27,7 @@ Set `ZORA_APPROVAL_POLICY=mindmap-pilot`. W3-G2, W4-G2, S1-G1 and W6-G1 become i
 saurabh@mindmapdigital.ai,advait.mahajan@mindmapdigital.ai,ganesh@mindmapdigital.ai
 ```
 
-Extend both with verified sales/demo work addresses when Advait supplies them. Do not grant all roles to everybody or create a human architect/domain-owner identity for Zora. Pursuit-specific team assignment is still implementation work; an allowlist alone does not grant every case.
+Extend both with verified sales/demo work addresses when Advait supplies them. Do not grant all roles to everybody or create a human architect/domain-owner identity for Zora. Owners/admins now assign approved accounts to a pursuit; an allowlist alone does not grant every case.
 
 | Variable | Value / source |
 |---|---|

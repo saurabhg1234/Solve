@@ -96,3 +96,44 @@ CREATE TABLE IF NOT EXISTS zora_uploads (
 );
 -- zora:statement-breakpoint
 ALTER TABLE zora_uploads ADD COLUMN IF NOT EXISTS case_version integer;
+-- zora:statement-breakpoint
+ALTER TABLE zora_cases ADD COLUMN IF NOT EXISTS qc_clean_loops integer;
+-- zora:statement-breakpoint
+ALTER TABLE zora_cases ADD COLUMN IF NOT EXISTS qc_max_loops integer;
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs ADD COLUMN IF NOT EXISTS context_id text;
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs DROP CONSTRAINT IF EXISTS zora_jobs_state_check;
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs ADD CONSTRAINT zora_jobs_state_check CHECK(state IN ('queued','leased','reviewing','completed','blocked'));
+-- zora:statement-breakpoint
+ALTER TABLE zora_artifacts ADD COLUMN IF NOT EXISTS purpose text NOT NULL DEFAULT 'workpaper';
+-- zora:statement-breakpoint
+ALTER TABLE zora_uploads ADD COLUMN IF NOT EXISTS purpose text NOT NULL DEFAULT 'workpaper';
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_qc_runs (
+  id uuid PRIMARY KEY, case_id uuid NOT NULL REFERENCES zora_cases(id), job_id uuid NOT NULL REFERENCES zora_jobs(id),
+  case_version integer NOT NULL, source_revision integer NOT NULL, creator_context text NOT NULL,
+  state text NOT NULL DEFAULT 'reviewing' CHECK(state IN ('reviewing','blocked','passed')),
+  packet jsonb NOT NULL, packet_hash text NOT NULL, loop_number integer NOT NULL DEFAULT 1,
+  clean_streak integer NOT NULL DEFAULT 0, clean_loops integer, max_loops integer,
+  missing_inputs jsonb NOT NULL DEFAULT '[]', created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz
+);
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_reviews (
+  id uuid PRIMARY KEY, run_id uuid NOT NULL REFERENCES zora_qc_runs(id), case_id uuid NOT NULL REFERENCES zora_cases(id),
+  checker text NOT NULL, pass_number integer NOT NULL, method text NOT NULL, loop_number integer NOT NULL,
+  state text NOT NULL DEFAULT 'queued' CHECK(state IN ('queued','leased','completed','blocked')),
+  context_id text, worker_id text, lease_id uuid, lease_expires_at timestamptz, result jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz,
+  UNIQUE(run_id,loop_number,checker,pass_number)
+);
+-- zora:statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS zora_reviews_fresh_context ON zora_reviews(case_id,context_id) WHERE context_id IS NOT NULL;
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_review_contexts (
+  case_id uuid NOT NULL REFERENCES zora_cases(id), context_id text NOT NULL, review_id uuid NOT NULL REFERENCES zora_reviews(id),
+  created_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY(case_id,context_id)
+);
+-- zora:statement-breakpoint
+ALTER TABLE zora_reviews ADD COLUMN IF NOT EXISTS sequence integer NOT NULL DEFAULT 0;

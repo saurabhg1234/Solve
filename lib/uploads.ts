@@ -7,7 +7,7 @@ import { transaction } from './db';
 import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes } from './files';
 import { safeOutputPath } from './result';
 
-export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
+export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
 type UploadInput=z.infer<typeof uploadSchema>;
 export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
   if(!z.uuid().safeParse(id).success||!z.uuid().safeParse(leaseId).success)throw new HttpError(400,'Invalid session identity');
@@ -30,20 +30,21 @@ export async function beginArtifactUpload(jobId:string,input:UploadInput){
   return transaction(async db=>{
     if(!input.leaseId||!input.path||!safeOutputPath(input.path)||!input.path.startsWith(`outputs/${input.visibility}/`))throw new HttpError(400,'Artifact path and visibility must match');
     const job=await leasedJob(db,jobId,input.leaseId);
-    const existing=(await db.query('SELECT id,filename,mime_type,visibility,sha256,octet_length(data)::int AS bytes FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[jobId,input.leaseId,input.path])).rows[0];
+    const purpose=input.purpose||(input.visibility==='client'?'draft':'workpaper');
+    const existing=(await db.query('SELECT id,filename,mime_type,visibility,purpose,sha256,octet_length(data)::int AS bytes FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[jobId,input.leaseId,input.path])).rows[0];
     if(existing){
-      if(existing.filename!==cleanFilename(input.filename)||existing.mime_type!==input.mimeType||existing.visibility!==input.visibility||existing.sha256!==input.sha256||existing.bytes!==input.totalBytes)throw new HttpError(409,'This output path was stored with different content or metadata');
+      if(existing.filename!==cleanFilename(input.filename)||existing.mime_type!==input.mimeType||existing.visibility!==input.visibility||existing.purpose!==purpose||existing.sha256!==input.sha256||existing.bytes!==input.totalBytes)throw new HttpError(409,'This output path was stored with different content or metadata');
       return {id:existing.id,alreadyStored:true,chunkSize:FILE_CHUNK,nextOffset:input.totalBytes};
     }
     const id=randomUUID();
-    await db.query('INSERT INTO zora_uploads(id,case_id,job_id,kind,owner,lease_id,filename,mime_type,visibility,source_path,total_bytes,sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[id,job.case_id,jobId,'artifact',job.worker_id,input.leaseId,cleanFilename(input.filename),input.mimeType,input.visibility,input.path,input.totalBytes,input.sha256]);
+    await db.query('INSERT INTO zora_uploads(id,case_id,job_id,kind,owner,lease_id,filename,mime_type,visibility,source_path,total_bytes,sha256,purpose) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',[id,job.case_id,jobId,'artifact',job.worker_id,input.leaseId,cleanFilename(input.filename),input.mimeType,input.visibility,input.path,input.totalBytes,input.sha256,purpose]);
     return {id,chunkSize:FILE_CHUNK,nextOffset:0};
   });
 }
 export type UploadIdentity={kind:'source';caseId:string;user:Actor}|{kind:'artifact';jobId:string;leaseId:string};
 async function permitted(db:PoolClient,id:string,identity:UploadIdentity){
   if(!z.uuid().safeParse(id).success)throw new HttpError(400,'Invalid upload identity');
-  const row=(await db.query('SELECT id,case_id,job_id,kind,owner,lease_id,filename,mime_type,visibility,source_path,total_bytes,sha256,case_version,next_offset,state,expires_at FROM zora_uploads WHERE id=$1 FOR UPDATE',[id])).rows[0];
+  const row=(await db.query('SELECT id,case_id,job_id,kind,owner,lease_id,filename,mime_type,visibility,purpose,source_path,total_bytes,sha256,case_version,next_offset,state,expires_at FROM zora_uploads WHERE id=$1 FOR UPDATE',[id])).rows[0];
   if(!row||row.kind!==identity.kind||new Date(row.expires_at).getTime()<=Date.now())throw new HttpError(404,'Upload not available');
   if(identity.kind==='source'){
     sourceEditor(identity.user);await accessCase(identity.caseId,identity.user,db);
@@ -81,7 +82,7 @@ export async function finishUpload(id:string,identity:UploadIdentity){
       const job=await leasedJob(db,identity.jobId,identity.leaseId);
       const existing=await db.query('SELECT id FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[identity.jobId,identity.leaseId,row.source_path]);
       if(existing.rowCount)throw new HttpError(409,'This session output path is already stored');
-      await db.query('INSERT INTO zora_artifacts(id,case_id,job_id,filename,mime_type,visibility,data,sha256,source_path,lease_id,case_version,source_revision) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)',[id,row.case_id,row.job_id,row.filename,row.mime_type,row.visibility,bytes,row.sha256,row.source_path,row.lease_id,job.case_version,job.source_revision]);
+      await db.query('INSERT INTO zora_artifacts(id,case_id,job_id,filename,mime_type,visibility,data,sha256,source_path,lease_id,case_version,source_revision,purpose) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',[id,row.case_id,row.job_id,row.filename,row.mime_type,row.visibility,bytes,row.sha256,row.source_path,row.lease_id,job.case_version,job.source_revision,row.purpose]);
       await event(db,row.case_id,'artifact.stored',job.worker_id,{artifactId:id,filename:row.filename,sha256:row.sha256,visibility:row.visibility,stage:job.stage_id});
     }
     await db.query("UPDATE zora_uploads SET state='completed',data=''::bytea WHERE id=$1",[id]);

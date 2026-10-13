@@ -14,7 +14,7 @@ The cloud has `Tenant`, `Client`, `Client_secret`, `Object`, and `EMAIL`. Native
 - Microsoft folder delta queries pass repeatedly against the local development database. The new folder currently contains no messages; this does not validate incoming-request processing.
 - Deployed mailbox connector returns authenticated access; unsigned case requests return 401; webhook validation returns the expected plain text.
 - Inbox-rule metadata access returns **403 ErrorAccessDenied**. The credential grants mailbox read/write, but not the settings permission needed to administer rules. Use the Outlook rule below; no new secret is needed.
-- The production Graph subscription is registered and manual maintenance/catch-up passes. Continuous renewal/dispatch still needs a verified native cloud schedule. Attachment/file transport is implemented; complete workflow production and independent QC remain pending.
+- The production Graph subscription is registered and manual maintenance/catch-up passes. Continuous renewal/dispatch still needs a verified native cloud schedule. Attachment/file transport is implemented; workflow production and actual independent-review acceptance remain pending; the reviewer protocol is implemented.
 
 In Outlook, create an Inbox rule: **subject contains `[ZORA]` → move to `Zora`**. Keep Jarvis routing separate. In the Entra application, add the Web redirect URI **`https://zora-mindmap.vercel.app/api/auth/callback`** before testing interactive sign-in. The app token's successful authentication does not prove that this new redirect URI is registered.
 

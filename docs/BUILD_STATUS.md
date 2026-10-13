@@ -2,7 +2,7 @@
 
 The deployed application is a tested foundation. It is not a completed solutions agent, and none of W1–W8 has passed full end-to-end acceptance.
 
-The file/team/revision milestone is deployed from commit `8719989` on `codex/zora-foundation`, Vercel deployment `dpl_BV2Ayry8pHgCoKBdDAyD2ttyxB7A` (`READY`). Production verification confirms 12 tables, the new file revision columns, mailbox authentication, active subscription and unsigned case/file/worker-upload denial. The stable URL shows a public preview; case data requires work-account sign-in. Vercel's deployment protection remains configured and protects the deployment URL.
+The prior file/team/revision milestone was deployed from commit `8719989` on `codex/zora-foundation`, deployment `dpl_BV2Ayry8pHgCoKBdDAyD2ttyxB7A` (`READY`). The new independent-review milestone adds a durable reviewer queue, server-derived inventories, isolated file access, context/coverage guards, policy-bound clean loops and visible findings. Its additive production migration passes. The stable URL shows a public preview; case data requires work-account sign-in. Vercel protection remains configured.
 
 At verification, production held **zero pursuits, zero active jobs and zero unlinked requests**. The local transport/browser fixtures were removed; no fake proposal or test pursuit was published. Open a signed-in pursuit to view source/generated files, team assignments, revision controls and its recent activity. The Activity view records pursuit events, not ongoing engineering edits.
 
@@ -10,7 +10,7 @@ At verification, production held **zero pursuits, zero active jobs and zero unli
 |---|---|
 | Branded portal | Deployed at https://zora-mindmap.vercel.app, with magenta orb identity and Vercel protection |
 | Company/BRD sources | Company deck/site research and indexed 272 BRD requirements/120 stages available; original source assets preserved |
-| Production database | Neon connected; 12 tables and additive file/team/revision columns verified; repeatable migrations and deployed connection/schema checks pass |
+| Production database | Neon connected; additive file/team/review schema migrated; repeatable migrations and deployed connection/schema checks pass |
 | Microsoft mailbox connection | Authentication and dedicated Zora-folder reads verified; Graph subscription registered; manual renewal/catch-up works |
 | Request and approval foundation | Pursuit tracking, queued stages, leases, evidence/source schema and role/version-bound human gates implemented and tested |
 | Work-account sign-in | Implemented; user confirms Entra callback setup; full interactive sign-in acceptance unverified |
@@ -19,13 +19,13 @@ At verification, production held **zero pursuits, zero active jobs and zero unli
 | Word/PDF/PPT proposal production | File import/storage/download implemented; consultant-quality drafting/export and acceptance unfinished; approved Word template outstanding |
 | Attachment handling | Email file/inline intake and manual uploads implemented; 32 MB per file, 2 MB transfers, provenance/hashes; linked/nested attachments and limits hold explicitly |
 | Team access and revisions | Owner/admin assigns approved accounts; role-limited internal files; audited revision/reset and blocked-step resume implemented and tested |
-| Independent QC | Fresh-reviewer orchestration, authoritative coverage, clean loops and escalation unfinished; QC stages hold |
+| Independent QC | Reviewer queue, stored-byte inventories, isolated packets, context/coverage validation and explicit clean loops implemented; real native reviews, full ESC/fix automation and semantic acceptance pending |
 | Demos and videos | Full W6/W7 production paths and acceptance unfinished; real assets, team names and tool preferences requested from Advait |
 | Pilot scope | All eight workflows remain required; a workflow card/index does not demonstrate delivery |
 
-Latest implementation evidence: TypeScript, 16 domain tests and the production build pass. Local authenticated API checks cover chunked file round trips, inline-only attachment intake, provenance, hash/offset/path denial, team isolation, internal-file restrictions, revision conflicts, stale-upload rejection, matching-output retry, lease/replay checks, QC holds and origin enforcement. Browser checks on the compiled production build with a local HTTPS origin pass for authenticated reviewer downloads, repeated output persistence, safe text preview, owner controls, mobile width and zero page errors. Supplied PDF/DOCX/PPTX files are used only as byte-preserving transport fixtures, not presented as generated proposals. Local fixtures are deleted after checks.
+Latest implementation evidence: TypeScript, 21 domain/parser tests and the production build pass. Original file/API checks still pass. New QC fixtures cover eight distinct synthetic reviewer identities over two clean loops, native bridge completion, creator/workpaper/prior-report isolation, coverage/hash/context/replay denial, unconfirmed-policy holds, internal finding privacy, revision cancellation and role-gated human release. Compiled browser checks verify visible reviewer progress/findings, internal-role privacy, mobile layout and zero page errors. Original PDF/PPT inputs validate inventory; image-only and unstructured PDF drafts hold explicitly. Synthetic protocol evidence is not actual fresh Codex judgment or pilot acceptance. Fixtures are deleted.
 
-Manual mailbox/queue checks pass with the project's valid existing Vercel automation token. The saved cloud `ZORA_NOTIFICATION_BYPASS` binding remains malformed, and the cloud allowlist was missing Ganesh. A temporary private override is not a repaired saved binding or active schedule. Updating the environment's saved start-instructions draft returned `INVALID_ARGUMENT`; draft persistence is unconfirmed. Current startup instructions are committed in `docs/ZORA_HANDOFF.md`.
+The native bridge now resolves the existing valid Vercel token securely using supplied credentials, and live mailbox maintenance passes without a manual override. The saved bypass binding remains malformed; the resolver does not rewrite it. The cloud allowlist omitted Ganesh although production includes him. Startup-draft persistence was unconfirmed (`INVALID_ARGUMENT`); committed `docs/ZORA_HANDOFF.md` remains current. See [the precise user/team actions](YOUR_PENDING_ACTIONS.md) and [review implementation limits](INDEPENDENT_REVIEW.md).
 
 Build work runs while a Codex task is actively executing. A final reply ends execution; “unfinished” means pending implementation, not an invisible background build. No automatic recurrence is verified.
 

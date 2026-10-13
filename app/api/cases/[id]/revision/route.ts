@@ -16,7 +16,9 @@ export async function POST(request:Request,context:{params:Promise<{id:string}>}
         c.version++;await db.query('UPDATE zora_cases SET version=$2,updated_at=now() WHERE id=$1',[id,c.version]);
         if(c.stageIndex===0&&!['W2','W8'].includes(c.workflow))await db.query("UPDATE zora_cases SET status='awaiting_confirmation' WHERE id=$1",[id]);else await queueStage(db,c);
       }else{
-        await db.query("UPDATE zora_jobs SET state='blocked' WHERE case_id=$1 AND state IN ('queued','leased')",[id]);
+        await db.query("UPDATE zora_jobs SET state='blocked' WHERE case_id=$1 AND state IN ('queued','leased','reviewing')",[id]);
+        await db.query("UPDATE zora_reviews SET state='blocked' WHERE case_id=$1 AND state IN ('queued','leased')",[id]);
+        await db.query("UPDATE zora_qc_runs SET state='blocked',missing_inputs='[\"Pursuit revision changed\"]'::jsonb WHERE case_id=$1 AND state='reviewing'",[id]);
         await db.query("UPDATE zora_cases SET stage_index=0,status='blocked',version=version+1,source_revision=source_revision+1,updated_at=now() WHERE id=$1",[id]);
       }
       await event(db,id,input.data.action==='resume'?'stage.resumed':'revision.started',user.email,{note:input.data.note,previousVersion,previousSourceRevision:c.sourceRevision});

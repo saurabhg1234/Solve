@@ -81,9 +81,9 @@ Internal man-hours, rates, overhead, AI reduction, margins and commercial reason
 
 Implemented foundation: branded portal, all-eight workflow catalogue, BRD index, case creation, connected database and stage queue, role/version-bound gates, Microsoft sign-in, Zora-folder-only notifications/delta sync/subscription renewal, native-session bridge, email file/inline attachment intake, source uploads, generated-file storage/download and safe text review, pursuit team access and audited revision/resume.
 
-Remaining before pilot acceptance: interactive sign-in and real mailbox/routing acceptance; verified recurring scheduling; full fresh-session QC orchestration and authoritative coverage; approval escalation; consultant-quality document/demo/video production; end-to-end W1–W8 tests with Advait. The cloud automation-bypass binding also needs repair with the existing valid private Vercel value.
+Independent review now has a durable queue, file/purpose isolation, server document inventory, context/hash/coverage validation, configured clean loops, privacy and revision cancellation. Actual fresh Codex tasks and semantic review quality remain unaccepted; full ESC trust-reset/fix automation, large-document/unsupported media paths, interactive sign-in/routing, recurring scheduling and consultant-quality W1–W8 production still need work/testing. The native transport can resolve the existing private bypass at runtime, while the saved binding remains unchanged.
 
-Those items are pending work. A stage result must match its stored output files, and unimplemented QC still holds. An automatic pilot cannot be called ready until its real sessions, sources, reviews and human decisions pass acceptance.
+Those items are pending work. Stage results must match stored files; review passes must match independent leases and server coverage; missing policy/evidence holds. An automatic pilot cannot be called ready until real sessions, sources, reviews and human decisions pass acceptance.
 
 ## Inputs and decisions still needed
 

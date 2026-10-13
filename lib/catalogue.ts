@@ -16,7 +16,7 @@ export type Role = typeof roles[number];
 export type CaseStatus = 'awaiting_confirmation' | 'queued' | 'running' | 'awaiting_approval' | 'blocked' | 'released';
 export interface CaseRecord {
   id: string; client: string; title: string; workflow: WorkflowId;
-  status: CaseStatus; version: number; sourceRevision: number; stageIndex: number; source: 'manual' | 'email';
+  status: CaseStatus; version: number; sourceRevision: number; qcPolicy:{cleanLoops:number|null;maxLoops:number|null}; stageIndex: number; source: 'manual' | 'email';
   createdAt: string; updatedAt: string; requestedBy: string; briefing: string;
 }
 
