@@ -58,3 +58,10 @@ test('real supplied PPT/PDF inventory works and an image-only PDF requires OCR',
   const untagged=file('synthetic-untagged.pdf',untaggedPdf());assert.ok((await inventory({...untagged,role:'source'})).length>0);await assert.rejects(inventory(untagged),/structural element IDs/);
   const scanned='AI_Solutioning_Agent_BRD_v1.0/MindMap AI Business Deck Oct 2026.pdf';await assert.rejects(inventory(file(scanned,await readFile(scanned))),/OCR\/transcript/);
 });
+
+test('Office image descriptions and titles enter word-level review inventory',async()=>{
+  const source='<p:sld xmlns:p="urn:ppt" xmlns:a="urn:drawing"><p:pic><p:nvPicPr><p:cNvPr id="1" name="Picture" descr="Actual diagram description" title="Earlier client title"/></p:nvPicPr></p:pic></p:sld>';
+  const bytes=Buffer.from(zipSync({'ppt/slides/slide1.xml':strToU8(source)}));const elements=await inventory(file('picture.pptx',bytes));
+  for(const text of ['Actual diagram description','Earlier client title'])assert.ok(elements.some(e=>e.kind==='caption'&&e.text===text));
+  assert.ok(elements.some(e=>e.kind==='word'&&e.text==='Earlier'));
+});

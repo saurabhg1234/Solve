@@ -49,9 +49,37 @@ Every visible slide text node must be edited or explicitly retained. Word uses `
 
 To compose the five supplied templates, retain the base `template` and add `templates` entries with unique `key` values and the same path/hash/approval fields. Each slide chooses `templateKey` (`base` by default). Its layouts, master, theme, artwork and related assets are imported with separate paths; different slide dimensions hold instead of scaling. A build permits at most ten additional templates and 160 MB combined template assets. Original font sizes and run formatting remain. Unselected slides, speaker notes, comments, old document properties and unreachable assets are removed.
 
-Master/layout text and reachable artwork retain their source bytes. Inspect them and the rendered slides for source-client claims, text fit, inherited footers, visual quality and branding; a mechanically retained template is not automatically safe. The QC inventory includes imported masters/layouts and visuals. Media replacement and buyer-specific spreadsheet template mapping are not yet implemented; request an appropriate clean approved layout when needed.
+Master/layout text and reachable artwork retain their source bytes. Inspect them and the rendered slides for source-client claims, text fit, inherited footers, visual quality and branding; a mechanically retained template is not automatically safe. The QC inventory includes imported masters/layouts and visuals. Ordinary embedded PNG/JPEG pictures can now be replaced through explicit image decisions below. Buyer-specific spreadsheet template mapping remains pending; request an appropriate clean approved layout when needed.
 
 With `pdf: true`, installed LibreOffice exports a current tagged PDF using a private profile. PDF conversion is bounded and must produce the current file. The internal build report records output/template hashes, edited text count, retained style parts and `qcRequired: true`. Keep that report in `outputs/internal` as a workpaper. View the actual rendered pages before submitting: preserved typography does not guarantee that new text fits.
+
+## Replace an existing picture without rebuilding the layout
+
+`inspect` now returns each supported text part's `images`: stable indices, embedded relationship, media part, exact source SHA-256, pixel dimensions, and whether the frame can be replaced. This applies to existing slide pictures and Word body/header/footer pictures. It does not insert a new layout, invent a diagram or treat a supplied architecture reference as client-specific design.
+
+An individual slide or Word part may provide:
+
+```json
+{
+  "images": [{
+    "index": 0,
+    "expectedSha256": "<inspected old image hash>",
+    "path": "outputs/internal/verified-diagram.png",
+    "sha256": "<actual replacement image hash>",
+    "altText": "<accurate description of the replacement figure>",
+    "sourceNote": "<actual source or build provenance; retained internally>"
+  }],
+  "retainedImages": [{"index": 1, "expectedSha256": "<explicitly retained picture hash>"}]
+}
+```
+
+Once image decisions are supplied, every picture in that part must be replaced or explicitly retained with its inspected hash. Without image decisions, the earlier behavior retains the template's original artwork, which still requires visual/carryover review. Existing images on masters/layouts remain source artwork and cannot be edited by this operation.
+
+Replacement bytes must be inside the private workspace, match their declared SHA-256 and be a single PNG/JPEG image within 32 MB and 25 million pixels. The intrinsic aspect ratio must exactly match the original. The builder preserves the original position, dimensions, layout/theme and crop-free frame; it does not guess a new crop, stretch or diagram layout. Cropped, linked, interactive, animated, effect/fallback and vector pictures hold for a suitable approved frame. Replacement assets have a 64 MB working bound; final Office artifacts must fit the existing 32 MB transport bound.
+
+Each changed picture receives its own image relationship, so a logo or shared picture in other frames/slides remains unchanged. Other-template imports keep their namespace/theme. Replaced picture descriptions/titles are cleared and accurate alt text is recorded; unreferenced old assets are removed by package traversal. Original source files and retained artwork are unchanged. The internal build report records old/new hashes, input path, dimensions, alt text and the source/build note. These declarations do not validate what a figure claims. The server's QC inventory now includes image descriptions/titles and their words, as well as visual elements, so old accessible metadata is also reviewable.
+
+Six additional Python fixtures verify shared-image isolation, Word styles/metadata, pixel dimensions and frame positions, different-template composition, real supplied-template compatibility, hash/path/crop/ratio/retention holds, removal of unused old bytes and a rendered PDF containing both the replaced and retained figures. The actual local native queue also stores/re-inventories changed picture artifacts. No synthetic picture is a real architecture, client asset or accepted deliverable.
 
 ## Export W5 question workbooks
 
@@ -83,4 +111,4 @@ npm run routine -- complete <private-workspace>
 
 The bridge imports byte-accurate files before recording completion. Document helpers renew leases while working and stop if renewal fails. A fresh independent reviewer may prepare its isolated packet, but cannot use the build commands to change its draft. Completion does not send email, release a proposal, submit a bid or record a human approval.
 
-Verified locally: ten Python tests exercise source/hash/timestamp/OCR resumption, actual five-template deck/PDF assembly, Word run/style retention, unchanged architecture PNG/JPEG visual evidence, guards, buyer/internal workbook separation, literal cells and provenance/anonymity/cap checks. The real local queue fixture prepares sources, builds PPT/tagged-PDF/RFI files, persists seven exact artifacts and checks QC inventory plus internal privacy. These are transport/format fixtures, not client quality or full W1–W8 acceptance.
+Verified locally: ten Python tests exercise source/hash/timestamp/OCR resumption, actual five-template deck/PDF assembly, Word run/style retention, unchanged architecture PNG/JPEG visual evidence, guards, buyer/internal workbook separation, literal cells and provenance/anonymity/cap checks. The real local queue fixture prepares sources, builds PPT/tagged-PDF/RFI files, persists ten exact artifacts including edited pictures and checks QC inventory plus internal privacy. These are transport/format fixtures, not client quality or full W1–W8 acceptance.

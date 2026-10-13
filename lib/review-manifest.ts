@@ -66,6 +66,8 @@ export async function inventory(file:ReviewFile):Promise<ReviewElement[]> {
             const text=Array.from(node.getElementsByTagNameNS('*','t') as ArrayLike<any>).map(n=>n.textContent||'').join('');
             add('paragraph',where,text||undefined);
             if(Array.from(node.getElementsByTagNameNS('*','pStyle') as ArrayLike<any>).some((n:any)=>n.getAttribute('w:val')==='Caption'))add('caption',where,text||undefined);
+          }else if(local==='cNvPr'||local==='docPr'){
+            for(const attribute of ['descr','title'])if(node.getAttribute(attribute)?.trim())add('caption',`${where} ${attribute}`,node.getAttribute(attribute));
           }else if(local==='tc')add('table_cell',where);
           else if(['drawing','graphicFrame','sp','pic'].includes(local))add(local==='pic'?'image':'diagram',where);
         }

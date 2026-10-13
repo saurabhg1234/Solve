@@ -4,6 +4,7 @@ import argparse, copy, hashlib, io, json, os, posixpath, re, subprocess, sys, te
 from pathlib import Path, PurePosixPath
 from zipfile import ZipFile, ZIP_DEFLATED
 from lxml import etree
+from PIL import Image
 
 NS={'a':'http://schemas.openxmlformats.org/drawingml/2006/main','p':'http://schemas.openxmlformats.org/presentationml/2006/main','r':'http://schemas.openxmlformats.org/officeDocument/2006/relationships','w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main','rel':'http://schemas.openxmlformats.org/package/2006/relationships','ct':'http://schemas.openxmlformats.org/package/2006/content-types'}
 PARSER=etree.XMLParser(resolve_entities=False,no_network=True)
@@ -31,10 +32,88 @@ def text_parts(entries,kind):
     pattern=r'word/(document|header\d+|footer\d+|footnotes|endnotes)\.xml$' if kind=='docx' else r'ppt/slides/slide\d+\.xml$'
     return {name:xml(data) for name,data in entries.items() if re.match(pattern,name)}
 def nodes(document,kind): return document.findall('.//w:t' if kind=='docx' else './/a:t',NS)
+def relationships_part(part): return str(PurePosixPath(part).parent/'_rels'/(PurePosixPath(part).name+'.rels'))
+def raster(data):
+    with Image.open(io.BytesIO(data)) as image:
+        if image.format not in ('PNG','JPEG') or image.width*image.height>25000000 or getattr(image,'n_frames',1)!=1: raise ValueError('Use a single PNG/JPEG image within 25 million pixels')
+        result={'format':image.format,'width':image.width,'height':image.height};image.verify();return result
+def image_inventory(entries,part,document):
+    relations=xml(entries[relationships_part(part)]) if relationships_part(part) in entries else []
+    mapping={r.get('Id'):r for r in relations};result=[]
+    for index,blip in enumerate(document.findall('.//a:blip',NS)):
+        rid=blip.get('{'+NS['r']+'}embed');relation=mapping.get(rid)
+        target=posixpath.normpath(posixpath.join(posixpath.dirname(part),relation.get('Target',''))) if relation is not None else ''
+        item={'index':index,'relationshipId':rid,'mediaPart':target,'replaceable':False}
+        if relation is None or relation.get('TargetMode')=='External' or not relation.get('Type','').endswith('/image') or target not in entries: item['hold']='An embedded image relationship is required'
+        else:
+            item['sha256']=sha(entries[target])
+            try:
+                item.update(raster(entries[target]));item['replaceable']=True
+                picture=next((n for n in blip.iterancestors() if etree.QName(n).localname=='pic'),None)
+                if picture is None or blip.get('{'+NS['r']+'}link') or len(blip): raise ValueError('Only ordinary picture frames without linked/effect/fallback assets can be replaced')
+                if picture.find('.//a:hlinkClick',NS) is not None or picture.find('.//a:hlinkHover',NS) is not None: raise ValueError('Use a picture frame without inherited interactive links')
+                crop=picture.find('.//a:srcRect',NS)
+                if crop is not None and any(value!='0' for value in crop.attrib.values()): raise ValueError('Use an uncropped approved picture frame for a complete diagram')
+            except (ValueError, OSError, Image.DecompressionBombError): item['replaceable']=False;item['hold']='Use an uncropped ordinary PNG/JPEG picture without linked, interactive, animated, effect or fallback assets'
+        result.append(item)
+    return result
 def inspect(path,kind):
     entries=package(path);parts=text_parts(entries,kind)
     if not parts: raise ValueError('No supported template text parts')
-    return {'format':kind,'templateSha256':sha(path.read_bytes()),'parts':[{'part':name,'texts':[{'index':i,'text':node.text or ''} for i,node in enumerate(nodes(doc,kind))]} for name,doc in parts.items()]}
+    return {'format':kind,'templateSha256':sha(path.read_bytes()),'parts':[{'part':name,'texts':[{'index':i,'text':node.text or ''} for i,node in enumerate(nodes(doc,kind))],'images':image_inventory(entries,name,doc)} for name,doc in parts.items()]}
+
+def replace_images(entries,part,document,spec,root,content):
+    changes=spec.get('images',[]);retained=spec.get('retainedImages')
+    if not isinstance(changes,list) or len(changes)>100 or (retained is not None and not isinstance(retained,list)): raise ValueError('Supply bounded image replacement/retention decisions')
+    if not changes and retained is None: return []
+    items=image_inventory(entries,part,document);blips=document.findall('.//a:blip',NS);used=set();report=[]
+    relations=xml(entries[relationships_part(part)]) if relationships_part(part) in entries else etree.Element('{'+NS['rel']+'}Relationships')
+    ids={r.get('Id') for r in relations}
+    for change in changes:
+        if not isinstance(change,dict) or set(change)!={'index','expectedSha256','path','sha256','altText','sourceNote'}: raise ValueError('Image replacements require explicit index, old/new hashes, private path, alt text and source note')
+        index=change['index']
+        if not isinstance(index,int) or isinstance(index,bool) or not 0<=index<len(items) or index in used: raise ValueError('Invalid or duplicate image index')
+        item=items[index]
+        if not item['replaceable'] or change['expectedSha256']!=item.get('sha256'): raise ValueError('Picture is unsupported or changed; re-inspect the approved template')
+        path=(root/change['path']).resolve(strict=True)
+        if not path.is_relative_to(root) or not path.is_file() or path.stat().st_size>32*1024*1024: raise ValueError('Replacement image must be a bounded file inside the private workspace')
+        data=path.read_bytes();fingerprint=sha(data)
+        if fingerprint!=change['sha256']: raise ValueError('Replacement image SHA-256 does not match')
+        details=raster(data)
+        if details['width']*item['height']!=details['height']*item['width']: raise ValueError('Replacement image must preserve the original picture aspect ratio; no cropping/stretching is inferred')
+        for name,minimum,maximum in [('altText',1,1000),('sourceNote',20,4000)]:
+            value=change[name]
+            if not isinstance(value,str) or not minimum<=len(value.strip())<=maximum or re.search(r'[\x00-\x08\x0b-\x1f\x7f]',value): raise ValueError('Provide bounded descriptive alt text and an actual source/build note')
+        prefix='word' if part.startswith('word/') else 'ppt';extension='png' if details['format']=='PNG' else 'jpg'
+        target=f"{prefix}/media/zoraImage-{sha((part+':'+str(index)+':'+fingerprint).encode())[:24]}.{extension}"
+        if target in entries and entries[target]!=data: raise ValueError('Replacement asset name collision')
+        entries[target]=data
+        if sum(len(value) for name,value in entries.items() if '/media/zoraImage-' in name)>64*1024*1024: raise ValueError('Replacement media exceeds the 64 MB working bound; split the document')
+        if not any(c.get('PartName')=='/'+target for c in content): etree.SubElement(content,'{'+NS['ct']+'}Override',PartName='/'+target,ContentType='image/png' if extension=='png' else 'image/jpeg')
+        rid='zoraImage'+str(index+1)
+        while rid in ids: rid+='x'
+        ids.add(rid);etree.SubElement(relations,'{'+NS['rel']+'}Relationship',Id=rid,Type=NS['r']+'/image',Target=posixpath.relpath(target,posixpath.dirname(part)))
+        blip=blips[index];old_rid=blip.get('{'+NS['r']+'}embed');blip.set('{'+NS['r']+'}embed',rid)
+        # Clone the relationship per picture, never mutate a shared logo/image part.
+        picture=next(n for n in blip.iterancestors() if etree.QName(n).localname=='pic')
+        properties=[n for n in picture.iter() if etree.QName(n).localname=='cNvPr']
+        drawing=next((n for n in picture.iterancestors() if etree.QName(n).localname in ('inline','anchor')),None)
+        if drawing is not None: properties.extend(n for n in drawing if etree.QName(n).localname=='docPr')
+        for node in properties: node.set('descr',change['altText'].strip());node.set('name','Zora image '+str(index+1));node.attrib.pop('title',None)
+        # Remove only a relationship no longer used anywhere in this edited part.
+        if not any(old_rid in [n.get('{'+NS['r']+'}embed'),n.get('{'+NS['r']+'}link'),n.get('{'+NS['r']+'}id')] for n in document.iter()):
+            for relation in list(relations):
+                if relation.get('Id')==old_rid: relations.remove(relation)
+        used.add(index);report.append({'part':part,'index':index,'oldSha256':item['sha256'],'newSha256':fingerprint,'input':str(path.relative_to(root)),'mediaPart':target,'altText':change['altText'].strip(),'sourceNote':change['sourceNote'].strip(),'dimensions':details,'semanticReviewRequired':True})
+    keep={}
+    for item in retained or []:
+        if not isinstance(item,dict) or set(item)!={'index','expectedSha256'} or not isinstance(item['index'],int) or isinstance(item['index'],bool) or item['index'] in keep: raise ValueError('Retained images need unique indices and exact hashes')
+        keep[item['index']]=item['expectedSha256']
+    if set(keep)&used or set(keep)-set(range(len(items))): raise ValueError('Image retention decisions do not match the template')
+    for item in items:
+        if item['index'] not in used and (not item.get('sha256') or keep.get(item['index'])!=item['sha256']): raise ValueError('Account for every retained picture when replacing images; hidden client artwork must not be assumed safe')
+    entries[relationships_part(part)]=serial(relations)
+    return report
 def edits(document,kind,changes,retained):
     texts=nodes(document,kind);used=set()
     for change in changes:
@@ -118,7 +197,7 @@ def compose_slides(plan,entries,root):
     specs=plan.get('slides',[])
     if not 1<=len(specs)<=100: raise ValueError('Declare one to 100 template-duplicate slides')
     next_number=max(int(re.search(r'slide(\d+)\.xml$',name).group(1)) for name in entries if re.fullmatch(r'ppt/slides/slide\d+\.xml',name))+1
-    relation_ids={r.get('Id') for r in rels};imported={};masters=set();changes=[]
+    relation_ids={r.get('Id') for r in rels};imported={};masters=set();changes=[];image_changes=[]
     def override(destination,source,key):
         source_content=xml(packages[key]['[Content_Types].xml'])
         matching=next((c for c in source_content if c.get('PartName')=='/'+source),None)
@@ -159,7 +238,8 @@ def compose_slides(plan,entries,root):
         targets=slide_targets(packages[key]);number=spec['sourceSlide']
         if not isinstance(number,int) or not 1<=number<=len(targets): raise ValueError('Missing template slide; a new slide layout will not be invented')
         source=targets[number-1];document=xml(packages[key][source]);edits(document,'pptx',spec.get('edits',[]),spec.get('retained',[]));changes.extend(spec.get('edits',[]))
-        destination=f'ppt/slides/slide{next_number+index}.xml';entries[destination]=serial(document);copy_relations(key,source,destination)
+        destination=f'ppt/slides/slide{next_number+index}.xml';copy_relations(key,source,destination)
+        image_changes.extend(replace_images(entries,destination,document,spec,root,content));entries[destination]=serial(document)
         rid='zoraSlide'+str(index+1)
         while rid in relation_ids: rid+='x'
         relation_ids.add(rid);etree.SubElement(rels,'{'+NS['rel']+'}Relationship',Id=rid,Type=NS['r']+'/slide',Target='slides/'+PurePosixPath(destination).name)
@@ -180,7 +260,7 @@ def compose_slides(plan,entries,root):
     for node in list(presentation):
         if etree.QName(node).localname in ('custShowLst','extLst'): presentation.remove(node)
     entries['ppt/presentation.xml']=serial(presentation);entries['ppt/_rels/presentation.xml.rels']=serial(rels);entries['[Content_Types].xml']=serial(content)
-    return changes,preserved,{key:spec['templateSha256'] for key,spec in specifications.items()}
+    return changes,preserved,{key:spec['templateSha256'] for key,spec in specifications.items()},image_changes
 
 def build(plan,root):
     root=root.resolve(strict=True);kind=plan['format']
@@ -189,14 +269,16 @@ def build(plan,root):
     if output.is_absolute() or '..' in output.parts or output.parts[:2] not in [('outputs','client'),('outputs','internal')] or output.suffix!='.'+kind: raise ValueError('Output must be an Office file within outputs/client or outputs/internal')
     destination=(root/str(output)).resolve()
     if not destination.is_relative_to(root): raise ValueError('Output escapes workspace')
-    entries=approved_template(plan,root,kind);original={name:sha(data) for name,data in entries.items()};changes=[];imported_styles={};template_hashes={'base':plan['templateSha256']}
+    entries=approved_template(plan,root,kind);original={name:sha(data) for name,data in entries.items()};changes=[];image_changes=[];imported_styles={};template_hashes={'base':plan['templateSha256']}
     if kind=='docx':
         documents=text_parts(entries,kind);specs=plan.get('parts',[])
         if set(documents)!=set(item['part'] for item in specs): raise ValueError('Account for every Word body/header/footer text part')
+        content=xml(entries['[Content_Types].xml'])
         for spec in specs:
-            document=documents[spec['part']];edits(document,kind,spec.get('edits',[]),spec.get('retained',[]));entries[spec['part']]=serial(document);changes.extend(spec.get('edits',[]))
+            document=documents[spec['part']];edits(document,kind,spec.get('edits',[]),spec.get('retained',[]));image_changes.extend(replace_images(entries,spec['part'],document,spec,root,content));entries[spec['part']]=serial(document);changes.extend(spec.get('edits',[]))
+        entries['[Content_Types].xml']=serial(content)
     else:
-        changes,imported_styles,template_hashes=compose_slides(plan,entries,root)
+        changes,imported_styles,template_hashes,image_changes=compose_slides(plan,entries,root)
     entries=prune(entries)
     content=xml(entries['[Content_Types].xml'])
     for override in list(content):
@@ -207,9 +289,10 @@ def build(plan,root):
     with ZipFile(destination,'w',ZIP_DEFLATED) as archive:
         for name,data in entries.items(): archive.writestr(name,data)
     destination.chmod(0o600)
+    if destination.stat().st_size>32*1024*1024: raise ValueError('Generated Office file exceeds the 32 MB artifact bound; split the document')
     preserved=[name for name in original if name in entries and name.startswith(('ppt/theme/','ppt/slideMasters/','ppt/slideLayouts/','ppt/media/','word/styles','word/media/'))]
     if any(sha(entries[name])!=original[name] for name in preserved) or any(name in entries and sha(entries[name])!=fingerprint for name,fingerprint in imported_styles.items()): raise ValueError('Template branding/styles/media changed unexpectedly')
-    report={'status':'draft','output':str(output),'sha256':sha(destination.read_bytes()),'templateSha256':plan['templateSha256'],'templateHashes':template_hashes,'textEdits':len(changes),'preservedStyleParts':len(preserved)+sum(name in entries for name in imported_styles),'qcRequired':True,'note':'Template bytes/styles are retained; text fit, figures, sources, legal/commercial content and human release still require review.'}
+    report={'status':'draft','output':str(output),'sha256':sha(destination.read_bytes()),'templateSha256':plan['templateSha256'],'templateHashes':template_hashes,'textEdits':len(changes),'imageReplacements':image_changes,'preservedStyleParts':len(preserved)+sum(name in entries for name in imported_styles),'qcRequired':True,'note':'Template styles/layouts and unedited artwork are retained; image replacements have explicit hashes. Text fit, figures, sources, legal/commercial content and human release still require review.'}
     if plan.get('pdf'):
         pdf=destination.with_suffix('.pdf');pdf.unlink(missing_ok=True)
         with tempfile.TemporaryDirectory(prefix='zora-office-') as profile:
