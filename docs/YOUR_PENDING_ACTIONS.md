@@ -11,7 +11,7 @@ Updated 13 October 2026. Zora engineering can continue while these inputs are co
 | Demo/video assets and tools | Advait | Tender-agent code, approved accelerator/demo/video catalogue and locations, real domain inputs and expected test outputs, recording/voice preferences and testing availability. |
 | Native cloud recurrence | Saurabh through the product UI | Create the standalone fresh cloud task from `docs/CLOUD_ROUTINE.md`, with the Solve environment, every five minutes. Verify Run now and actual recurrence. No schedule-management tool is exposed here; no saved schedule is verified. If the UI cannot attach the cloud environment, that is a platform limitation to resolve. |
 
-The authorised email asking Advait for these assets/names was sent and its original was forwarded to Saurabh. A fresh Microsoft check found **no related Advait reply**. Do not send duplicate requests automatically. Every future authorised outgoing email to others visibly Ccs `saurabh@mindmapdigital.ai` and retains Zora's magenta stripe/orb.
+The authorised email asking Advait for these assets/names was sent and its original was forwarded to Saurabh. No related Advait reply was found. The user then authorised chasing outstanding inputs: one follow-up was verified in Sent Items on **13 October at 21:03 Dubai time**, To **advait.mahajan@mindmapdigital.ai**, Cc **saurabh@mindmapdigital.ai**, subject **[ZORA] Follow-up: pilot assets, team names and first test**. Do not duplicate that follow-up automatically. Every future authorised outgoing email to others visibly Ccs `saurabh@mindmapdigital.ai` and retains Zora's magenta stripe/orb.
 
 ## Deferred, as requested
 

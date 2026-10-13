@@ -19,6 +19,12 @@ export function cleanFilename(value: string): string {
 export function canReadInternal(user: Actor): boolean {
   return user.roles.some(role=>['admin','architect','delivery_lead','pricing_owner'].includes(role));
 }
+export function canReviewRfi(user:Actor):boolean{return user.roles.some(role=>['consultant','bid_owner'].includes(role));}
+export function canReadArtifact(user:Actor,file:{visibility?:string;purpose?:string;workflow?:string;stage_id?:string}):boolean{
+  if(file.visibility==='client')return true;
+  if(file.visibility!=='internal')return false;
+  return canReadInternal(user)||(file.purpose==='rfi_review'&&file.workflow==='W5'&&file.stage_id==='W5-11'&&canReviewRfi(user));
+}
 export function byteRange(header: string | null, size: number): {start:number;end:number;partial:boolean} {
   if (!header) {
     if (size>FILE_CHUNK) throw new HttpError(413,'Download this file in byte ranges');

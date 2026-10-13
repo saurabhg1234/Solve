@@ -22,7 +22,7 @@ async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string
 export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:StageResult):Promise<{runId?:string;missingInputs:string[]}>{
   if(!job.context_id)return {missingInputs:['Independent QC requires a native task identity; claim this stage in a fresh Codex cloud task.']};
   const plan=reviewPlan(job.stage_id);if(!plan)return {missingInputs:['Independent QC review plan is missing.']};
-  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND a.purpose IN ('draft','reference') ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
+  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
   let targets;
   if(result.reviewArtifactIds?.length){
     targets=available.filter(a=>a.purpose==='draft'&&result.reviewArtifactIds!.includes(a.id));
@@ -33,7 +33,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
   }
   if(!targets.length)return {missingInputs:['Independent QC needs an actual stored draft; label the deliverable or estimate purpose as draft.']};
   const sources=(await db.query('SELECT id,filename,mime_type,sha256,octet_length(data)::int AS byte_size FROM zora_sources WHERE case_id=$1',[c.id])).rows;
-  const references=available.filter(a=>a.purpose==='reference');
+  const references=available.filter(a=>a.purpose==='reference'||a.purpose==='rfi_review');
   if(!sources.length)return {missingInputs:['Independent QC requires actual source documents, not a drafter summary.']};
   if(plan.passes.some(p=>['D1','D2','UNDERSTANDING','ARCHITECTURE','DOMAIN','EFFORT','COST'].includes(p.checker))&&!references.length)return {missingInputs:['Independent QC requires a selected reference/register/baseline; label that file as reference, separate from reasoning.']};
   if(['W3','W4'].includes(c.workflow)&&!['W3-7','W4-5'].includes(job.stage_id)){
@@ -54,7 +54,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
     if(error instanceof ReviewInputError)return {missingInputs:[error.message]};
     return {missingInputs:['A review document could not be inventoried completely. Supply a valid, unencrypted review copy; coverage will not be guessed.']};
   }
-  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,files:files.map(({job_id,purpose,...file})=>file),elements};
+  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,files:files.map(({job_id,...file})=>file),elements};
   const hash=digest(packet),runId=randomUUID();
   const policy=(await db.query('SELECT qc_clean_loops,qc_max_loops FROM zora_cases WHERE id=$1',[c.id])).rows[0];
   await db.query('INSERT INTO zora_qc_runs(id,case_id,job_id,case_version,source_revision,creator_context,packet,packet_hash,clean_loops,max_loops) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[runId,c.id,job.id,c.version,c.sourceRevision,job.context_id,JSON.stringify(packet),hash,policy.qc_clean_loops,policy.qc_max_loops]);

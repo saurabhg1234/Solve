@@ -7,3 +7,5 @@ node_modules/
 .zora/
 test-results/
 playwright-report/
+__pycache__/
+*.pyc

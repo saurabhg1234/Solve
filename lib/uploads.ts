@@ -7,7 +7,7 @@ import { transaction } from './db';
 import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes } from './files';
 import { safeOutputPath } from './result';
 
-export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
+export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper','rfi_review']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
 type UploadInput=z.infer<typeof uploadSchema>;
 export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
   if(!z.uuid().safeParse(id).success||!z.uuid().safeParse(leaseId).success)throw new HttpError(400,'Invalid session identity');
@@ -31,6 +31,7 @@ export async function beginArtifactUpload(jobId:string,input:UploadInput){
     if(!input.leaseId||!input.path||!safeOutputPath(input.path)||!input.path.startsWith(`outputs/${input.visibility}/`))throw new HttpError(400,'Artifact path and visibility must match');
     const job=await leasedJob(db,jobId,input.leaseId);
     const purpose=input.purpose||(input.visibility==='client'?'draft':'workpaper');
+    if(purpose==='rfi_review'&&(job.stage_id!=='W5-11'||input.visibility!=='internal'||input.path!=='outputs/internal/rfi-tracker.xlsx'||cleanFilename(input.filename)!=='rfi-tracker.xlsx'||input.mimeType!=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))throw new HttpError(400,'RFI review access is limited to the internal W5-11 cross-check workbook');
     const existing=(await db.query('SELECT id,filename,mime_type,visibility,purpose,sha256,octet_length(data)::int AS bytes FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[jobId,input.leaseId,input.path])).rows[0];
     if(existing){
       if(existing.filename!==cleanFilename(input.filename)||existing.mime_type!==input.mimeType||existing.visibility!==input.visibility||existing.purpose!==purpose||existing.sha256!==input.sha256||existing.bytes!==input.totalBytes)throw new HttpError(409,'This output path was stored with different content or metadata');

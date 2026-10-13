@@ -36,10 +36,13 @@ export NODE_USE_ENV_PROXY=1
 npm run routine -- check
 npm run routine -- claim
 npm run routine -- heartbeat <private-workspace>
+npm run routine -- prepare <private-workspace>
+npm run routine -- build <private-workspace> build-plan.json
+npm run routine -- build-rfi <private-workspace> rfi-plan.json
 npm run routine -- complete <private-workspace>
 ```
 
-The bridge is bounded and does not launch a model, CLI session or daemon. Stage sources/prior files and isolated review packets download into private `.zora/routine` workspaces with UUID paths, 2 MB ranges and verified hashes. Review inventory is paginated. Stage completion imports actual files before recording the result; reviewer completion enforces its lease/context/hash and full unique coverage. Local tests verify the protocol and native completion command; actual fresh Codex reviewer judgments remain unaccepted. See [the independent-review contract](INDEPENDENT_REVIEW.md) for packet limits, explicit policy holds and remaining work.
+The bridge is bounded and does not launch a model, CLI session or daemon. Stage sources/prior files and isolated review packets download into private `.zora/routine` workspaces with UUID paths, 2 MB ranges and verified hashes. Review inventory is paginated. Stage completion imports actual files before recording the result; reviewer completion enforces its lease/context/hash and full unique coverage. Native source preparation and approved-template/RFI export renew leases without passing infrastructure credentials to document child processes. See [document tools and limits](NATIVE_DOCUMENTS.md). Local tests verify the protocol and native completion command; actual fresh Codex reviewer judgments remain unaccepted. See [the independent-review contract](INDEPENDENT_REVIEW.md) for packet limits, explicit policy holds and remaining work.
 
 Required cloud bindings: `ZORA_APP_URL`, `ZORA_RUNNER_TOKEN`, `CRON_SECRET` and the existing `ZORA_NOTIFICATION_BYPASS` where protection applies. If that saved bypass is malformed, the native transport securely resolves the existing production value using the supplied `VERCEL_TOKEN` and verified Zora project/team IDs; a live check passes without rewriting the binding. Do not place credentials in the prompt. CODEX_THREAD_ID comes from the platform, not a user-provided secret. Publishing the environment and creating a schedule are separate actions.
 

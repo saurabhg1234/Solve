@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { resultSchema, safeOutputPath } from '../lib/result';
 import { portalRequest,downloadFiles,persistOutputs } from '../worker/transport';
 import { contextSchema,reviewResultSchema } from '../lib/review-plan';
+import { spawn,type ChildProcess } from 'node:child_process';
 
 const stageJobSchema = z.object({
   kind:z.literal('stage').default('stage'),contextId:contextSchema.nullable().optional(),
@@ -14,7 +15,7 @@ const stageJobSchema = z.object({
   stage: z.object({ id: z.string(), title: z.string() }).passthrough(),
   instructions: z.string(), requiresIndependentReview: z.boolean(),
   sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive() })),
-  artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),source_path:z.string()})).default([]),
+  artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),purpose:z.string().optional(),source_path:z.string()})).default([]),
 }).passthrough();
 const fileSchema=z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string(),byte_size:z.number().int().positive(),kind:z.enum(['sources','artifacts']),role:z.enum(['source','reference','draft'])}).passthrough();
 const reviewJobSchema=z.object({kind:z.literal('review'),id:z.uuid(),leaseId:z.uuid(),contextId:contextSchema,runId:z.uuid(),checker:z.string(),method:z.string(),packetHash:z.string(),elementCount:z.number().int().positive(),instructions:z.string(),packet:z.object({files:z.array(fileSchema)}).passthrough()}).passthrough();
@@ -92,13 +93,32 @@ async function complete(path: string) {
   const outcome=await(await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId,contextId:job.contextId, result })).json();
   console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
 }
+async function documentTool(path:string,action:'prepare'|'build'|'build-rfi',plan?:string){
+  const {dir,job}=await workspace(path);
+  if(action!=='prepare'&&job.kind==='review')throw new Error('An independent reviewer cannot create or replace the draft');
+  const script=resolve('scripts',action==='prepare'?'prepare_sources.py':action==='build-rfi'?'build_rfi.py':'build_documents.py');
+  const python=process.env.ZORA_DOCUMENT_PYTHON||'/workspace/solve-environment/.venv/bin/python';
+  let arguments_:string[]=[script,dir];
+  if(action!=='prepare'){
+    if(!plan)throw new Error('Supply the inspected approved-template plan');
+    const actual=await realpath(resolve(dir,plan));if(!actual.startsWith(dir+sep))throw new Error('Build plan must stay in the private workspace');arguments_=action==='build-rfi'?[script,dir,actual]:[script,'build',dir,actual];
+  }
+  await heartbeat(job);let failed=false;let child:ChildProcess|undefined;
+  const timer=setInterval(()=>{void heartbeat(job).catch(()=>{failed=true;child?.kill('SIGTERM');});},60000);
+  try{
+    const environment:NodeJS.ProcessEnv={NODE_ENV:process.env.NODE_ENV||'development',...Object.fromEntries(Object.entries(process.env).filter(([name])=>['PATH','HOME','LANG','LC_ALL','FONTCONFIG_PATH','FONTCONFIG_FILE','TESSDATA_PREFIX'].includes(name)))};
+    const code=await new Promise<number>((done,reject)=>{const running=spawn(python,arguments_,{stdio:['ignore','inherit','inherit'],env:environment});child=running;running.once('error',reject);running.once('exit',code=>done(code??1));});
+    if(code!==0||failed)throw new Error('Native document preparation/build failed or its lease was lost');await heartbeat(job);
+  }finally{clearInterval(timer);}
+}
 async function main() {
-  const [action = 'check', path] = process.argv.slice(2);
+  const [action = 'check', path,plan] = process.argv.slice(2);
   if (action === 'check') return maintenance();
   if (action === 'claim') return claim();
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
-  throw new Error('Use check, claim, heartbeat or complete');
+  if (action === 'prepare'||action==='build'||action==='build-rfi') return documentTool(path,action,plan);
+  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi or complete');
 }
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });

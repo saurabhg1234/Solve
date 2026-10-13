@@ -27,19 +27,33 @@ export async function inventory(file:ReviewFile):Promise<ReviewElement[]> {
       for(const [index,child] of (node.childNodes||[]).entries())visit(child,`${path}/${index+1}`);
     }
     visit(document,'HTML');
-  }else if(['docx','pptx'].includes(extension||'')){
+  }else if(['docx','pptx','xlsx'].includes(extension||'')){
     let expanded=0;
     const entries=unzipSync(file.data,{filter:entry=>{
       expanded+=entry.originalSize;
-      if(entry.originalSize>16*1024*1024||expanded>96*1024*1024)throw new ReviewInputError('Office archive exceeds the safe expanded-size limit');
+      if(entry.originalSize>32*1024*1024||expanded>96*1024*1024)throw new ReviewInputError('Office archive exceeds the safe expanded-size limit');
       if(/(?:vbaProject|\/embeddings\/)/i.test(entry.name))throw new ReviewInputError('Embedded programs/documents need separate source files and review');
-      return /^(word|ppt)\//.test(entry.name)&&/\.(xml|png|jpe?g|gif|svg|emf|wmf|webp)$/i.test(entry.name);
+      if(/^xl\/externalLinks\//.test(entry.name))throw new ReviewInputError('External workbook links need separate source files and review');
+      return /^(word|ppt|xl)\//.test(entry.name)&&/\.(xml|png|jpe?g|gif|svg|emf|wmf|webp)$/i.test(entry.name);
     }});
     const parts=Object.keys(entries).sort((a,b)=>a.localeCompare(b,'en',{numeric:true}));
-    if(!parts.some(p=>p=== 'word/document.xml'||/^ppt\/slides\/slide\d+\.xml$/.test(p)))throw new ReviewInputError('Invalid Office document');
+    if(!parts.some(p=>p=== 'word/document.xml'||p==='xl/workbook.xml'||/^ppt\/slides\/slide\d+\.xml$/.test(p)))throw new ReviewInputError('Invalid Office document');
+    function officeXml(part:string){const source=strFromU8(entries[part]);if(/<!DOCTYPE|<!ENTITY/i.test(source))throw new ReviewInputError('Office XML entities are not supported');let invalid=false;const document=new DOMParser({onError:()=>{invalid=true;}}).parseFromString(source,'application/xml');if(invalid)throw new ReviewInputError('Malformed Office XML');return document;}
+    const sharedStrings:string[]=entries['xl/sharedStrings.xml']?Array.from(officeXml('xl/sharedStrings.xml').getElementsByTagNameNS('*','si') as ArrayLike<any>).map(node=>Array.from(node.getElementsByTagNameNS('*','t') as ArrayLike<any>).map((n:any)=>n.textContent||'').join('')):[];
     for(const part of parts){
       if(/\/media\//.test(part)){add('image',part);continue;}
-      if(!/^word\/(document|header\d+|footer\d+|footnotes|endnotes)\.xml$|^ppt\/(slides\/slide\d+|notesSlides\/notesSlide\d+)\.xml$|\/(charts|diagrams)\//.test(part))continue;
+      if(/^xl\/worksheets\/sheet\d+\.xml$/.test(part)){
+        const document=officeXml(part);
+        for(const node of Array.from(document.getElementsByTagNameNS('*','c') as ArrayLike<any>)){
+          const where=`${part} cell ${node.getAttribute('r')||'unlabelled'}`;const type=node.getAttribute('t');const value=node.getElementsByTagNameNS('*','v')[0]?.textContent||'';let text=value;
+          if(type==='s'){if(!/^\d+$/.test(value)||sharedStrings[Number(value)]===undefined)throw new ReviewInputError('Workbook cell references a missing shared string');text=sharedStrings[Number(value)];}
+          if(type==='inlineStr')text=Array.from(node.getElementsByTagNameNS('*','t') as ArrayLike<any>).map((n:any)=>n.textContent||'').join('');
+          add('table_cell',where,text||undefined);const formula=node.getElementsByTagNameNS('*','f')[0]?.textContent;if(formula)add('formula',where,formula);
+        }
+        continue;
+      }
+      if(/^xl\/(drawings|charts|comments)/.test(part)){const document=officeXml(part);add('diagram',part,document.documentElement?.textContent||undefined);continue;}
+      if(!/^word\/(document|header\d+|footer\d+|footnotes|endnotes)\.xml$|^ppt\/(slides\/slide\d+|notesSlides\/notesSlide\d+)\.xml$|^ppt\/(?:zoraTemplate\d+\/)?(slideMasters\/slideMaster\d+|slideLayouts\/slideLayout\d+)\.xml$|\/(charts|diagrams)\//.test(part))continue;
       const xml=strFromU8(entries[part]);if(/<!DOCTYPE|<!ENTITY/i.test(xml))throw new ReviewInputError('Office XML entities are not supported');
       let invalid=false;
       const document=new DOMParser({onError:()=>{invalid=true;}}).parseFromString(xml,'application/xml');
