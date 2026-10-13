@@ -93,15 +93,16 @@ async function complete(path: string) {
   const outcome=await(await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId,contextId:job.contextId, result })).json();
   console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
 }
-async function documentTool(path:string,action:'prepare'|'build'|'build-rfi',plan?:string){
+async function documentTool(path:string,action:'prepare'|'build'|'build-rfi'|'build-costs',plan?:string){
   const {dir,job}=await workspace(path);
   if(action!=='prepare'&&job.kind==='review')throw new Error('An independent reviewer cannot create or replace the draft');
-  const script=resolve('scripts',action==='prepare'?'prepare_sources.py':action==='build-rfi'?'build_rfi.py':'build_documents.py');
+  if(action==='build-costs'&&(job.kind!=='stage'||job.stage.id!=='S1-6'))throw new Error('Internal cost rendering belongs to the leased S1-6 cost-calculator stage');
+  const script=resolve('scripts',action==='prepare'?'prepare_sources.py':action==='build-rfi'?'build_rfi.py':action==='build-costs'?'build_costs.py':'build_documents.py');
   const python=process.env.ZORA_DOCUMENT_PYTHON||'/workspace/solve-environment/.venv/bin/python';
   let arguments_:string[]=[script,dir];
   if(action!=='prepare'){
     if(!plan)throw new Error('Supply the inspected approved-template plan');
-    const actual=await realpath(resolve(dir,plan));if(!actual.startsWith(dir+sep))throw new Error('Build plan must stay in the private workspace');arguments_=action==='build-rfi'?[script,dir,actual]:[script,'build',dir,actual];
+    const actual=await realpath(resolve(dir,plan));if(!actual.startsWith(dir+sep))throw new Error('Build plan must stay in the private workspace');arguments_=action==='build'?[script,'build',dir,actual]:[script,dir,actual];
   }
   await heartbeat(job);let failed=false;let child:ChildProcess|undefined;
   const timer=setInterval(()=>{void heartbeat(job).catch(()=>{failed=true;child?.kill('SIGTERM');});},60000);
@@ -118,7 +119,7 @@ async function main() {
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
-  if (action === 'prepare'||action==='build'||action==='build-rfi') return documentTool(path,action,plan);
-  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi or complete');
+  if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs') return documentTool(path,action,plan);
+  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs or complete');
 }
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });

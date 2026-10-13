@@ -63,3 +63,7 @@ The new private library supports company claims, Word/slide templates, architect
 The original nine supplied corporate assets import as private draft references: **31,253,161 bytes**, with repository/path/commit provenance and exact stored SHA-256. Repeat and interrupted-import recovery pass. No Word template, real company claim, demo, video, client pursuit or human approval is manufactured. See docs/REUSABLE_KNOWLEDGE.md for tested behavior and limits.
 
 The latest related-email check at **23:12 Dubai** found no Advait reply and no truncated continuation. The already verified 21:03 follow-up was not resent.
+
+## Internal cost worksheet milestone
+
+The native S1-6 bridge generates internal-only XLSX/JSON build-ups with exact decimal arithmetic, hours-weighted AI reduction, configured policy/ranges and explicit currency rounding. Source/artifact hashes and package/requirement mapping are retained; missing values hold. Four Python arithmetic/guard/privacy fixtures and the real local lease/upload/role fixture pass. Consultants cannot read these files; pricing/internal reviewers can. No production rules, rates, client price, infrastructure/revenue share or pricing approval is inferred. See docs/NATIVE_COSTS.md.
