@@ -1,6 +1,6 @@
 # What remains with Saurabh and Advait
 
-Updated 13 October 2026. Zora engineering can continue while these inputs are collected. No new Microsoft, Vercel, model API or application-secret key is required. The source/document tools, private reusable knowledge library and internal cost worksheets are now deployed; all nine supplied corporate source assets are available to your administrator account as draft references. Source-reuse review remains separate from client proposal approval and all-eight pilot acceptance.
+Updated 14 October 2026 (Dubai). Zora engineering can continue while these inputs are collected. No new Microsoft, Vercel, model API or application-secret key is required. The source/document tools, template picture replacement, sourced email drafts/preview, private reusable knowledge library, private pricing inputs and internal cost worksheets are now deployed; all nine supplied corporate source assets are available to your administrator account as draft references. Source-reuse review remains separate from client proposal approval and all-eight pilot acceptance.
 
 | Action | Owner | What to provide / do |
 |---|---|---|
@@ -22,3 +22,5 @@ Currency/rate rules, AI reduction ranges, tolerances, question caps, recency/sco
 The saved cloud `ZORA_NOTIFICATION_BYPASS` value is still malformed. The native bridge now securely retrieves the existing valid Zora-project Vercel value at runtime using the already supplied Vercel credentials; a live maintenance check passed through it. No new token is needed to continue. When updating the saved binding, use that existing private value, never a masked display or text description. The runtime resolver does not rewrite the saved binding.
 
 The saved cloud allowlist omitted Ganesh while production already includes him. Keep it aligned with `docs/PILOT_CONFIGURATION.md`. The latest complete native-document startup/install/repository draft save was also unconfirmed (revision 16 unchanged); the committed `docs/ZORA_HANDOFF.md` is the current startup authority. Saving/publishing an environment and creating a schedule are separate actions.
+
+The latest build adds **Add private inputs** for assigned pricing/internal reviewers on paused pursuits. Ganesh can use it for policies when you choose to provide them; those settings remain deferred now. No new environment variable or account role is required. Source disclosure rules are in [PRIVATE_SOURCES.md](PRIVATE_SOURCES.md). Full pilot acceptance remains pending; these releases do not imply that real proposals, demos or videos have passed.
