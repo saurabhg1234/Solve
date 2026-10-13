@@ -65,3 +65,34 @@ CREATE TABLE IF NOT EXISTS zora_mail_signals (
   id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, mailbox text NOT NULL,
   kind text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), processed_at timestamptz
 );
+-- zora:statement-breakpoint
+ALTER TABLE zora_cases ADD COLUMN IF NOT EXISTS source_revision integer NOT NULL DEFAULT 1;
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs ADD COLUMN IF NOT EXISTS source_revision integer NOT NULL DEFAULT 1;
+-- zora:statement-breakpoint
+ALTER TABLE zora_sources ADD COLUMN IF NOT EXISTS provenance jsonb NOT NULL DEFAULT '{}';
+-- zora:statement-breakpoint
+ALTER TABLE zora_artifacts ADD COLUMN IF NOT EXISTS source_path text;
+-- zora:statement-breakpoint
+ALTER TABLE zora_artifacts ADD COLUMN IF NOT EXISTS lease_id uuid;
+-- zora:statement-breakpoint
+ALTER TABLE zora_artifacts ADD COLUMN IF NOT EXISTS case_version integer NOT NULL DEFAULT 1;
+-- zora:statement-breakpoint
+ALTER TABLE zora_artifacts ADD COLUMN IF NOT EXISTS source_revision integer NOT NULL DEFAULT 1;
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_case_members (
+  case_id uuid NOT NULL REFERENCES zora_cases(id), email text NOT NULL, added_by text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY(case_id,email)
+);
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_uploads (
+  id uuid PRIMARY KEY, case_id uuid NOT NULL REFERENCES zora_cases(id), job_id uuid REFERENCES zora_jobs(id),
+  kind text NOT NULL CHECK(kind IN ('source','artifact')), owner text NOT NULL, lease_id uuid,
+  filename text NOT NULL, mime_type text NOT NULL, visibility text NOT NULL DEFAULT 'internal', source_path text,
+  total_bytes integer NOT NULL CHECK(total_bytes>0 AND total_bytes<=33554432), sha256 text NOT NULL,
+  data bytea NOT NULL DEFAULT ''::bytea, next_offset integer NOT NULL DEFAULT 0,
+  state text NOT NULL DEFAULT 'uploading' CHECK(state IN ('uploading','completed')),
+  created_at timestamptz NOT NULL DEFAULT now(), expires_at timestamptz NOT NULL DEFAULT now()+interval '2 hours'
+);
+-- zora:statement-breakpoint
+ALTER TABLE zora_uploads ADD COLUMN IF NOT EXISTS case_version integer;

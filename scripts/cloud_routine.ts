@@ -1,16 +1,18 @@
 /** A bounded bridge for a native cloud Codex session. Never launches another model or daemon. */
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
 import { z } from 'zod';
 import { resultSchema, safeOutputPath } from '../lib/result';
+import { portalRequest,downloadFiles,persistOutputs } from '../worker/transport';
 
 const jobSchema = z.object({
   id: z.uuid(), leaseId: z.uuid(),
   case: z.object({ id: z.uuid(), title: z.string(), workflow: z.string() }).passthrough(),
   stage: z.object({ id: z.string(), title: z.string() }).passthrough(),
   instructions: z.string(), requiresIndependentReview: z.boolean(),
-  sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/) })),
+  sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive() })),
+  artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),source_path:z.string()})).default([]),
 }).passthrough();
 type Job = z.infer<typeof jobSchema>;
 const root = resolve(process.env.ZORA_WORK_ROOT || '.zora/routine');
@@ -23,14 +25,7 @@ function origin() {
   return url.origin;
 }
 async function request(path: string, credential: string, body?: unknown) {
-  const secret = process.env[credential];
-  if (!secret || secret.length < 32) throw new Error(`${credential} is missing or too short`);
-  const headers: Record<string, string> = { Authorization: `Bearer ${secret}` };
-  if (process.env.ZORA_NOTIFICATION_BYPASS) headers['x-vercel-protection-bypass'] = process.env.ZORA_NOTIFICATION_BYPASS;
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
-  const response = await fetch(new URL(path, origin()), { method: body === undefined ? 'GET' : 'POST', headers, body: body === undefined ? undefined : JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(60000) });
-  if (!response.ok) throw new Error(`Routine endpoint failed (${response.status}); check bindings, deployment protection and database migration`);
-  return response;
+  origin();return portalRequest(path,credential,body);
 }
 async function maintenance() {
   const result = await (await request('/api/microsoft/maintenance', 'CRON_SECRET', {})).json();
@@ -57,21 +52,11 @@ async function claim() {
   await mkdir(join(dir, 'outputs/internal'), { recursive: true, mode: 0o700 });
   await writeFile(join(dir, 'request.json'), JSON.stringify(job, null, 2), { mode: 0o600 });
   await writeFile(join(dir, 'instructions.txt'), job.instructions, { mode: 0o600 });
-  const manifest = [];
-  for (const source of job.sources) {
-    await heartbeat(job);
-    const response = await request(`/api/worker/${job.id}/sources/${source.id}?leaseId=${job.leaseId}`, 'ZORA_RUNNER_TOKEN');
-    const bytes = Buffer.from(await response.arrayBuffer());
-    if (createHash('sha256').update(bytes).digest('hex') !== source.sha256) throw new Error('Downloaded source hash does not match its manifest');
-    // Use server-issued UUIDs rather than email attachment filenames as local paths.
-    const path = `sources/${source.id}.source`;
-    await writeFile(join(dir, path), bytes, { mode: 0o600 });
-    manifest.push({ ...source, path });
-  }
-  await writeFile(join(dir, 'sources.json'), JSON.stringify(manifest, null, 2), { mode: 0o600 });
+  const manifest=await downloadFiles(job,job.sources,dir,'sources');
+  await downloadFiles(job,job.artifacts,dir,'artifacts');
   await writeFile(join(dir, 'result.schema.json'), JSON.stringify(z.toJSONSchema(resultSchema), null, 2), { mode: 0o600 });
   await heartbeat(job);
-  console.log(JSON.stringify({ workspace: dir, caseId: job.case.id, workflow: job.case.workflow, stage: job.stage.id, sources: manifest.length, requiresIndependentReview: job.requiresIndependentReview, next: 'Read instructions.txt, request.json and sources.json. Process this stage in the current native Codex session. Renew the lease at least every two minutes. Save result.json and use routine complete. Unimplemented artifact/QC stages must remain blocked.' }));
+  console.log(JSON.stringify({ workspace: dir, caseId: job.case.id, workflow: job.case.workflow, stage: job.stage.id, sources: manifest.length, requiresIndependentReview: job.requiresIndependentReview, next: 'Read instructions.txt, request.json, sources.json and artifacts.json. Process this stage in the current native Codex session. Renew the lease at least every two minutes. Save result.json and use routine complete to persist outputs. Independent QC still requires its verified reviewer orchestrator.' }));
 }
 async function complete(path: string) {
   const { dir, job } = await workspace(path);
@@ -81,12 +66,9 @@ async function complete(path: string) {
     const actual = await realpath(join(dir, file.path));
     if (!actual.startsWith(dir + sep) || !(await stat(actual)).isFile()) throw new Error('Output escapes the private workspace');
   }
-  if (result.outputFiles.length && result.status === 'completed') {
-    result.status = 'blocked';
-    result.missingInputs.push('Verified artifact import is pending. Generated files remain in the private cloud task workspace.');
-  }
-  await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId, result });
-  console.log(JSON.stringify({ recorded: true, submittedStatus: result.status, note: 'The server independently enforces QC holds and human gates; this response does not claim release.' }));
+  await persistOutputs(job,result,dir);
+  const outcome=await(await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId, result })).json();
+  console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
 }
 async function main() {
   const [action = 'check', path] = process.argv.slice(2);
@@ -97,4 +79,4 @@ async function main() {
   if (action === 'complete') return complete(path);
   throw new Error('Use check, claim, heartbeat or complete');
 }
-main().catch(error => { console.error(error instanceof Error && error.message.startsWith('Routine endpoint failed') ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });
+main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });

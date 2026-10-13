@@ -2,20 +2,20 @@
 
 Zora’s content engine uses Codex sessions. Do **not** add `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, model endpoints or an AI SDK. Microsoft Graph and hosting/queue transport remain infrastructure connections.
 
-**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. The Neon schema is migrated and verified, and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). The bridge's manual maintenance/empty-queue check passes and the Graph subscription is registered; actual scheduled recurrence still needs the Scheduled UI. Outlook routing and Entra callback setup are confirmed by Saurabh. Full artifact/QC/revision implementation and all-eight acceptance remain unfinished.
+**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. Neon is migrated and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). Manual maintenance/empty-queue checks pass and the Graph subscription is registered; scheduled recurrence still needs verification. Outlook routing and Entra callback are confirmed. Attachment/file storage, team assignments and revision/resume are implemented; reviewer orchestration, complete document/demo/video production and all-eight acceptance remain unfinished.
 
 ## Current verified deployment
 
 `https://zora-mindmap.vercel.app` is deployed in Saurabh's existing Vercel team, with deployment protection retained. Microsoft credentials, the Zora folder ID, application origin, initial team access, session/runner/webhook/maintenance secrets and the service callback's Vercel automation bypass are securely configured in that project. The deployment's Microsoft connector, unsigned-access denial and webhook validation checks pass.
 
-Production Neon storage is configured; its migration passes twice through supported HTTPS and all ten tables are verified. Vercel also verifies its database connection and installed schema. A native cloud task bridge is prepared and manually checked; recurring scheduling is not verified. The application remains a foundation rather than a completed automatic pilot. Local synthetic fixtures additionally verify source downloads bound to the current lease and pursuit.
+Production Neon storage is configured; repeatable migrations use supported HTTPS. The additive file/team/revision schema is migrated. Vercel verifies its database connection and schema. Native bridge transport now downloads and persists files with hashes; recurrence is unverified. Local synthetic checks cover lease/pursuit isolation, chunked file storage, internal permissions and revisions. The application remains a foundation rather than an accepted automatic pilot.
 
 ## Variables and where they belong
 
 | Variable | Required for | Secret? | Notes |
 |---|---|---|---|
 | `ZORA_APP_URL` | Portal, callbacks, worker | No | Actual stable HTTPS deployment origin in production |
-| `DATABASE_URL` | Persistent case/queue/mail state | Yes | Managed PostgreSQL connection with provider TLS; provider/region pending |
+| `DATABASE_URL` | Persistent case/queue/mail/private files | Yes | Existing Neon PostgreSQL connection with provider TLS |
 | `ZORA_SESSION_SECRET` | Work-account sessions | Yes | At least 32 random characters |
 | `ZORA_ALLOWED_EMAILS` | Sign-in | No | Approved work emails separated by commas; empty denies access |
 | `ZORA_ROLE_MAP` | Human gates | No | JSON email-to-role mapping; pricing access is explicit |
@@ -67,7 +67,7 @@ zora-mindmap.vercel.app
 
 Native Microsoft token checks, Vercel account access and official website/docs retrieval now succeed. The initial proxy `403` failures were network-policy failures, not evidence of invalid credentials. The new deployment hostname was added to the draft and deployed HTTP checks now pass through the project's supported automation bypass. Review/save the remaining draft changes and publish the prepared cloud environment as appropriate; draft saving alone is not publication.
 
-The database destination cannot be listed until the actual provider/host is selected. Codex authentication/networking belongs on the managed runner through its supported signed-in route; never tunnel around network policy.
+Use the existing Neon database destination. Native Codex sessions use the published cloud environment and supported network transport; never tunnel around network policy.
 
 ## 2. Prepare durable storage and access
 
@@ -84,7 +84,7 @@ npm test
 npm run build
 ```
 
-The intended **zora-mindmap** Vercel project is created and linked locally through ignored `.vercel/project.json`. It uses the Next.js preset and repository root. Its stable protected hostname is available; continuous Microsoft monitoring still needs production storage and maintenance before registration.
+The **zora-mindmap** Vercel project is linked through ignored `.vercel/project.json`, using the Next.js preset and repository root. Its protected stable hostname, production storage and registered Microsoft subscription are available; continuous renewal/processing still requires verified recurring maintenance.
 
 Deployment has been confirmed by Vercel's READY result and deployed HTTP checks. Reuse the existing token and project link for subsequent deployments. Root-only `.vercelignore` exclusions preserve the hosted `app/api/worker` routes while excluding the local worker, test scripts and original document assets.
 
@@ -99,10 +99,10 @@ The chosen pilot uses [native cloud scheduling](CLOUD_ROUTINE.md). The separate 
 3. Use the existing Solve checkout. A cloud task is already isolated; do not create another Git worktree unless requested.
 4. Configure `ZORA_APP_URL`, `ZORA_RUNNER_TOKEN`, `CRON_SECRET`, runner identity and private work/repository directories on the runner.
 5. Prepare PDF/DOCX/PPTX/Pillow/PyMuPDF and English Tesseract tools. W6 needs browser/test tooling; W7 needs an agreed local voice/recording/editing toolchain. Raw audio transcription tools must also be selected before expecting recording-only requests to work.
-6. Complete artifact import, independent QC orchestration and revision/resume implementation before allowing automatic delivery progression.
+6. Complete independent QC orchestration and all-eight acceptance before allowing automatic delivery progression.
 7. Run `npm run worker` under an OS service manager and monitor lease loss, failures and queued jobs. Do not use sandbox bypass flags or expose infrastructure secrets inside content-generation sessions.
 
-The current runner scaffold uses a new `codex exec` session per stage, a structured output schema and five-minute leases renewed every minute. It invokes the CLI directly without shell interpolation. It withholds deployment/mail/database/runner credentials from child sessions. It checks generated paths against the session workspace. It intentionally blocks file-delivery and QC stages while their verified importer/orchestrator is pending.
+The optional CLI runner uses a new `codex exec` session per stage, structured results and five-minute leases renewed every minute. It withholds infrastructure credentials from child sessions, validates paths and imports actual files through the same chunked transport as the native bridge. QC remains blocked until independent reviewer orchestration/coverage is verified.
 
 For a manual pilot, an authorised user can download a Codex request pack and open a session themselves. A result/approval import path still needs completion before the portal can reflect that work. Manual handoff is not automatic email-to-Codex dispatch.
 

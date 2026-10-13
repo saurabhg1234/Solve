@@ -19,11 +19,11 @@ Use Codex session tools for all reasoning and document creation, without Claude,
 
 With the environment's supported HTTPS proxy enabled, run npm run routine -- claim. It renews the subscription, catches up mail and claims at most one executable stage. New emails still require human workflow confirmation in the portal. Do not invent that confirmation. If no work is queued, finish quietly unless new actionable intake needs attention.
 
-For a claimed job, read its private instructions.txt, request.json and sources.json, then read the actual downloaded sources. Process only that stage in this native Codex session. Zora owns architecture/domain review. Sales/consultant, Ganesh pricing and named demo builders retain applicable human decisions. Do not send mail, submit bids, change infrastructure or invent approvals during a routine run.
+For a claimed job, read its private instructions.txt, request.json, sources.json and artifacts.json, then read the downloaded sources and any previous stage files. Process only that stage in this native Codex session. Zora owns architecture/domain review. Sales/consultant, Ganesh pricing and named demo builders retain applicable human decisions. Do not send mail, submit bids, change infrastructure or invent approvals during a routine run.
 
 Any email draft must identify saurabh@mindmapdigital.ai as a visible Cc recipient for an eventual authorised send to others, using zoraRecipients from lib/email.ts. If he is the primary To recipient, do not duplicate him in Cc. Keep the magenta stripe/orb. This copy requirement does not authorise the routine to send email.
 
-Renew the lease with npm run routine -- heartbeat <workspace> at least every two minutes during active work. Save result.json against result.schema.json, then use npm run routine -- complete <workspace>. Pending generated-file import, independent reviewer orchestration or other unfinished stages must return blocked with exact missing inputs or implementation. Never claim verified QC, delivered files or release without evidence.
+Renew the lease with npm run routine -- heartbeat <workspace> at least every two minutes during active work. Save actual files under outputs/client or outputs/internal and declare their exact paths, visibility and MIME types in result.json against result.schema.json. Each file must be nonempty and at most 32 MB. Use npm run routine -- complete <workspace> to upload, hash-verify and record the files before submitting the result. Independent reviewer orchestration or other unfinished stages must return blocked with exact missing inputs or implementation. Never claim verified QC or release without evidence.
 
 Report a new actionable request, human gate, failure/missing input or substantive reviewed outcome, with case/stage and required action. Do not repeat unchanged blockers or print credentials/private client content. If cloud access or bindings are unavailable, report the prerequisite and stop that run. Continue on later scheduled runs until Saurabh pauses the task.
 ```
@@ -39,7 +39,7 @@ npm run routine -- heartbeat <private-workspace>
 npm run routine -- complete <private-workspace>
 ```
 
-The bridge is bounded and does not launch a model, CLI session or permanent daemon. Sources download into private `.zora/routine` workspaces with UUID-based paths and verified SHA-256 hashes. Large sources hold for the forthcoming storage path. Result/path validation and the server's independent QC/human gate enforcement still apply. Artifact import remains pending.
+The bridge is bounded and does not launch a model, CLI session or permanent daemon. Sources and prior stage artifacts download into private `.zora/routine` workspaces with UUID-based paths, 2 MB ranges and verified SHA-256 hashes. Completion uploads actual generated files in 2 MB chunks into private database storage, bound to the active lease, stage and source revision. The server rejects declared outputs that were not stored with matching path, MIME type and visibility. Files over 32 MB hold explicitly. Result validation and independent QC/human gates still apply; reviewer isolation/coverage is unfinished.
 
 Required cloud bindings: `ZORA_APP_URL`, `ZORA_RUNNER_TOKEN`, `CRON_SECRET` and the existing `ZORA_NOTIFICATION_BYPASS` while Vercel protection is enabled. Do not place secrets in the prompt. Publishing the environment and creating the schedule are separate actions.
 

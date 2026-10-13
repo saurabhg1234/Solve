@@ -7,7 +7,7 @@ const input = z.object({ title: z.string().trim().min(3).max(200), client: z.str
 export async function GET() {
   try {
     const user=await requireActor();
-    const result=await database().query('SELECT * FROM zora_cases WHERE requested_by=$1 OR $2 ORDER BY updated_at DESC LIMIT 100',[user.email,user.roles.includes('admin')]);
+    const result=await database().query('SELECT c.* FROM zora_cases c WHERE requested_by=$1 OR $2 OR EXISTS(SELECT 1 FROM zora_case_members m WHERE m.case_id=c.id AND m.email=$1) ORDER BY updated_at DESC LIMIT 100',[user.email,user.roles.includes('admin')]);
     return Response.json({ cases:result.rows.map(mapCase) },{headers:{'Cache-Control':'no-store'}});
   } catch(e) { return responseError(e); }
 }

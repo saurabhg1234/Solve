@@ -6,7 +6,7 @@ The agreed pilot includes **W1–W8**. Advait's tenant address is verified as `a
 
 Before client-like documents are processed automatically, provide the signed-in Codex runner or agreed manual session flow; verified Microsoft scope and Zora/Jarvis routing; connected private storage; named approvers; the approved company-profile claims; the Word proposal template; actual demo/video library; tender/domain inputs; and real RFP/RFI/final-response test sets.
 
-Complete implementation of source attachment ingestion, artifact import, per-pass reviewer isolation/coverage validation, clean loops/escalation and revision/resume handling. A portal preview or queued email is not an accepted deliverable.
+Source attachment intake, chunked source/artifact storage, pursuit team access and revision/resume are implemented and pass local transport/permission checks. Complete per-pass reviewer isolation/coverage, clean loops/escalation and document/demo/video production, then test real W1–W8 cases. A portal preview, stored draft or queued email is not an accepted deliverable. Use the selected native cloud schedule; no separate CLI host is required.
 
 ## Stage 1: mailbox, identity and access
 

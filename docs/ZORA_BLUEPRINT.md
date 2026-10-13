@@ -37,8 +37,8 @@ flowchart LR
   Catch[Subscription renewal and delta catch-up] --> Inbox
   Human[Consultant / Advait] --> Portal[Branded review portal]
   Portal --> Inbox
-  Inbox --> Runner[Mindmap-controlled signed-in Codex runner]
-  Runner --> Create[Fresh Codex creation session]
+  Inbox --> Runner[Native scheduled cloud task — recurrence unverified]
+  Runner --> Create[Codex session with leased stage and verified sources]
   Create --> Artifacts[Versioned evidence and deliverables]
   Artifacts --> Review[Fresh Codex sessions for independent QC]
   Review --> Gate[Required human gates]
@@ -46,9 +46,9 @@ flowchart LR
   Gate -->|Release approval| Delivery[Human downloads / sends / submits]
 ```
 
-Vercel request handlers do not host a permanent Codex process. A Mindmap-controlled machine runs the signed-in Codex CLI, claims a leased request, creates an isolated session directory and returns validated stage results. If no runner is available, an authorised human downloads a request pack and opens a Codex session. Queueing a request is not the same as creating or waking a cloud Codex chat.
+Vercel request handlers do not host a permanent Codex process. Saurabh selected a standalone native cloud task every five minutes. The bounded bridge claims one leased stage, downloads its sources/prior files and persists actual outputs after the current Codex session works on them. No schedule is saved or recurrence verified. An authorised human can also use a request pack in a fresh session. Queueing a request does not itself wake Codex. The optional CLI runner is not the selected pilot prerequisite.
 
-PostgreSQL retains pursuits, jobs, leases, source metadata, mail cursors, immutable audit events and version-bound approvals. A database/provider and required region remain to be selected. No model API keys are needed.
+The connected Neon PostgreSQL service retains pursuits, jobs, leases, private source/artifact bytes and hashes, mail cursors, audit events, team assignments and version-bound approvals. Files use 2 MB transfers with a 32 MB per-file limit. Internal workpapers require both pursuit access and an authorised internal role. No model API keys are needed.
 
 ## Workflow contract
 
@@ -79,17 +79,17 @@ Internal man-hours, rates, overhead, AI reduction, margins and commercial reason
 
 ## Current implementation and next milestones
 
-Implemented foundation: branded portal, all-eight workflow catalogue, BRD index, case creation, durable schema and stage queue, role/version-bound gate logic, Microsoft work-account sign-in, Zora-folder-only notifications/delta sync/subscription renewal, request-pack download and guarded Codex runner scaffold.
+Implemented foundation: branded portal, all-eight workflow catalogue, BRD index, case creation, connected database and stage queue, role/version-bound gates, Microsoft sign-in, Zora-folder-only notifications/delta sync/subscription renewal, native-session bridge, email file/inline attachment intake, source uploads, generated-file storage/download and safe text review, pursuit team access and audited revision/resume.
 
-Remaining before pilot acceptance: connected database and team access; mailbox routing and permissions validation; attachments into source manifests; artifact persistence/import and review preview; full fresh-session QC orchestration and authoritative coverage checks; revision and resume handling; approval escalation; all document/demo/video paths; end-to-end tests with Advait.
+Remaining before pilot acceptance: interactive sign-in and real mailbox/routing acceptance; verified recurring scheduling; full fresh-session QC orchestration and authoritative coverage; approval escalation; consultant-quality document/demo/video production; end-to-end W1–W8 tests with Advait. The cloud automation-bypass binding also needs repair with the existing valid private Vercel value.
 
-Those items are implementation work, not completed features. The current scaffold intentionally blocks unverified file delivery and QC instead of advancing a pursuit on unsupported claims. An automatic pilot cannot be called ready until these are implemented and tested with the actual runner and source inputs.
+Those items are pending work. A stage result must match its stored output files, and unimplemented QC still holds. An automatic pilot cannot be called ready until its real sessions, sources, reviews and human decisions pass acceptance.
 
 ## Inputs and decisions still needed
 
-1. Always-on signed-in Codex runner versus manual request packs; this determines automatic launch.
-2. Confirmation of shared-mailbox routing and Advait’s work email/roles.
-3. PostgreSQL service and data region.
+1. Create and verify the chosen native cloud schedule; no schedule-management tool is exposed in this task.
+2. Advait's named sales and demo-builder accounts, plus interactive sign-in testing. Mailbox routing, his work email and initial roles are already confirmed.
+3. Any required data-region restriction beyond the currently connected Neon service.
 4. Approved detailed Word proposal template and company-profile claims.
 5. Approved accelerator/demo/video library, with real asset locations and permitted use.
 6. Pending tender agent code and domain-owner input for W6; real RFP/RFI/final-response test sets.

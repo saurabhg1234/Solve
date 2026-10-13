@@ -14,7 +14,7 @@ The cloud has `Tenant`, `Client`, `Client_secret`, `Object`, and `EMAIL`. Native
 - Microsoft folder delta queries pass repeatedly against the local development database. The new folder currently contains no messages; this does not validate incoming-request processing.
 - Deployed mailbox connector returns authenticated access; unsigned case requests return 401; webhook validation returns the expected plain text.
 - Inbox-rule metadata access returns **403 ErrorAccessDenied**. The credential grants mailbox read/write, but not the settings permission needed to administer rules. Use the Outlook rule below; no new secret is needed.
-- The production Graph subscription is registered and manual maintenance/catch-up passes. Continuous renewal/dispatch still needs the native cloud schedule. Full Codex workflow and artifact/QC implementation remains in progress.
+- The production Graph subscription is registered and manual maintenance/catch-up passes. Continuous renewal/dispatch still needs a verified native cloud schedule. Attachment/file transport is implemented; complete workflow production and independent QC remain pending.
 
 In Outlook, create an Inbox rule: **subject contains `[ZORA]` → move to `Zora`**. Keep Jarvis routing separate. In the Entra application, add the Web redirect URI **`https://zora-mindmap.vercel.app/api/auth/callback`** before testing interactive sign-in. The app token's successful authentication does not prove that this new redirect URI is registered.
 
@@ -122,7 +122,7 @@ POST /api/microsoft/maintenance
 
 The notification endpoint returns Microsoft's validation token as plain text. Subsequent notifications must match the stored subscription and the secret `clientState`. Accepted signals are persisted before acknowledgement; background sync reads the configured Zora folder through delta queries, deduplicates immutable message IDs, and retains its cursor.
 
-The project retains Vercel deployment protection. `ZORA_NOTIFICATION_BYPASS` is configured privately for Microsoft's callback, and the subscription URL includes that automation token only when needed. Do not publish a full token-bearing callback URL. The portal's normal protection remains enabled. The protected-hosting validation endpoint has been verified, but a production Graph subscription has not been registered while durable production storage is absent.
+The project retains Vercel deployment protection. `ZORA_NOTIFICATION_BYPASS` is configured privately for Microsoft's callback, and the subscription URL includes that automation token only when needed. Do not publish a token-bearing callback URL. Production storage is connected and the Graph subscription is registered; recurring renewal remains unverified. The cloud task's separate saved bypass binding is malformed and must be repaired with the existing private Vercel value.
 
 The maintenance endpoint requires `Authorization: Bearer <CRON_SECRET>`. The signed-in worker scaffold calls it once a minute when configured. It renews subscriptions, handles reauthorisation/removal notifications and catches up missed mail. If you use manual request packs, provide a separate regular maintenance scheduler. Do not assume that a subscription lives forever or that Vercel runs a persistent inbox daemon. Do not add a Vercel paid scheduler silently; choose the schedule supported by your actual plan.
 
@@ -130,7 +130,7 @@ The code uses a five-day basic notification subscription, without rich notificat
 
 ## 8. Verify with Advait
 
-Validate sign-in, allowed/denied users, mailbox scope, folder routing, webhook verification, duplicate delivery, a downtime/catch-up scenario and subscription renewal. Test attachment retrieval before expecting Zora to draft from an emailed RFP: the current foundation records an attachment notice but the ingestion/import path still needs implementation. A queued email does not prove its attachments were read or a Codex session started.
+Validate sign-in, allowed/denied users, mailbox scope, routing, webhook verification, duplicate delivery, downtime/catch-up and subscription renewal. Email file and inline attachments are now imported with provenance and hashes when a consultant creates the pursuit. Linked/nested attachments and file limits hold explicitly. Local inline-only intake passed; real emailed RFP ingestion still needs acceptance. A queued email does not prove its attachments were read or a Codex session started.
 
 For emails created by Zora, verify the magenta stripe at the top and orb/signature in Outlook web, Outlook desktop and a mobile client. The shared account remains `apex.ap@mindmapdigital.ai`; Jarvis keeps its own branding. Release and sending remain human actions.
 

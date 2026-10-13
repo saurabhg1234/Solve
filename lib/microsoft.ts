@@ -3,6 +3,7 @@ import { notificationUrl,microsoftConfig } from './config';
 import { database,transaction } from './db';
 import { ownsMessage } from './email';
 import { HttpError } from './auth';
+import { cleanFilename,FILE_LIMIT,hashBytes } from './files';
 
 let cached: {token:string;until:number}|undefined;
 export function safeGraphUrl(pathOrUrl:string):string {
@@ -24,6 +25,39 @@ export async function graph(path:string,init:RequestInit={}) {
   const response=await fetch(safeGraphUrl(path),{...init,headers,signal:AbortSignal.timeout(20000)});
   if(!response.ok) throw new HttpError(502,`Microsoft mailbox operation failed (${response.status})`);
   return response.status===204?{}:response.json();
+}
+
+async function attachmentBytes(path:string):Promise<Buffer> {
+  const response=await fetch(safeGraphUrl(path),{headers:{Authorization:`Bearer ${await token()}`},redirect:'error',signal:AbortSignal.timeout(20000)});
+  if(!response.ok)throw new HttpError(502,`Microsoft attachment retrieval failed (${response.status})`);
+  if(Number(response.headers.get('content-length'))>FILE_LIMIT)throw new HttpError(413,'An email attachment exceeds the 32 MB limit');
+  const reader=response.body?.getReader();if(!reader)throw new HttpError(502,'Microsoft returned no attachment body');
+  const chunks:Buffer[]=[];let size=0;
+  for(;;){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>FILE_LIMIT){await reader.cancel();throw new HttpError(413,'An email attachment exceeds the 32 MB limit');}chunks.push(Buffer.from(value));}
+  if(!size)throw new HttpError(422,'An email attachment is empty');return Buffer.concat(chunks);
+}
+export async function emailAttachments(mailbox:string,messageId:string,io={json:graph,bytes:attachmentBytes}) {
+  const ms=microsoftConfig();
+  if(mailbox.toLowerCase()!==ms.mailbox.toLowerCase())throw new HttpError(403,'This message is outside the configured Zora mailbox');
+  const prefix=`users/${encodeURIComponent(mailbox)}/messages/${encodeURIComponent(messageId)}`;
+  const message=await io.json(`${prefix}?$select=id,parentFolderId,subject,categories`);
+  if(message.parentFolderId!==ms.folder||!ownsMessage(message.subject||'',message.categories||[],ms.tag))throw new HttpError(409,'The email is no longer an explicitly routed Zora request');
+  const files:{filename:string;mimeType:string;data:Buffer;sha256:string;provenance:Record<string,unknown>}[]=[];
+  let link:string|undefined=`${prefix}/attachments?$select=id,name,contentType,size,isInline`;let total=0;
+  for(let page=0;link&&page<5;page++){
+    const result=await io.json(link);
+    if(!Array.isArray(result.value))throw new HttpError(502,'Microsoft returned an invalid attachment list');
+    for(const item of result.value){
+      if(item['@odata.type']!=='#microsoft.graph.fileAttachment')throw new HttpError(422,`Provide a file copy of the linked or nested attachment: ${cleanFilename(String(item.name||'attachment'))}`);
+      if(files.length>=12||Number(item.size)>FILE_LIMIT||total+Number(item.size||0)>64*1024*1024)throw new HttpError(413,'Email intake supports up to 12 files, 32 MB per file and 64 MB total; provide larger inputs separately');
+      const data=await io.bytes(`${prefix}/attachments/${encodeURIComponent(item.id)}/$value`);total+=data.length;
+      if(total>64*1024*1024)throw new HttpError(413,'Email attachments exceed the 64 MB intake limit');
+      const mimeType=/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+$/.test(item.contentType||'')?item.contentType:'application/octet-stream';
+      files.push({filename:cleanFilename(String(item.name||'attachment')),mimeType,data,sha256:hashBytes(data),provenance:{kind:'email_attachment',mailbox,messageId,attachmentId:item.id,originalFilename:String(item.name||'attachment'),inline:!!item.isInline}});
+    }
+    link=result['@odata.nextLink'];if(link)safeGraphUrl(link);
+  }
+  if(link)throw new HttpError(413,'The attachment list exceeds the intake limit');return files;
 }
 
 export async function renewSubscription() {
@@ -67,7 +101,7 @@ export async function syncMailbox() {
           const receipt=await client.query('INSERT INTO zora_mail_receipts(mailbox,message_id,disposition) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING message_id',[ms.mailbox,item.id,owned?'zora':'ignored']);
           if(!receipt.rows.length||!owned) return;
           // Mail is never marked read, moved, categorised or deleted. Jarvis retains its own state.
-          await client.query('INSERT INTO zora_inbox(id,mailbox,message_id,subject,sender,body_text,received_at,attachment_notice) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[randomUUID(),ms.mailbox,item.id,String(item.subject||'').slice(0,500),String(item.from?.emailAddress?.address||''),String(item.body?.content||'').slice(0,40000),item.receivedDateTime||new Date().toISOString(),item.hasAttachments?'Attachments need explicit retrieval into the pursuit before processing.':null]);
+          await client.query('INSERT INTO zora_inbox(id,mailbox,message_id,subject,sender,body_text,received_at,attachment_notice) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[randomUUID(),ms.mailbox,item.id,String(item.subject||'').slice(0,500),String(item.from?.emailAddress?.address||''),String(item.body?.content||''),item.receivedDateTime||new Date().toISOString(),item.hasAttachments?'File attachments will be imported when a pursuit is created.':null]);
           synced++;
         });
       }
