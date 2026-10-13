@@ -53,6 +53,7 @@ The database migration is repeatable and does not delete tables. Preserve provid
 - [Advait’s eight-workflow pilot acceptance plan](docs/ADVAIT_PILOT.md)
 - [Cloud scheduled task and native-session bridge](docs/CLOUD_ROUTINE.md)
 - [Native internal effort/cost worksheets](docs/NATIVE_COSTS.md)
+- [Native sourced and branded email drafts](docs/NATIVE_EMAILS.md)
 - [Reusable Mindmap knowledge](docs/REUSABLE_KNOWLEDGE.md)
 - [Native source and document tools](docs/NATIVE_DOCUMENTS.md)
 - [Pilot roles and exact variable guidance](docs/PILOT_CONFIGURATION.md)

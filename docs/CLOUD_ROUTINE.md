@@ -40,6 +40,8 @@ npm run routine -- prepare <private-workspace>
 npm run routine -- build <private-workspace> build-plan.json
 npm run routine -- build-rfi <private-workspace> rfi-plan.json
 npm run routine -- build-costs <private-workspace> cost-plan.json # S1-6, explicit policy inputs only
+npm run routine -- email-context <private-workspace> # W8-1/W8-2 source inventory
+npm run routine -- build-email <private-workspace> email-plan.json # W8-2 draft only
 npm run routine -- complete <private-workspace>
 ```
 

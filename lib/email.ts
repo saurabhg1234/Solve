@@ -5,7 +5,11 @@ export const ZORA_OWNER_EMAIL = 'saurabh@mindmapdigital.ai';
 export function zoraRecipients(to: string[], cc: string[] = []) {
   const addresses = (values: string[]) => [...new Set(values.map(value => {
     const address = value.trim().toLowerCase();
-    if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(address)) throw new Error('Invalid email recipient');
+    // Accept ordinary mailbox addresses only; reject header injection, lists and display names.
+    const [local, domain, extra] = address.split('@');
+    if (address.length > 254 || extra !== undefined || !local || local.length > 64 || !domain ||
+        !/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/i.test(local) ||
+        !domain.includes('.') || !domain.split('.').every(label => label.length <= 63 && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(label))) throw new Error('Invalid email recipient');
     return address;
   }))];
   const recipients = addresses(to);
