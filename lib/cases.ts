@@ -13,7 +13,7 @@ export function mapCase(row: Record<string, unknown>): CaseRecord {
     source: row.source as CaseRecord['source'], requestedBy: String(row.requested_by), briefing: String(row.briefing),
     createdAt: new Date(row.created_at as string).toISOString(), updatedAt: new Date(row.updated_at as string).toISOString() };
 }
-export async function event(db: PoolClient, caseId: string, type: string, who: string, data: unknown = {}) {
+export async function event(db: PoolClient, caseId: string|null, type: string, who: string, data: unknown = {}) {
   await db.query('INSERT INTO zora_events(case_id,type,actor,data) VALUES($1,$2,$3,$4)', [caseId,type,who,JSON.stringify(data)]);
 }
 export async function queueStage(db: PoolClient, c: CaseRecord) {

@@ -4,6 +4,7 @@ import { accessCase,event,mapCase,queueStage } from '@/lib/cases';
 import { transaction } from '@/lib/db';
 import { stagesFor,canApprove,approvalComplete } from '@/lib/engine';
 import type { Role } from '@/lib/catalogue';
+import { knowledgeHolds } from '@/lib/knowledge';
 
 const schema=z.object({version:z.number().int().positive(),action:z.enum(['confirm','approve','reject']),note:z.string().max(5000).optional()});
 export async function POST(request:Request,context:{params:Promise<{id:string}>}) {
@@ -13,6 +14,7 @@ export async function POST(request:Request,context:{params:Promise<{id:string}>}
     const result=await transaction(async db=>{
       await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[id]);const c=await accessCase(id,user,db);
       if(c.version!==parsed.data.version) throw new HttpError(409,'This pursuit changed. Refresh before deciding.');
+      if(parsed.data.action!=='reject'&&(await knowledgeHolds(db,id)).length)throw new HttpError(409,'A reusable source was withdrawn. Open a revision and retire or replace it before approval.');
       const stage=stagesFor(c.workflow)[c.stageIndex];
       if(parsed.data.action==='confirm') {
         if(c.status!=='awaiting_confirmation' || !user.roles.some(r=>['consultant','bid_owner'].includes(r))) throw new HttpError(403,'Workflow confirmation is not available for this role or stage');

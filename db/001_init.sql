@@ -137,3 +137,27 @@ CREATE TABLE IF NOT EXISTS zora_review_contexts (
 );
 -- zora:statement-breakpoint
 ALTER TABLE zora_reviews ADD COLUMN IF NOT EXISTS sequence integer NOT NULL DEFAULT 0;
+-- zora:statement-breakpoint
+ALTER TABLE zora_sources ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true;
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_knowledge_versions (
+  id uuid PRIMARY KEY, entry_id uuid NOT NULL, version integer NOT NULL,
+  kind text NOT NULL CHECK(kind IN ('company_profile','proposal_template','slide_template','architecture_format','demo','video','reference')),
+  title text NOT NULL, notes text NOT NULL DEFAULT '', claim jsonb,
+  filename text NOT NULL, mime_type text NOT NULL, data bytea NOT NULL, sha256 text NOT NULL,
+  source_case_id uuid NOT NULL REFERENCES zora_cases(id), source_id uuid NOT NULL REFERENCES zora_sources(id),
+  owner_email text NOT NULL, created_by text NOT NULL,
+  status text NOT NULL DEFAULT 'draft' CHECK(status IN ('draft','approved','superseded','rejected','revoked')),
+  approved_by text, approved_at timestamptz, decision_note text,
+  created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(entry_id,version)
+);
+-- zora:statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS zora_knowledge_one_approved ON zora_knowledge_versions(entry_id) WHERE status='approved';
+-- zora:statement-breakpoint
+ALTER TABLE zora_knowledge_versions ALTER COLUMN source_case_id DROP NOT NULL;
+-- zora:statement-breakpoint
+ALTER TABLE zora_knowledge_versions ALTER COLUMN source_id DROP NOT NULL;
+-- zora:statement-breakpoint
+ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS source_origin jsonb NOT NULL DEFAULT '{}';
+-- zora:statement-breakpoint
+ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS ingestion_complete boolean NOT NULL DEFAULT true;

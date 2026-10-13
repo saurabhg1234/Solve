@@ -113,6 +113,15 @@ def extract(file: dict, data: bytes, target: Path, ocr_budget: list[int], langua
         for line, passage in enumerate(text.splitlines(), 1):
             timestamp = re.search(r'\b\d{1,2}:\d{2}(?::\d{2})?\b', passage)
             record(f'line:{line}', passage, extraction='plain_text', **({'timestamp':timestamp.group()} if timestamp else {}))
+    elif mime.startswith('image/') or extension in ('.png','.jpg','.jpeg'):
+        from PIL import Image
+        with Image.open(io.BytesIO(data)) as image:
+            if image.format not in ('PNG','JPEG') or image.width*image.height>25000000: raise ValueError('Use a PNG/JPEG visual source within 25 million pixels')
+            format_,width,height=image.format,image.width,image.height;image.verify()
+        visual=target/f"{file['id']}.{'png' if format_=='PNG' else 'jpg'}"
+        if visual.is_symlink(): raise ValueError('Visual source output cannot be a symlink')
+        visual.write_bytes(data);visual.chmod(0o600)
+        records.append({'id':f"{file['id']}:e1",'sourceId':file['id'],'sourceSha256':file['sha256'],'filename':file['filename'],'location':'Complete source image','text':'','textSha256':digest(b''),'verified':False,'extraction':'visual_source','visual':visual.name,'width':width,'height':height,'needsVisualVerification':True})
     elif mime.startswith(('audio/', 'video/')) or extension in ('.mp3', '.wav', '.mp4', '.m4a', '.webm'):
         holds.append(f"{file['filename']}: a verified speaker-labelled timestamped transcript is required; no speech recognition/model API is called")
     else:

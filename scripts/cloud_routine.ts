@@ -14,7 +14,7 @@ const stageJobSchema = z.object({
   case: z.object({ id: z.uuid(), title: z.string(), workflow: z.string() }).passthrough(),
   stage: z.object({ id: z.string(), title: z.string() }).passthrough(),
   instructions: z.string(), requiresIndependentReview: z.boolean(),
-  sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive() })),
+  sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive() }).passthrough()),
   artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),purpose:z.string().optional(),source_path:z.string()})).default([]),
 }).passthrough();
 const fileSchema=z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string(),byte_size:z.number().int().positive(),kind:z.enum(['sources','artifacts']),role:z.enum(['source','reference','draft'])}).passthrough();

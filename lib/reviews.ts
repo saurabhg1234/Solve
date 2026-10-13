@@ -7,6 +7,7 @@ import type { CaseRecord } from './catalogue';
 import type { StageResult } from './result';
 import { inventory,MAX_REVIEW_ELEMENTS,ReviewInputError,type ReviewElement,type ReviewFile } from './review-manifest';
 import { reviewPlan,reviewInstructions,type ReviewResult } from './review-plan';
+import { knowledgeHolds } from './knowledge';
 
 async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string,loop:number){
   const plan=reviewPlan(stage);if(!plan)throw new HttpError(409,'Independent review plan is missing');
@@ -20,6 +21,7 @@ async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string
 
 /** Inventory is derived from stored bytes, never from the drafter's claimed element IDs. */
 export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:StageResult):Promise<{runId?:string;missingInputs:string[]}>{
+  const withdrawn=await knowledgeHolds(db,c.id);if(withdrawn.length)return {missingInputs:withdrawn};
   if(!job.context_id)return {missingInputs:['Independent QC requires a native task identity; claim this stage in a fresh Codex cloud task.']};
   const plan=reviewPlan(job.stage_id);if(!plan)return {missingInputs:['Independent QC review plan is missing.']};
   const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
@@ -32,7 +34,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
     targets=available.filter(a=>a.purpose==='draft'&&a.job_id===latest);
   }
   if(!targets.length)return {missingInputs:['Independent QC needs an actual stored draft; label the deliverable or estimate purpose as draft.']};
-  const sources=(await db.query('SELECT id,filename,mime_type,sha256,octet_length(data)::int AS byte_size FROM zora_sources WHERE case_id=$1',[c.id])).rows;
+  const sources=(await db.query('SELECT id,filename,mime_type,sha256,octet_length(data)::int AS byte_size FROM zora_sources WHERE case_id=$1 AND active',[c.id])).rows;
   const references=available.filter(a=>a.purpose==='reference'||a.purpose==='rfi_review');
   if(!sources.length)return {missingInputs:['Independent QC requires actual source documents, not a drafter summary.']};
   if(plan.passes.some(p=>['D1','D2','UNDERSTANDING','ARCHITECTURE','DOMAIN','EFFORT','COST'].includes(p.checker))&&!references.length)return {missingInputs:['Independent QC requires a selected reference/register/baseline; label that file as reference, separate from reasoning.']};
@@ -91,6 +93,7 @@ export async function completeReview(db:PoolClient,id:string,leaseId:string,cont
   const expected=review.packet.elements.map((e:ReviewElement)=>e.id);
   if(result.packetHash!==review.packet_hash||!validateCoverage({expectedElementIds:expected,checkedElementIds:result.checkedElementIds}))throw new HttpError(422,'Review hash and complete, unique element coverage are required');
   const ids=new Set(expected);if(result.findings.some(f=>!ids.has(f.elementId)))throw new HttpError(422,'Every finding must reference an inventoried element');
+  const withdrawn=await knowledgeHolds(db,review.case_id);if(withdrawn.length)result={...result,missingInputs:[...result.missingInputs,...withdrawn]};
   await db.query("UPDATE zora_reviews SET state='completed',result=$2,completed_at=now() WHERE id=$1",[id,JSON.stringify(result)]);
   await event(db,review.case_id,'qc.pass_recorded',review.worker_id,{reviewId:id,checker:review.checker,findings:result.findings.length,checked:result.checkedElementIds.length,loop:review.loop_number});
   // Any problem holds the loop. No vote or model-supplied 'passed' flag can override it.
