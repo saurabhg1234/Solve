@@ -1,6 +1,6 @@
 # What remains with Saurabh and Advait
 
-Updated 13 October 2026. Zora engineering can continue while these inputs are collected. No new Microsoft, Vercel, model API or application-secret key is required.
+Updated 13 October 2026. Zora engineering can continue while these inputs are collected. No new Microsoft, Vercel, model API or application-secret key is required. The source/document tools and private reusable knowledge library are now deployed; all nine supplied corporate source assets are available to your administrator account as draft references. Source-reuse review remains separate from client proposal approval and all-eight pilot acceptance.
 
 | Action | Owner | What to provide / do |
 |---|---|---|

@@ -56,6 +56,10 @@ The document milestone’s complete startup/install/repository draft save also r
 
 ## Reusable knowledge milestone
 
+Deployed from **c2a6bfe**, deployment **dpl_A3PvMk2NDYvLNfmUJHM5BqR7QQzm**, **READY**, at https://zora-mindmap.vercel.app. Live verification at **23:09 Dubai on 13 October** confirms **16 tables**, full connector/schema health, an active subscription, private library/file/case/review API denials and retained Vercel protection. Production holds the **nine real supplied assets as drafts**, each with verified stored SHA-256, and **zero client pursuits, review runs, active jobs, source approvals or human gate approvals**.
+
 The new private library supports company claims, Word/slide templates, architecture formats, demo/video references and other firm sources. Source-reuse review uses Saurabh’s existing administrator role; Codex does not receive a human approval role. Versioned sources retain bytes/hashes and pinned pursuit snapshots; source retirement retains history, and withdrawal/missing/integrity failures hold stages, QC and gate decisions. API/browser/concurrency fixtures pass locally, including partial-import denial.
 
 The original nine supplied corporate assets import as private draft references: **31,253,161 bytes**, with repository/path/commit provenance and exact stored SHA-256. Repeat and interrupted-import recovery pass. No Word template, real company claim, demo, video, client pursuit or human approval is manufactured. See docs/REUSABLE_KNOWLEDGE.md for tested behavior and limits.
+
+The latest related-email check at **23:12 Dubai** found no Advait reply and no truncated continuation. The already verified 21:03 follow-up was not resent.
