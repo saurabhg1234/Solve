@@ -1,6 +1,8 @@
-# Zora build status — 13 October 2026
+# Zora build status — 14 October 2026 (Dubai)
 
 The deployed application is a tested foundation. It is not a completed solutions agent, and none of W1–W8 has passed full end-to-end acceptance.
+
+**Current live release: e425a60**, deployment **dpl_CWAWAveyXz1CHsgFiohhQaAsUJG7**, **READY**, verified **2026-10-13T22:31:48.383Z** (02:31 Dubai on 14 October). Production has **17 application tables**, nine original draft source versions and zero pursuits/active jobs/human approvals. See the human gate feedback milestone below; older deployment entries are historical evidence.
 
 The prior file/team/revision milestone was deployed from commit `8719989` on `codex/zora-foundation`, deployment `dpl_BV2Ayry8pHgCoKBdDAyD2ttyxB7A` (`READY`). The new independent-review milestone adds a durable reviewer queue, server-derived inventories, isolated file access, context/coverage guards, policy-bound clean loops and visible findings. Its additive production migration passes. The stable URL shows a public preview; case data requires work-account sign-in. Vercel protection remains configured.
 
@@ -22,7 +24,7 @@ At verification, production held **zero pursuits, zero active jobs and zero unli
 | RFI workbooks | Buyer/simple-complex question sheet and separate internal cross-check tracker export pass; exact quotes/search references, explicit cap, anonymity and narrow W5 review access enforced; semantic/buyer-template acceptance pending |
 | Source preparation | Hash-bound DOCX/PPT/PDF/XLSX/transcript extraction and bounded cached OCR implemented; OCR is unverified and recording-only requests hold for a transcript |
 | Attachment handling | Email file/inline intake and manual uploads implemented; 32 MB per file, 2 MB transfers, provenance/hashes; linked/nested attachments and limits hold explicitly |
-| Team access and revisions | Owner/admin assigns approved accounts; role-limited internal files; audited revision/reset and blocked-step resume implemented and tested |
+| Team access and revisions | Owner/admin assigns approved accounts; role-limited internal files; audited revision/reset, blocked-step resume and ordinary human-gate correction routes implemented and tested |
 | Independent QC | Reviewer queue, stored-byte inventories, isolated packets, context/coverage validation and explicit clean loops implemented; real native reviews, full ESC/fix automation and semantic acceptance pending |
 | Demos and videos | Full W6/W7 production paths and acceptance unfinished; real assets, team names and tool preferences requested from Advait |
 | Pilot scope | All eight workflows remain required; a workflow card/index does not demonstrate delivery |
@@ -115,3 +117,16 @@ W8-1 can package a scanned source and select its context; W8-2 drafts from the s
 **39 TypeScript tests** pass, along with production builds, the new native transcript fixture, existing independent-review/private-source/text-email regressions and the scanned W8 stage fixture. Tests exercise source/hash/page/privacy failures, concurrent checker ordering, ten synthetic contexts over two loops, minor-error holds, expiry/context/replay/revision rejection, exact stored citation-to-QC hashes and zero human approvals. Compiled desktop/mobile transcript and email-preview checks pass with no page errors. All synthetic fixture cases/jobs are deleted. An actual **19-page Mindmap business-deck** packaging trial produced **3,829 source elements** from retained OCR and kept status **unverified**; no semantic acceptance or production source approval is claimed.
 
 Read docs/SOURCE_TRANSCRIPTS.md and docs/NATIVE_EMAILS.md. Full ESC trust reset/fix/disagreement automation, actual fresh transcription/semantic review, real demos/videos, work-account sign-in and complete W1–W8 acceptance remain pending. Advait had no related reply at **02:05 Dubai on 14 October**; no duplicate follow-up was sent. Cloud draft readback remains revision **16**, with saved startup pointing to docs/ZORA_HANDOFF.md; the earlier failed update was not retried without a new diagnosis. Recurring execution is still unverified.
+
+
+## Human gate feedback milestone
+
+Deployed from **e425a60**, deployment **dpl_CWAWAveyXz1CHsgFiohhQaAsUJG7**, **READY**, at https://zora-mindmap.vercel.app. The additive migration passed twice locally and twice on Neon. Live verification at **2026-10-13T22:31:48.383Z** confirms **17 tables**, active Microsoft monitoring, healthy storage, unsigned case/knowledge API denial, **nine real source drafts** and **zero pursuits, active jobs, feedback records or human approvals**. Private receipt: `/workspace/solve-environment/zora-gate-feedback-milestone-receipt.json`.
+
+Human reviewers can now retain exact file/hash/location/severity evidence with revision requests. Ordinary corrections return to earlier work, run later checks and human gates again, and record when the relevant gate is approved. Feedback reaches native creators without entering independent reviewer packets. Internal files and source-related feedback remain restricted. Stale, concurrent, wrong-role, inaccessible-file and changed-source attempts fail explicitly.
+
+At W3/W4 document gates, major/critical issues or any previously unlogged issue record an ESC-1 hold. Exact existing QC links are validated against stored file bytes, location and evidence and cannot lower severity. Escalations survive a full revision and block later document-gate approval. **The ESC-2/3/4 explanation, fresh whole-document drafter and root-cause review sequence remains unfinished**; this release adds no bypass or manually clear-escalation operation. The UI currently records new findings; selecting existing QC findings in the form remains pending. Read [GATE_FEEDBACK.md](GATE_FEEDBACK.md).
+
+**43 TypeScript tests**, type checking, production builds, existing API/review regressions and the expanded gate-feedback fixture pass. The latter exercises fresh-QC protocol and a new synthetic human gate after correction, exact QC linking/severity/escape rules, private packet/artifact restrictions, full-revision persistence and ordinary-feedback supersession. Compiled desktop/mobile checks submit the form and display retained findings/holds without page errors or horizontal overflow. All synthetic records were removed; no production client approval was created. Original assets/dependencies remain unchanged. Owned local Next/proxy processes were stopped; the retained database and pre-existing port-3000 process remain.
+
+No new credential, role, environment requirement or business-policy decision is needed. Saved cloud readback is still revision **16**, with no pending runtime requirement and startup pointing to the handoff; the previously rejected write was not retried blindly. Latest recorded Advait reply check remains **02:05 Dubai on 14 October**, zero related replies; no new outbound email was sent. Native recurrence and full W1–W8 acceptance remain unverified. A final response ends active execution.
