@@ -4,7 +4,7 @@ export const resultSchema=z.object({
   status:z.enum(['completed','blocked']),
   summary:z.string().min(10).max(10000),
   missingInputs:z.array(z.string().max(2000)).max(100),
-  outputFiles:z.array(z.object({path:z.string().min(1).max(250),visibility:z.enum(['client','internal']),mimeType:z.string().min(1).max(150),purpose:z.enum(['draft','reference','workpaper','rfi_review']).optional()})).max(100),
+  outputFiles:z.array(z.object({path:z.string().min(1).max(250),visibility:z.enum(['client','internal']),mimeType:z.string().min(1).max(150),purpose:z.enum(['draft','reference','workpaper','rfi_review','source_transcript']).optional()})).max(100),
   reviewArtifactIds:z.array(z.uuid()).max(30).optional(),
   citations:z.array(z.object({source:z.string().min(1),location:z.string().min(1),quote:z.string().min(1)})).max(10000),
   reviewReports:z.array(z.object({checker:z.string(),runId:z.string(),checkedElementIds:z.array(z.string()),findings:z.array(z.object({severity:z.enum(['critical','major','minor']),kind:z.string(),location:z.string(),description:z.string()}))})).max(100),

@@ -6,8 +6,9 @@ import { accessCase,event } from './cases';
 import { transaction } from './db';
 import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes,canReadInternal } from './files';
 import { safeOutputPath } from './result';
+import { parseSourceTranscript,matchTranscript,TRANSCRIPT_LIMIT } from './source-transcript';
 
-export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper','rfi_review']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
+export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper','rfi_review','source_transcript']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
 export const sourceUploadSchema=uploadSchema.extend({visibility:z.enum(['client','internal']).default('client')});
 type UploadInput=z.infer<typeof uploadSchema>;
 export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
@@ -37,6 +38,7 @@ export async function beginArtifactUpload(jobId:string,input:UploadInput){
     const purpose=input.purpose||(input.visibility==='client'?'draft':'workpaper');
     if(purpose==='rfi_review'&&(job.stage_id!=='W5-11'||input.visibility!=='internal'||input.path!=='outputs/internal/rfi-tracker.xlsx'||cleanFilename(input.filename)!=='rfi-tracker.xlsx'||input.mimeType!=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))throw new HttpError(400,'RFI review access is limited to the internal W5-11 cross-check workbook');
     if(purpose==='rfi_review'&&(await db.query("SELECT 1 FROM zora_sources WHERE case_id=$1 AND visibility='internal' LIMIT 1",[job.case_id])).rowCount)throw new HttpError(409,'A pursuit with private sources cannot expose its cross-check workpaper through consultant RFI access');
+    if(purpose==='source_transcript'&&(input.mimeType!=='application/json'||input.totalBytes>TRANSCRIPT_LIMIT))throw new HttpError(400,'Source transcripts require bounded JSON');
     const existing=(await db.query('SELECT id,filename,mime_type,visibility,purpose,sha256,octet_length(data)::int AS bytes FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[jobId,input.leaseId,input.path])).rows[0];
     if(existing){
       if(existing.filename!==cleanFilename(input.filename)||existing.mime_type!==input.mimeType||existing.visibility!==input.visibility||existing.purpose!==purpose||existing.sha256!==input.sha256||existing.bytes!==input.totalBytes)throw new HttpError(409,'This output path was stored with different content or metadata');
@@ -90,6 +92,13 @@ export async function finishUpload(id:string,identity:UploadIdentity){
       const job=await leasedJob(db,identity.jobId,identity.leaseId);
       const existing=await db.query('SELECT id FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[identity.jobId,identity.leaseId,row.source_path]);
       if(existing.rowCount)throw new HttpError(409,'This session output path is already stored');
+      if(row.purpose==='source_transcript'){
+        try{
+          const transcript=parseSourceTranscript(bytes);
+          const source=(await db.query('SELECT id,sha256,mime_type,filename,visibility FROM zora_sources WHERE id=$1 AND case_id=$2 AND active',[transcript.sourceId,row.case_id])).rows[0];
+          if(!source)throw new Error('Missing source');matchTranscript(transcript,source,row.visibility);
+        }catch{throw new HttpError(422,'Transcript must match an active PDF source, its hash, access classification and page contract');}
+      }
       await db.query('INSERT INTO zora_artifacts(id,case_id,job_id,filename,mime_type,visibility,data,sha256,source_path,lease_id,case_version,source_revision,purpose) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',[id,row.case_id,row.job_id,row.filename,row.mime_type,row.visibility,bytes,row.sha256,row.source_path,row.lease_id,job.case_version,job.source_revision,row.purpose]);
       await event(db,row.case_id,'artifact.stored',job.worker_id,{artifactId:id,filename:row.filename,sha256:row.sha256,visibility:row.visibility,stage:job.stage_id});
     }

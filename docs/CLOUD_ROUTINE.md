@@ -37,6 +37,7 @@ npm run routine -- check
 npm run routine -- claim
 npm run routine -- heartbeat <private-workspace>
 npm run routine -- prepare <private-workspace>
+npm run routine -- build-transcript <private-workspace> transcript-plan.json # PDF sources, unverified until fresh review
 npm run routine -- build <private-workspace> build-plan.json
 npm run routine -- build-rfi <private-workspace> rfi-plan.json
 npm run routine -- build-costs <private-workspace> cost-plan.json # S1-6, explicit policy inputs only

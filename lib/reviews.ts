@@ -8,10 +8,13 @@ import type { StageResult } from './result';
 import { inventory,MAX_REVIEW_ELEMENTS,ReviewInputError,type ReviewElement,type ReviewFile } from './review-manifest';
 import { reviewPlan,reviewInstructions,type ReviewResult } from './review-plan';
 import { knowledgeHolds } from './knowledge';
+import { parseSourceTranscript,matchTranscript,transcriptHash,TRANSCRIPT_LIMIT,type SourceTranscript } from './source-transcript';
 
 async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string,loop:number){
   const plan=reviewPlan(stage);if(!plan)throw new HttpError(409,'Independent review plan is missing');
   const passes=[...plan.passes];
+  const packet=(await db.query('SELECT packet FROM zora_qc_runs WHERE id=$1',[runId])).rows[0]?.packet;
+  if(packet?.sourceTranscripts?.length)passes.unshift({checker:'SOURCE_TRANSCRIPT',passNumber:1,method:'Compare every transcribed word, cell and caption against every original PDF page before downstream checks'});
   if(['W3-17','W4-18','W4-20'].includes(stage)){
     const previous=(await db.query("SELECT 1 FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_qc_runs current ON current.id=$2 WHERE q.case_id=$1 AND q.source_revision=current.source_revision AND q.packet->>'stageId'=$3 AND r.checker='D1' AND r.pass_number=2 AND jsonb_array_length(r.result->'findings')>0 LIMIT 1",[caseId,runId,stage])).rows.length;
     if(previous)passes.push({checker:'D1',passNumber:3,method:'Third independent compliance pass after a second-pass finding; verify the corrected draft without seeing earlier reports'});
@@ -24,7 +27,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
   const withdrawn=await knowledgeHolds(db,c.id);if(withdrawn.length)return {missingInputs:withdrawn};
   if(!job.context_id)return {missingInputs:['Independent QC requires a native task identity; claim this stage in a fresh Codex cloud task.']};
   const plan=reviewPlan(job.stage_id);if(!plan)return {missingInputs:['Independent QC review plan is missing.']};
-  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
+  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference','source_transcript') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
   let targets;
   if(result.reviewArtifactIds?.length){
     targets=available.filter(a=>a.purpose==='draft'&&result.reviewArtifactIds!.includes(a.id));
@@ -42,28 +45,41 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
     const baseline=(await db.query("SELECT 1 FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id JOIN zora_approvals p ON p.case_id=a.case_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.purpose='reference' AND a.lease_id=j.lease_id AND j.stage_id=ANY($3::text[]) AND p.stage_id=$4 AND p.version>=a.case_version AND p.created_at>=a.created_at LIMIT 1",[c.id,c.sourceRevision,c.workflow==='W3'?['W3-6']:['W4-3','W4-4'],`${c.workflow}-G1`])).rows.length;
     if(!baseline)return {missingInputs:['A reference baseline from this source revision must be confirmed at the requirement gate before technical/document QC.']};
   }
-  const files=[...sources.map(f=>({...f,kind:'sources',role:'source'})),...references.map(f=>({...f,kind:'artifacts',role:'reference'})),...targets.map(f=>({...f,kind:'artifacts',role:'draft'}))];
+  // Select the latest valid transcript for each active source, never a workpaper cache.
+  const transcripts=new Map<string,{artifact:any;transcript:SourceTranscript}>();
+  try{
+    for(const artifact of available.filter(a=>a.purpose==='source_transcript')){
+      if(artifact.byte_size>TRANSCRIPT_LIMIT)throw new Error('Transcript bound');
+      const bytes=(await db.query('SELECT data FROM zora_artifacts WHERE id=$1 AND case_id=$2',[artifact.id,c.id])).rows[0].data;
+      if(transcriptHash(bytes)!==artifact.sha256)throw new Error('Transcript integrity');
+      const transcript=parseSourceTranscript(bytes),source=sources.find(f=>f.id===transcript.sourceId);
+      if(!source)continue; // Retired source transcripts cannot enter a new packet.
+      matchTranscript(transcript,source,artifact.visibility);
+      if(!transcripts.has(source.id))transcripts.set(source.id,{artifact,transcript});
+    }
+  }catch{return {missingInputs:['A source transcript is invalid, stale or has a different access classification. Supply an exact page-linked copy of the active original PDF.']};}
+  const files=[...sources.map(f=>({...f,kind:'sources',role:'source'})),...[...references,...[...transcripts.values()].map(t=>t.artifact)].map(f=>({...f,kind:'artifacts',role:'reference'})),...targets.map(f=>({...f,kind:'artifacts',role:'draft'}))];
   if(files.length>30||files.reduce((size,f)=>size+f.byte_size,0)>64*1024*1024)return {missingInputs:['Independent QC packet exceeds 30 files or 64 MB; split it into bounded review sections.']};
   const elements:ReviewElement[]=[];
   try{
     for(const file of files){
       const table=file.kind==='sources'?'zora_sources':'zora_artifacts';
       const bytes=(await db.query(`SELECT data FROM ${table} WHERE id=$1 AND case_id=$2`,[file.id,c.id])).rows[0].data;
-      elements.push(...await inventory({...file,data:bytes} as ReviewFile));
+      elements.push(...await inventory({...file,data:bytes} as ReviewFile,file.kind==='sources'?transcripts.get(file.id)?.transcript:undefined));
       if(elements.length>MAX_REVIEW_ELEMENTS)throw new ReviewInputError('Review packet exceeds the element limit; split it into bounded sections');
     }
   }catch(error){
     if(error instanceof ReviewInputError)return {missingInputs:[error.message]};
     return {missingInputs:['A review document could not be inventoried completely. Supply a valid, unencrypted review copy; coverage will not be guessed.']};
   }
-  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,files:files.map(({job_id,...file})=>file),elements};
+  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,sourceTranscripts:[...transcripts.values()].map(({artifact,transcript})=>({sourceId:transcript.sourceId,sourceSha256:transcript.sourceSha256,transcriptId:artifact.id,transcriptSha256:artifact.sha256,pageCount:transcript.pages.length,status:'unverified'})),files:files.map(({job_id,...file})=>file),elements};
   const hash=digest(packet),runId=randomUUID();
   const policy=(await db.query('SELECT qc_clean_loops,qc_max_loops FROM zora_cases WHERE id=$1',[c.id])).rows[0];
   await db.query('INSERT INTO zora_qc_runs(id,case_id,job_id,case_version,source_revision,creator_context,packet,packet_hash,clean_loops,max_loops) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[runId,c.id,job.id,c.version,c.sourceRevision,job.context_id,JSON.stringify(packet),hash,policy.qc_clean_loops,policy.qc_max_loops]);
   await queuePasses(db,runId,c.id,job.stage_id,1);
   await db.query("UPDATE zora_jobs SET state='reviewing',result=$2 WHERE id=$1",[job.id,JSON.stringify(result)]);
   await db.query("UPDATE zora_cases SET status='queued',updated_at=now() WHERE id=$1",[c.id]);
-  await event(db,c.id,'qc.queued',job.worker_id,{runId,stage:job.stage_id,passes:plan.passes.length,elements:elements.length,packetHash:hash});
+  await event(db,c.id,'qc.queued',job.worker_id,{runId,stage:job.stage_id,passes:plan.passes.length+(transcripts.size?1:0),elements:elements.length,packetHash:hash});
   return {runId,missingInputs:[]};
 }
 
@@ -75,9 +91,9 @@ export async function leasedReview(db:PoolClient,id:string,leaseId:string){
 }
 
 export async function claimReview(db:PoolClient,worker:string,contextId:string){
-  const candidate=(await db.query("SELECT c.id FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id WHERE r.case_id=c.id AND q.state='reviewing' AND q.case_version=c.version AND q.creator_context<>$1 AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now()))) AND NOT EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId])).rows[0];
+  const candidate=(await db.query("SELECT c.id FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id WHERE r.case_id=c.id AND q.state='reviewing' AND q.case_version=c.version AND q.creator_context<>$1 AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) AND (r.checker='SOURCE_TRANSCRIPT' OR NOT EXISTS(SELECT 1 FROM zora_reviews prerequisite WHERE prerequisite.run_id=r.run_id AND prerequisite.loop_number=r.loop_number AND prerequisite.checker='SOURCE_TRANSCRIPT' AND prerequisite.state<>'completed'))) AND NOT EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId])).rows[0];
   if(!candidate)return null;
-  const r=(await db.query("SELECT r.id,r.checker,r.method,r.pass_number,r.loop_number,q.id AS run_id,q.packet,q.packet_hash FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_cases c ON c.id=r.case_id WHERE r.case_id=$1 AND q.state='reviewing' AND q.case_version=c.version AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) ORDER BY r.created_at,r.sequence FOR UPDATE OF r SKIP LOCKED LIMIT 1",[candidate.id])).rows[0];
+  const r=(await db.query("SELECT r.id,r.checker,r.method,r.pass_number,r.loop_number,q.id AS run_id,q.packet,q.packet_hash FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_cases c ON c.id=r.case_id WHERE r.case_id=$1 AND q.state='reviewing' AND q.case_version=c.version AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) AND (r.checker='SOURCE_TRANSCRIPT' OR NOT EXISTS(SELECT 1 FROM zora_reviews prerequisite WHERE prerequisite.run_id=r.run_id AND prerequisite.loop_number=r.loop_number AND prerequisite.checker='SOURCE_TRANSCRIPT' AND prerequisite.state<>'completed')) ORDER BY r.created_at,r.sequence FOR UPDATE OF r SKIP LOCKED LIMIT 1",[candidate.id])).rows[0];
   if(!r)return null;const leaseId=randomUUID();
   await db.query('INSERT INTO zora_review_contexts(case_id,context_id,review_id) VALUES($1,$2,$3)',[candidate.id,contextId,r.id]);
   await db.query("UPDATE zora_reviews SET state='leased',context_id=$2,worker_id=$3,lease_id=$4,lease_expires_at=now()+interval '5 minutes' WHERE id=$1",[r.id,contextId,worker,leaseId]);

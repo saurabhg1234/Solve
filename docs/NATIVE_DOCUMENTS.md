@@ -112,3 +112,6 @@ npm run routine -- complete <private-workspace>
 The bridge imports byte-accurate files before recording completion. Document helpers renew leases while working and stop if renewal fails. A fresh independent reviewer may prepare its isolated packet, but cannot use the build commands to change its draft. Completion does not send email, release a proposal, submit a bid or record a human approval.
 
 Verified locally: ten Python tests exercise source/hash/timestamp/OCR resumption, actual five-template deck/PDF assembly, Word run/style retention, unchanged architecture PNG/JPEG visual evidence, guards, buyer/internal workbook separation, literal cells and provenance/anonymity/cap checks. The real local queue fixture prepares sources, builds PPT/tagged-PDF/RFI files, persists ten exact artifacts including edited pictures and checks QC inventory plus internal privacy. These are transport/format fixtures, not client quality or full W1–W8 acceptance.
+
+
+Image-only PDF sources can now use explicit page-linked transcripts with an independent transcription check before ordinary QC. The original PDF remains in the packet; no OCR cache is marked verified. Read [source transcripts](SOURCE_TRANSCRIPTS.md) for the native build plan, privacy, review ordering and limits.

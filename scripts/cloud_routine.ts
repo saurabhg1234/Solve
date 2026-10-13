@@ -93,7 +93,7 @@ async function complete(path: string) {
   const outcome=await(await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId,contextId:job.contextId, result })).json();
   console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
 }
-async function documentTool(path:string,action:'prepare'|'build'|'build-rfi'|'build-costs'|'email-context'|'build-email',plan?:string){
+async function documentTool(path:string,action:'prepare'|'build'|'build-rfi'|'build-costs'|'email-context'|'build-email'|'build-transcript',plan?:string){
   const {dir,job}=await workspace(path);
   if(action!=='prepare'&&job.kind==='review')throw new Error('An independent reviewer cannot create or replace the draft');
   if(action==='build-costs'&&(job.kind!=='stage'||job.stage.id!=='S1-6'))throw new Error('Internal cost rendering belongs to the leased S1-6 cost-calculator stage');
@@ -107,11 +107,13 @@ async function documentTool(path:string,action:'prepare'|'build'|'build-rfi'|'bu
     const actual=await realpath(resolve(dir,plan));if(!actual.startsWith(dir+sep))throw new Error('Build plan must stay in the private workspace');arguments_=action==='build'?[script,'build',dir,actual]:[script,dir,actual];
   }
   if(email)arguments_=['--import','tsx',resolve('scripts/build_email.ts'),action==='email-context'?'context':'build',dir,...(action==='build-email'?[await realpath(resolve(dir,plan!))]:[])];
+  const nodeTool=email||action==='build-transcript';
+  if(action==='build-transcript')arguments_=['--import','tsx',resolve('scripts/build_transcript.ts'),dir,await realpath(resolve(dir,plan!))];
   await heartbeat(job);let failed=false;let child:ChildProcess|undefined;
   const timer=setInterval(()=>{void heartbeat(job).catch(()=>{failed=true;child?.kill('SIGTERM');});},60000);
   try{
     const environment:NodeJS.ProcessEnv={NODE_ENV:process.env.NODE_ENV||'development',...Object.fromEntries(Object.entries(process.env).filter(([name])=>['PATH','HOME','LANG','LC_ALL','FONTCONFIG_PATH','FONTCONFIG_FILE','TESSDATA_PREFIX'].includes(name)))};
-    const code=await new Promise<number>((done,reject)=>{const running=spawn(email?process.execPath:python,arguments_,{stdio:['ignore','inherit','inherit'],env:environment});child=running;running.once('error',reject);running.once('exit',code=>done(code??1));});
+    const code=await new Promise<number>((done,reject)=>{const running=spawn(nodeTool?process.execPath:python,arguments_,{stdio:['ignore','inherit','inherit'],env:environment});child=running;running.once('error',reject);running.once('exit',code=>done(code??1));});
     if(code!==0||failed)throw new Error('Native document preparation/build failed or its lease was lost');await heartbeat(job);
   }finally{clearInterval(timer);}
 }
@@ -122,7 +124,7 @@ async function main() {
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
-  if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email') return documentTool(path,action,plan);
-  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email or complete');
+  if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email'||action==='build-transcript') return documentTool(path,action,plan);
+  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript or complete');
 }
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });

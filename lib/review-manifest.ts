@@ -2,13 +2,18 @@ import { createHash } from 'node:crypto';
 import { unzipSync,strFromU8 } from 'fflate';
 import { DOMParser } from '@xmldom/xmldom';
 import { parse } from 'parse5';
+import { matchTranscript, sourceTranscriptSchema, type SourceTranscript } from './source-transcript';
 
 export type ReviewFile={id:string;filename:string;mime_type:string;sha256:string;data:Buffer;role:'source'|'reference'|'draft'};
 export type ReviewElement={id:string;fileId:string;kind:string;location:string;text?:string};
 export const MAX_REVIEW_ELEMENTS=40000;
 export class ReviewInputError extends Error {}
-export async function inventory(file:ReviewFile):Promise<ReviewElement[]> {
+export async function inventory(file:ReviewFile, sourceTranscript?:SourceTranscript):Promise<ReviewElement[]> {
   if(createHash('sha256').update(file.data).digest('hex')!==file.sha256)throw new ReviewInputError('Stored review file failed its hash check');
+  if(sourceTranscript){
+    if(file.role!=='source')throw new ReviewInputError('A source transcript cannot replace draft/reference review or PDF structure');
+    try{sourceTranscript=sourceTranscriptSchema.parse(sourceTranscript);matchTranscript(sourceTranscript,file);}catch{throw new ReviewInputError('Source transcript does not match the PDF source and required page contract');}
+  }
   const elements:ReviewElement[]=[];
   function add(kind:string,location:string,text?:string){
     const id=`${file.id}/${elements.length+1}`;
@@ -82,6 +87,7 @@ export async function inventory(file:ReviewFile):Promise<ReviewElement[]> {
     try{
       const document=await task.promise;
       if(document.numPages>150)throw new ReviewInputError('PDF exceeds 150 pages; split it into bounded review sections');
+      if(sourceTranscript&&sourceTranscript.pages.length!==document.numPages)throw new ReviewInputError('Source transcript must cover every original PDF page exactly once');
       for(let number=1;number<=document.numPages;number++){
         const page=await document.getPage(number);add('page',`PDF page ${number}`);
         const content=await page.getTextContent();let text=0;
@@ -90,7 +96,14 @@ export async function inventory(file:ReviewFile):Promise<ReviewElement[]> {
         for(const [index,operator] of operators.fnArray.entries())if([OPS.paintImageXObject,OPS.paintInlineImageXObject,OPS.paintImageMaskXObject,OPS.paintFormXObjectBegin].includes(operator))add('image',`PDF page ${number}, visual operator ${index+1}`);
         // The original PDF is retained for visual/diagram review; text alone never verifies a page.
         add('diagram',`PDF page ${number}, complete rendered page`);
-        if(!text)throw new ReviewInputError(`PDF page ${number} has no extractable text; supply a verified OCR/transcript copy before word-level QC`);
+        if(!text&&!sourceTranscript)throw new ReviewInputError(`PDF page ${number} has no extractable text; supply a page-linked OCR/transcript for independent verification before word-level QC`);
+        // Transcribed words remain unverified until a fresh SOURCE_TRANSCRIPT reviewer checks
+        // every original page. Native PDF text is retained as a separate comparison source.
+        if(sourceTranscript){
+          const transcriptPage=sourceTranscript.pages[number-1];
+          for(const [index,block] of transcriptPage.blocks.entries())add(block.kind,`PDF page ${number}, unverified transcript ${block.kind} ${index+1}`,block.text);
+          if(transcriptPage.noTextReason)add('transcript_no_text',`PDF page ${number}, unverified no-text explanation`,transcriptPage.noTextReason);
+        }
         const structure=await page.getStructTree();
         if(file.role==='draft'&&!structure)throw new ReviewInputError(`PDF draft page ${number} has no structural element IDs; provide a tagged PDF or a verified editable review copy for cell/caption-level QC`);
         function structureElements(node:any,path:string){if(!node)return;if(['TD','TH'].includes(node.role))add('table_cell',path);if(node.role==='Caption')add('caption',path);if(node.role==='Figure')add('image',path);for(const [index,child] of (node.children||[]).entries())structureElements(child,`${path}/${index+1}`);}
