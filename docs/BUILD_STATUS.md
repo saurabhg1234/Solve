@@ -36,9 +36,11 @@ Build work runs while a Codex task is actively executing. A final reply ends exe
 
 ## Native document milestone
 
+Deployed from **7fa46df**, deployment **dpl_AUEcok8TWE5FTiA41Gp19wnKYpAX**, **READY**, at https://zora-mindmap.vercel.app. Live verification at **21:51 Dubai** confirms connector/schema health, an active subscription, unsigned case/review denial, retained Vercel protection and zero production pursuits/review runs/active jobs. No generated local fixture was published.
+
 The new native helpers run in the current leased Codex task with a filtered child-process environment. Nine Python tests pass: source/timestamp/hash handling, OCR batch resumption, actual five-template PPT/PDF composition, Word style/run retention, source/output/approval guards, RFI buyer/internal separation, literal spreadsheet text, provenance/anonymity/cap/answered/duplicate rejection. The owned local queue stores seven actual generated artifacts with matching bytes/hashes and verifies tagged PDF/workbook QC inventory. W5-11 access tests verify consultant downloads/request packs/QC findings, demo/unassigned denial and restricted commercial workpapers. Drafts and fixtures do not establish semantic acceptance or release.
 
-The Knowledge view explains the available source/document/RFI tools and the missing Word input. Original template fonts/layouts/themes/artwork are preserved; notes, unselected slides, metadata and unreachable old assets are removed. Inspect rendered outputs for text fit and client carryover. Image-only source QC, verified transcription, media replacement, buyer-specific workbook mapping, complete ESC/fix automation and all-eight acceptance remain pending. See [native tool instructions](NATIVE_DOCUMENTS.md).
+The production build and compiled browser checks pass; the Knowledge view explains the available source/document/RFI tools and the missing Word input. Original template fonts/layouts/themes/artwork are preserved; notes, unselected slides, metadata and unreachable old assets are removed. Inspect rendered outputs for text fit and client carryover. Image-only source QC, verified transcription, media replacement, buyer-specific workbook mapping, complete ESC/fix automation and all-eight acceptance remain pending. See [native tool instructions](NATIVE_DOCUMENTS.md).
 
 ## Advait email and owner visibility
 
@@ -49,3 +51,5 @@ Saurabh subsequently required a visible copy of every outgoing email. Include **
 A copy of the original was forwarded to **saurabh@mindmapdigital.ai** on **13 October 2026 at 5:10 pm Dubai time**, subject **FW: [ZORA] Pilot inputs and team details — all eight workflows**. The forwarded message is verified in the shared mailbox's Sent Items. This confirms sending and the saved message; recipient delivery/read status is not claimed.
 
 A further authorised follow-up is verified in Sent Items at **21:03:34 Dubai time on 13 October 2026**: **[ZORA] Follow-up: pilot assets, team names and first test**, To **advait.mahajan@mindmapdigital.ai**, Cc **saurabh@mindmapdigital.ai**. It asks for first-ready assets, account names and test availability; no reply or recipient delivery/read receipt is claimed. The private send receipt is retained outside Git.
+
+The document milestone’s complete startup/install/repository draft save also remained unconfirmed; reread still shows **revision 16**. The committed handoff and native guide remain the tested startup authority. Publishing an environment and verifying a standalone recurring schedule are still separate, unverified steps.

@@ -16,7 +16,7 @@ Image-only PDF pages use installed Tesseract, ten pages per invocation. Hash/lan
 /workspace/solve-environment/.venv/bin/python scripts/prepare_sources.py <private-workspace> --max-ocr-pages 10
 ```
 
-All extraction is marked **unverified**. OCR records include confidence and a rendered page filename; visually inspect that page before relying on a claim. An OCR result does not replace a verified source or bypass the server's image-only-PDF QC hold. Recordings require a verified speaker-labelled timestamped transcript; this implementation does not invent speech transcription. Malformed, encrypted, oversized, unsupported or empty sources return precise holds. Limits are 32 MB per source, 96 MB expanded Office packages, 32 MB per archive member and 150 pages per PDF.
+All extraction is marked **unverified**. OCR records include confidence and a rendered page filename; visually inspect that page before relying on a claim. An OCR result does not replace a verified source or bypass the server's image-only-PDF QC hold. Recordings require a verified speaker-labelled timestamped transcript; this implementation does not invent speech transcription. Malformed, encrypted, oversized, unsupported or empty sources return precise holds. Preparation is bounded to 64 distinct sources and 256 MB total workspace input. Limits are 32 MB per source, 96 MB expanded Office packages, 32 MB per archive member and 150 pages per PDF.
 
 ## Inspect and edit an approved Word/PPT template
 
@@ -47,7 +47,7 @@ An Office plan includes `format`, `template`, `templateSha256`, `approvedTemplat
 
 Every visible slide text node must be edited or explicitly retained. Word uses `parts` instead of `slides`, with `part` identifying each body/header/footer/footnote/endnote XML part, and the same `edits`/`retained` structure. Resolve comments and tracked changes in an approved template first. Index/hash/original-text mismatches, undeclared retained text, macros, embedded documents and external assets are rejected.
 
-To compose the five supplied templates, retain the base `template` and add `templates` entries with unique `key` values and the same path/hash/approval fields. Each slide chooses `templateKey` (`base` by default). Its layouts, master, theme, artwork and related assets are imported with separate paths; different slide dimensions hold instead of scaling. Original font sizes and run formatting remain. Unselected slides, speaker notes, comments, old document properties and unreachable assets are removed.
+To compose the five supplied templates, retain the base `template` and add `templates` entries with unique `key` values and the same path/hash/approval fields. Each slide chooses `templateKey` (`base` by default). Its layouts, master, theme, artwork and related assets are imported with separate paths; different slide dimensions hold instead of scaling. A build permits at most ten additional templates and 160 MB combined template assets. Original font sizes and run formatting remain. Unselected slides, speaker notes, comments, old document properties and unreachable assets are removed.
 
 Master/layout text and reachable artwork retain their source bytes. Inspect them and the rendered slides for source-client claims, text fit, inherited footers, visual quality and branding; a mechanically retained template is not automatically safe. The QC inventory includes imported masters/layouts and visuals. Media replacement and buyer-specific spreadsheet template mapping are not yet implemented; request an appropriate clean approved layout when needed.
 
@@ -63,7 +63,7 @@ The exporter rechecks source bytes through source preparation and requires an ex
 
 Each ranked question has a unique `id`, consecutive `rank`, `simple` and `complex` wording, `answerState: "not_found"`, nonempty `impacts` (design/effort/price/compliance/risk), a concrete `impactReason`, and actual `searchedEvidenceIds`. It also needs either `citations` with exact `evidenceId`/`quote` matches or a described `simulationGap` of at least twenty characters. An optional `closestAnswerEvidenceId` locates the strongest possible existing answer. Record excluded candidates in `dropped` with question, disposition (answered/irrelevant/duplicate/cap/contradiction) and reason.
 
-Unverified OCR citations, missing references, changed source hashes, fabricated quotes, duplicate wording, unchecked/answered questions, cap overflow and Mindmap names in anonymised buyer questions/references hold explicitly. Formula-like question text is written as a literal string, never executable Excel content. Semantic answer search, relevance, simplification and contradiction checks still require the actual Codex stages and independent reviewers.
+Unverified OCR citations, missing references, changed source hashes, fabricated quotes, duplicate wording, unchecked/answered questions, cap overflow and Mindmap names in anonymised buyer questions/references hold explicitly. Formula-like question text is written as a literal string, never executable Excel content. Overlong Excel cells hold instead of silently truncating evidence. Semantic answer search, relevance, simplification and contradiction checks still require the actual Codex stages and independent reviewers.
 
 Outputs are separate:
 
