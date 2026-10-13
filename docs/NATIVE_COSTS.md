@@ -10,6 +10,8 @@ The bridge restricts this command to S1-6, checks the actual task identity/works
 
 ## Required inputs
 
+Use the pursuit’s **Add private inputs** control for real pricing policies; Ganesh must be assigned to the pursuit and source changes require a paused revision. See [private source rules](PRIVATE_SOURCES.md).
+
 The plan selects a `policySourceId` from actual downloaded **sources** and an `effortArtifactId` from actual prior **artifacts**. Both must contain JSON, stay within the private workspace and match their stored SHA-256. The policy is not inferred from BRD example values or generated as a hidden tool default.
 
 The policy source explicitly defines:

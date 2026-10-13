@@ -8,7 +8,7 @@ These helpers run inside the current claimed Codex task. They never call a model
 npm run routine -- prepare <private-workspace>
 ```
 
-The bridge validates the saved job and actual task identity, renews its lease and downloads no additional external content. The helper checks each source's stored SHA-256 and writes private `prepared/evidence.json` and `prepared/source-text.txt`. Each passage retains a source ID/hash, its own text hash and an exact location: Office XML paragraph/table, PDF page/block, workbook cell or text line/timestamp. Original sources remain available.
+The bridge validates the saved job and actual task identity, renews its lease and downloads no additional external content. The helper checks each source's stored SHA-256 and writes private `prepared/evidence.json` and `prepared/source-text.txt`. Each passage retains a source ID/hash, its own text hash and an exact location: Office XML paragraph/table, PDF page/block, workbook cell or text line/timestamp. Original sources remain available. Private inputs retain their visibility on extracted source/evidence records.
 
 Image-only PDF pages use installed Tesseract, ten pages per invocation. Hash/language-bound caches let later invocations continue the remaining pages. Direct helper use supports an explicit zero-to-thirty-page batch:
 
@@ -87,7 +87,7 @@ Six additional Python fixtures verify shared-image isolation, Word styles/metada
 npm run routine -- build-rfi <private-workspace> rfi-plan.json
 ```
 
-The exporter rechecks source bytes through source preparation and requires an explicit `questionCap`, `anonymised` boolean and `buyerTemplateRequired: false`. When a buyer template is required, its mapping holds; do not substitute the standard sheet. Saurabh deferred business settings, so the native task must hold a real cap-dependent stage until the cap is explicitly provided. Synthetic test caps do not configure production.
+The exporter holds when a source packet contains private pricing/internal inputs, so the buyer sheet and consultant-visible RFI exception cannot publish private-source workpapers. The exporter rechecks source bytes through source preparation and requires an explicit `questionCap`, `anonymised` boolean and `buyerTemplateRequired: false`. When a buyer template is required, its mapping holds; do not substitute the standard sheet. Saurabh deferred business settings, so the native task must hold a real cap-dependent stage until the cap is explicitly provided. Synthetic test caps do not configure production.
 
 Each ranked question has a unique `id`, consecutive `rank`, `simple` and `complex` wording, `answerState: "not_found"`, nonempty `impacts` (design/effort/price/compliance/risk), a concrete `impactReason`, and actual `searchedEvidenceIds`. It also needs either `citations` with exact `evidenceId`/`quote` matches or a described `simulationGap` of at least twenty characters. An optional `closestAnswerEvidenceId` locates the strongest possible existing answer. Record excluded candidates in `dropped` with question, disposition (answered/irrelevant/duplicate/cap/contradiction) and reason.
 

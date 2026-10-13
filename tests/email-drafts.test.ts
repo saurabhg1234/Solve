@@ -87,3 +87,8 @@ test('email preview separates recipient headers and leaves arbitrary body markup
   assert.equal(parsed?.cc, 'saurabh@mindmapdigital.ai'); assert.equal(parsed?.body, '<img src="https://example.test">');
   assert.equal(emailPreview('A normal file without email headers'), null); assert.equal(emailPreview('To: a@example.test\nBcc: b@example.test\nSubject: hidden\n\nBody'), null);
 });
+
+test('private source passages cannot become client email citations',()=>fixture(async f=>{
+  f.source.visibility='internal';await f.save();await assert.rejects(buildEmail(f.root,f.plan),/private source/);
+  f.plan.paragraphs[1]=[{kind:'courtesy',text:f.sourceText.split('\n')[0],reason:'False courtesy classification in a deliberate negative fixture.'}];await assert.rejects(buildEmail(f.root,f.plan),/copied private/);
+}));

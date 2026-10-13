@@ -19,6 +19,7 @@ export function cleanFilename(value: string): string {
 export function canReadInternal(user: Actor): boolean {
   return user.roles.some(role=>['admin','architect','delivery_lead','pricing_owner'].includes(role));
 }
+export function canReadSource(user:Actor,visibility:unknown):boolean{return visibility==='client'||visibility==='internal'&&canReadInternal(user);}
 export function canReviewRfi(user:Actor):boolean{return user.roles.some(role=>['consultant','bid_owner'].includes(role));}
 export function canReadArtifact(user:Actor,file:{visibility?:string;purpose?:string;workflow?:string;stage_id?:string}):boolean{
   if(file.visibility==='client')return true;

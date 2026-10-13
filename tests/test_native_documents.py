@@ -101,4 +101,9 @@ class NativeDocuments(unittest.TestCase):
         plan={'questionCap':2,'anonymised':True,'buyerTemplateRequired':False,'questions':[question]}
         for invalid in [{**plan,'questionCap':None},{**plan,'buyerTemplateRequired':True},{**plan,'questions':[{**question,'answerState':'found'}]},{**plan,'questions':[{**question,'simple':'Can Mindmap Digital access the system?'}]},{**plan,'questions':[{**question,'citations':[{'evidenceId':evidence['id'],'quote':'This was never stated.'}]}]},{**plan,'questions':[question,{**question,'id':'Q2','rank':2}]}]: self.assertRaises(ValueError,build_rfi,invalid,self.root)
 
+    def test_private_source_classification_survives_preparation_and_holds_rfi_export(self):
+        item=self.source('synthetic-private.txt',b'Private commercial fixture, not an actual rate.','text/plain');item['visibility']='internal';(self.root/'sources.json').write_text(json.dumps([item]));prepare(self.root)
+        evidence=json.loads((self.root/'prepared/evidence.json').read_text());self.assertEqual(evidence['sources'][0]['visibility'],'internal');self.assertTrue(all(r['visibility']=='internal' for r in evidence['evidence']))
+        self.assertRaises(ValueError,build_rfi,{},self.root);self.assertFalse((self.root/'outputs/client/clarification-questions.xlsx').exists())
+
 if __name__=='__main__': unittest.main()

@@ -15,6 +15,7 @@ def literal(sheet,row,col,value,format_):
 
 def build(plan,root):
     root=root.resolve(strict=True)
+    if any(file.get('visibility')=='internal' for file in json.loads((root/'sources.json').read_text())): raise ValueError('A buyer/RFI tracker export must use a source packet without private pricing inputs; keep private analysis in restricted workpapers')
     if plan.get('buyerTemplateRequired') is not False: raise ValueError('Buyer template mapping is pending; explicitly confirm no buyer template is required before using the standard two-column sheet')
     cap=plan.get('questionCap')
     if not isinstance(cap,int) or isinstance(cap,bool) or not 1<=cap<=200: raise ValueError('An explicitly configured question cap is required; no business default is applied')

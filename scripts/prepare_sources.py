@@ -139,6 +139,7 @@ def prepare(root: Path, max_ocr_pages=10, language='eng'):
     if sum(child_path(root,file['path']).stat().st_size for file in files)>256*1024*1024: raise ValueError('Split source workspaces larger than 256 MB into bounded sections')
     all_records, holds, sources, budget = [], [] if files else ['No source files are available'], [], [max_ocr_pages]
     for file in files:
+        if file.get('visibility','client') not in ('client','internal'): raise ValueError('Unknown source access classification')
         if str(uuid.UUID(file['id']))!=file['id']: raise ValueError('Source IDs must be canonical UUIDs')
         path = child_path(root, file['path'])
         if path.stat().st_size > LIMIT: raise ValueError('Source exceeds 32 MB')
@@ -147,8 +148,9 @@ def prepare(root: Path, max_ocr_pages=10, language='eng'):
         try: records, missing = extract(file, data, output, budget, language)
         except Exception as error:
             records=[];missing=[f"{file['filename']}: extraction failed ({type(error).__name__}); original source retained"]
+        for record in records: record['visibility']=file.get('visibility','client')
         all_records.extend(records);holds.extend(missing)
-        sources.append({'id':file['id'], 'sha256':file['sha256'], 'filename':file['filename'], 'records':len(records), 'holds':missing})
+        sources.append({'id':file['id'], 'sha256':file['sha256'], 'filename':file['filename'], 'visibility':file.get('visibility','client'), 'records':len(records), 'holds':missing})
     report={'version':1, 'status':'blocked' if holds else 'prepared', 'sources':sources, 'evidence':all_records, 'missingInputs':holds, 'note':'Extraction is unverified evidence, not requirement understanding, an approved baseline, QC or release. OCR always needs visual verification.'}
     path=output/'evidence.json';text=output/'source-text.txt'
     if path.is_symlink() or text.is_symlink(): raise ValueError('Prepared evidence outputs cannot be symlinks')

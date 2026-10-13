@@ -25,6 +25,7 @@ export async function proposeKnowledge(input:z.infer<typeof knowledgeInput>,user
     const sourceCase=await accessCase(input.caseId,user,db);requireCaseManager(sourceCase,user);
     const source=(await db.query('SELECT * FROM zora_sources WHERE id=$1 AND case_id=$2 AND active',[input.sourceId,input.caseId])).rows[0];
     if(!source)throw new HttpError(404,'Select an active source from a pursuit you manage');
+    if(source.visibility!=='client')throw new HttpError(403,'Private pursuit sources cannot be proposed for firm-wide library reuse');
     if(source.data.length>FILE_LIMIT||hashBytes(source.data)!==source.sha256)throw new HttpError(409,'Reusable source failed its size/hash check');
     if(input.kind==='proposal_template'){
       if(!source.filename.toLowerCase().endsWith('.docx')||source.sha256===brd.source_sha256)throw new HttpError(400,'Provide the approved proposal DOCX layout; the BRD is not a template');
@@ -89,8 +90,10 @@ export async function attachKnowledge(caseId:string,input:{version:number;versio
       if(hashBytes(row.data)!==row.sha256)throw new HttpError(409,'Reusable source hash changed');
       await db.query("UPDATE zora_sources SET active=false WHERE case_id=$1 AND provenance->'knowledge'->>'entryId'=$2",[caseId,row.entry_id]);
       const provenance={kind:'approved_knowledge',knowledge:{entryId:row.entry_id,versionId:row.id,version:row.version,kind:row.kind,sha256:row.sha256,approvedBy:row.approved_by,approvedAt:row.approved_at}};
+      if((await db.query("SELECT 1 FROM zora_sources WHERE case_id=$1 AND sha256=$2 AND visibility='internal'",[caseId,row.sha256])).rowCount)throw new HttpError(409,'An existing private source has identical bytes; library attachment cannot change its access classification');
       await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(case_id,sha256) DO UPDATE SET active=true',[randomUUID(),caseId,row.filename,row.mime_type,row.data,row.sha256,JSON.stringify({kind:'approved_knowledge_asset',sha256:row.sha256})]);
       const metadata=Buffer.from(JSON.stringify({title:row.title,knowledgeType:row.kind,version:row.version,notes:row.notes,claim:row.claim,source:{filename:row.filename,sha256:row.sha256},approval:{actor:row.approved_by,at:row.approved_at,note:row.decision_note},notice:'Human-approved reusable source snapshot. This is not pursuit-specific QC, an approval of client commitments or permission to send.',...provenance},null,2));
+      if((await db.query("SELECT 1 FROM zora_sources WHERE case_id=$1 AND sha256=$2 AND visibility='internal'",[caseId,hashBytes(metadata)])).rowCount)throw new HttpError(409,'A private source conflicts with this reusable snapshot');
       await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(case_id,sha256) DO UPDATE SET active=true',[randomUUID(),caseId,`mindmap-knowledge-${row.id}.json`,'application/json',metadata,hashBytes(metadata),JSON.stringify(provenance)]);
     }
     await db.query("UPDATE zora_sources asset SET active=EXISTS(SELECT 1 FROM zora_sources snapshot WHERE snapshot.case_id=asset.case_id AND snapshot.active AND snapshot.provenance->>'kind'='approved_knowledge' AND snapshot.provenance->'knowledge'->>'sha256'=asset.sha256) WHERE asset.case_id=$1 AND asset.provenance->>'kind'='approved_knowledge_asset'",[caseId]);

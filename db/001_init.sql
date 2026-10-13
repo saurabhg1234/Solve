@@ -161,3 +161,5 @@ ALTER TABLE zora_knowledge_versions ALTER COLUMN source_id DROP NOT NULL;
 ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS source_origin jsonb NOT NULL DEFAULT '{}';
 -- zora:statement-breakpoint
 ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS ingestion_complete boolean NOT NULL DEFAULT true;
+-- zora:statement-breakpoint
+ALTER TABLE zora_sources ADD COLUMN IF NOT EXISTS visibility text NOT NULL DEFAULT 'client' CHECK(visibility IN ('client','internal'));

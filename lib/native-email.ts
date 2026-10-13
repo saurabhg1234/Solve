@@ -64,7 +64,7 @@ async function privateOutput(root: string, path: string, bytes: string) {
 export async function emailContext(workspace: string) {
   const { root, sources } = await loadSources(workspace);
   const context = { version: 1, status: 'unverified-source-context', sourceApprovalRecorded: false,
-    sources: sources.map(({ id, filename, sha256, elements }) => ({ id, filename, sha256, elements: elements.filter(e => e.kind !== 'word') })),
+    sources: sources.map(({ id, filename, sha256, visibility, elements }) => ({ id, filename, sha256, visibility, elements: elements.filter(e => e.kind !== 'word') })),
     note: 'Exact-byte extraction only. Codex must select the facts the email may use; citations do not establish truth, permission to disclose or semantic support. Visual source checks and independent W8 QC still apply.' };
   return { ...await privateOutput(root, 'outputs/internal/email-context.json', JSON.stringify(context, null, 2)), mimeType: 'application/json', visibility: 'internal', purpose: 'workpaper' };
 }
@@ -102,6 +102,7 @@ export async function buildEmail(workspace: string, input: unknown) {
     if (segment.kind === 'courtesy') return { location, ...segment, classificationVerified: false };
     const citations = segment.citations.map(citation => {
       const source = sources.find(f => f.id === citation.sourceId);
+      if (source?.visibility === 'internal') throw new Error('A private source cannot be quoted in a client email draft');
       if (!source || source.id === plan.policySourceId) throw new Error('A client claim must cite a factual source, not the email policy');
       const element = source.elements.find(e => e.location === citation.location && ['paragraph', 'caption', 'table_cell'].includes(e.kind) && e.text?.includes(citation.quote));
       if (!element) throw new Error('A claim citation must quote an actual source passage at its exact location');
@@ -110,6 +111,12 @@ export async function buildEmail(workspace: string, input: unknown) {
     return { location, ...segment, citations };
   });
   const content = subject + '\n' + paragraphs.join('\n\n');
+  for (const source of sources.filter(s => s.visibility === 'internal')) {
+    for (const element of source.elements.filter(e => e.kind !== 'word' && e.text)) {
+      const passage = normalized(element.text!);
+      if (passage.length >= 20 && normalized(content).includes(passage)) throw new Error('Remove copied private source passages from the email draft');
+    }
+  }
   const words = content.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu)?.length || 0;
   if (words > policy.maxWords) throw new Error('Draft exceeds the explicitly configured subject/body word limit');
   checkWording(content, policy.hypeWords);

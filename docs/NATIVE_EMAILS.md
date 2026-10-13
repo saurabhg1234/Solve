@@ -29,7 +29,7 @@ The plan has exactly these fields:
 - `subject`: one annotated text segment, at most 200 characters, with no line breaks.
 - `paragraphs`: arrays of annotated single-line segments. Segments join with spaces; each inner array becomes a paragraph.
 
-A `claim` segment has `text` and nonempty `citations`. Each citation supplies the real `sourceId`, exact `location` from the context inventory, and a verbatim `quote` at that location. The policy file cannot support a client claim. A `courtesy` segment has `text` and an internal `reason` explaining why it contains no factual assertion. Greetings, neutral headings and open questions can use this classification; classifying a sentence as courtesy does not make an embedded claim nonfactual. Independent reviewers must check all content.
+A `claim` segment has `text` and nonempty `citations`. Each citation supplies the real `sourceId`, exact `location` from the context inventory, and a verbatim `quote` at that location. The policy file and private internal sources cannot support a client claim. A `courtesy` segment has `text` and an internal `reason` explaining why it contains no factual assertion. Greetings, neutral headings and open questions can use this classification; classifying a sentence as courtesy does not make an embedded claim nonfactual. Independent reviewers must check all content.
 
 For example, this is only the shape of a segment; the IDs/passages must come from actual downloaded sources:
 

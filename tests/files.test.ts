@@ -21,3 +21,12 @@ test('email intake imports raw file bytes with hashes/provenance and excludes Ja
     await assert.rejects(emailAttachments('fixture@example.test','message-4',{...io,json:async(path:string)=>path.includes('/attachments?')?{value:[{'@odata.type':'#microsoft.graph.referenceAttachment',name:'linked.pdf'}]}:{parentFolderId:'fixture-folder',subject:'[ZORA] reference',categories:[]}}));
   }finally{if(previous.mailbox===undefined)delete process.env.MS_ZORA_MAILBOX;else process.env.MS_ZORA_MAILBOX=previous.mailbox;if(previous.folder===undefined)delete process.env.MS_ZORA_FOLDER_ID;else process.env.MS_ZORA_FOLDER_ID=previous.folder;}
 });
+
+// Source roles and artifact roles share the existing internal-review allocation.
+import { canReadSource } from '../lib/files';
+test('private sources require both pursuit access at the route and an internal review role',()=>{
+  const user=(role:any)=>({email:'local@example.test',name:'Synthetic user',roles:[role]});
+  for(const role of ['consultant','bid_owner','demo_builder']){assert.equal(canReadSource(user(role),'client'),true);assert.equal(canReadSource(user(role),'internal'),false);}
+  for(const role of ['admin','architect','pricing_owner','delivery_lead'])assert.equal(canReadSource(user(role),'internal'),true);
+  assert.equal(canReadSource(user('admin'),undefined),false);assert.equal(canReadSource(user('admin'),'unknown'),false);
+});

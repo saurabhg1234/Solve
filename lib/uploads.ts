@@ -4,10 +4,11 @@ import type { PoolClient } from 'pg';
 import { HttpError,type Actor } from './auth';
 import { accessCase,event } from './cases';
 import { transaction } from './db';
-import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes } from './files';
+import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes,canReadInternal } from './files';
 import { safeOutputPath } from './result';
 
 export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper','rfi_review']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
+export const sourceUploadSchema=uploadSchema.extend({visibility:z.enum(['client','internal']).default('client')});
 type UploadInput=z.infer<typeof uploadSchema>;
 export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
   if(!z.uuid().safeParse(id).success||!z.uuid().safeParse(leaseId).success)throw new HttpError(400,'Invalid session identity');
@@ -16,13 +17,16 @@ export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
   const row=(await db.query("SELECT j.*,c.source_revision FROM zora_jobs j JOIN zora_cases c ON c.id=j.case_id WHERE j.id=$1 AND j.lease_id=$2 AND j.state='leased' AND j.lease_expires_at>now() AND j.case_version=c.version FOR UPDATE OF j",[id,leaseId])).rows[0];
   if(!row)throw new HttpError(409,'Session lease is no longer valid');return row;
 }
-function sourceEditor(user:Actor){if(!user.roles.some(r=>['consultant','bid_owner','admin'].includes(r)))throw new HttpError(403,'Source changes require a consultant or bid owner');}
+function sourceEditor(user:Actor,visibility:string){
+  if(visibility==='internal'){if(!canReadInternal(user))throw new HttpError(403,'Private source uploads require a pricing or internal review role');}
+  else if(!user.roles.some(r=>['consultant','bid_owner','admin'].includes(r)))throw new HttpError(403,'Team source changes require a consultant or bid owner');
+}
 export async function beginSourceUpload(caseId:string,input:UploadInput,user:Actor){
   return transaction(async db=>{
-    sourceEditor(user);await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[caseId]);const c=await accessCase(caseId,user,db);
+    sourceEditor(user,input.visibility);await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[caseId]);const c=await accessCase(caseId,user,db);
     if(!['awaiting_confirmation','blocked'].includes(c.status))throw new HttpError(409,'Pause or start a revision before changing sources');
     if(input.version!==c.version)throw new HttpError(409,'The pursuit changed; refresh before uploading');
-    const id=randomUUID();await db.query('INSERT INTO zora_uploads(id,case_id,kind,owner,filename,mime_type,total_bytes,sha256,case_version) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[id,caseId,'source',user.email,cleanFilename(input.filename),input.mimeType,input.totalBytes,input.sha256,c.version]);
+    const id=randomUUID();await db.query('INSERT INTO zora_uploads(id,case_id,kind,owner,filename,mime_type,total_bytes,sha256,case_version,visibility) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[id,caseId,'source',user.email,cleanFilename(input.filename),input.mimeType,input.totalBytes,input.sha256,c.version,input.visibility]);
     return {id,chunkSize:FILE_CHUNK,nextOffset:0};
   });
 }
@@ -32,6 +36,7 @@ export async function beginArtifactUpload(jobId:string,input:UploadInput){
     const job=await leasedJob(db,jobId,input.leaseId);
     const purpose=input.purpose||(input.visibility==='client'?'draft':'workpaper');
     if(purpose==='rfi_review'&&(job.stage_id!=='W5-11'||input.visibility!=='internal'||input.path!=='outputs/internal/rfi-tracker.xlsx'||cleanFilename(input.filename)!=='rfi-tracker.xlsx'||input.mimeType!=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))throw new HttpError(400,'RFI review access is limited to the internal W5-11 cross-check workbook');
+    if(purpose==='rfi_review'&&(await db.query("SELECT 1 FROM zora_sources WHERE case_id=$1 AND visibility='internal' LIMIT 1",[job.case_id])).rowCount)throw new HttpError(409,'A pursuit with private sources cannot expose its cross-check workpaper through consultant RFI access');
     const existing=(await db.query('SELECT id,filename,mime_type,visibility,purpose,sha256,octet_length(data)::int AS bytes FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[jobId,input.leaseId,input.path])).rows[0];
     if(existing){
       if(existing.filename!==cleanFilename(input.filename)||existing.mime_type!==input.mimeType||existing.visibility!==input.visibility||existing.purpose!==purpose||existing.sha256!==input.sha256||existing.bytes!==input.totalBytes)throw new HttpError(409,'This output path was stored with different content or metadata');
@@ -48,7 +53,7 @@ async function permitted(db:PoolClient,id:string,identity:UploadIdentity){
   const row=(await db.query('SELECT id,case_id,job_id,kind,owner,lease_id,filename,mime_type,visibility,purpose,source_path,total_bytes,sha256,case_version,next_offset,state,expires_at FROM zora_uploads WHERE id=$1 FOR UPDATE',[id])).rows[0];
   if(!row||row.kind!==identity.kind||new Date(row.expires_at).getTime()<=Date.now())throw new HttpError(404,'Upload not available');
   if(identity.kind==='source'){
-    sourceEditor(identity.user);await accessCase(identity.caseId,identity.user,db);
+    sourceEditor(identity.user,row.visibility);await accessCase(identity.caseId,identity.user,db);
     if(row.case_id!==identity.caseId||row.owner!==identity.user.email)throw new HttpError(403,'Upload belongs to another pursuit or account');
   }else{
     if(row.job_id!==identity.jobId||row.lease_id!==identity.leaseId)throw new HttpError(403,'Upload belongs to another session');
@@ -76,9 +81,11 @@ export async function finishUpload(id:string,identity:UploadIdentity){
       await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[identity.caseId]);const c=await accessCase(identity.caseId,identity.user,db);
       if(!['awaiting_confirmation','blocked'].includes(c.status))throw new HttpError(409,'Pause or start a revision before changing sources');
       if(row.case_version!==c.version)throw new HttpError(409,'The pursuit changed during upload; refresh and upload against the current revision');
-      const added=await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(case_id,sha256) DO NOTHING RETURNING id',[id,row.case_id,row.filename,row.mime_type,bytes,row.sha256,JSON.stringify({kind:'upload',uploadedBy:identity.user.email})]);
+      const existing=(await db.query('SELECT visibility FROM zora_sources WHERE case_id=$1 AND sha256=$2',[row.case_id,row.sha256])).rows[0];
+      if(existing&&existing.visibility!==row.visibility)throw new HttpError(409,'Identical source bytes already have a different access classification; uploading cannot change it');
+      const added=await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance,visibility) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(case_id,sha256) DO NOTHING RETURNING id',[id,row.case_id,row.filename,row.mime_type,bytes,row.sha256,JSON.stringify({kind:'upload',uploadedBy:identity.user.email}),row.visibility]);
       version=added.rowCount?(await db.query('UPDATE zora_cases SET version=version+1,source_revision=source_revision+1,updated_at=now() WHERE id=$1 RETURNING version',[row.case_id])).rows[0].version:c.version;
-      await event(db,row.case_id,'source.uploaded',identity.user.email,{filename:row.filename,sha256:row.sha256,bytes:row.total_bytes,duplicate:!added.rowCount});
+      await event(db,row.case_id,'source.uploaded',identity.user.email,{filename:row.filename,sha256:row.sha256,bytes:row.total_bytes,visibility:row.visibility,duplicate:!added.rowCount});
     }else{
       const job=await leasedJob(db,identity.jobId,identity.leaseId);
       const existing=await db.query('SELECT id FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2 AND source_path=$3',[identity.jobId,identity.leaseId,row.source_path]);
