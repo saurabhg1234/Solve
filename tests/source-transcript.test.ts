@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { inventory } from '../lib/review-manifest';
 import { parseSourceTranscript,matchTranscript,transcriptHash,TRANSCRIPT_LIMIT } from '../lib/source-transcript';
 import { buildTranscript } from '../scripts/build_transcript';
+import { buildEmail,emailContext } from '../lib/native-email';
 
 export function syntheticPdf(){
   const objects=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>',
@@ -43,5 +44,41 @@ test('native packaging checks actual bytes, page bounds and private paths withou
     await writeFile(join(root,'bad.json'),JSON.stringify({...plan(),pages:plan().pages.slice(0,1)}));await assert.rejects(buildTranscript(root,'bad.json'),/every original PDF page/);
     await writeFile(join(root,'sources/source.pdf'),Buffer.from('Modified bytes'));await assert.rejects(buildTranscript(root,'plan.json'),/hash changed/);
     await symlink('/etc/hostname',join(root,'escaped'));await assert.rejects(buildTranscript(root,'escaped'),/escapes/);
+  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('email drafts bind PDF citations to stored or newly packaged transcripts without trusting caches',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'zora-transcript-email-'));
+  try{
+    const publicSource={...source,visibility:'client',path:'source.pdf'},policyId=randomUUID(),artifactId=randomUUID();
+    const policy=Buffer.from(JSON.stringify({maxWords:100,hypeWords:[]}));await writeFile(join(root,'source.pdf'),pdf);await writeFile(join(root,'policy.json'),policy);
+    await writeFile(join(root,'sources.json'),JSON.stringify([publicSource,{id:policyId,filename:'policy.json',mime_type:'application/json',path:'policy.json',visibility:'client',sha256:transcriptHash(policy)}]));
+    const transcript=Buffer.from(JSON.stringify(plan()));await writeFile(join(root,'transcript.json'),transcript);
+    const artifact={id:artifactId,filename:'transcript.json',mime_type:'application/json',path:'transcript.json',sha256:transcriptHash(transcript),visibility:'client',purpose:'source_transcript',state:'completed'};
+    const saveArtifact=async(a:unknown=artifact)=>writeFile(join(root,'artifacts.json'),JSON.stringify([a]));await saveArtifact();
+    const context=await emailContext(root);assert.deepEqual(context.additionalSourceFiles,[]);
+    const loaded=JSON.parse(await readFile(join(root,'outputs/internal/email-context.json'),'utf8'));assert.equal(loaded.sources[0].transcript.artifactId,artifactId);assert.equal(loaded.sources[0].transcript.status,'unverified');
+    const input={policySourceId:policyId,to:['buyer@example.test'],cc:[],subject:{kind:'courtesy',text:'Discussion',reason:'Neutral greeting'},paragraphs:[[{kind:'claim',text:'Synthetic transcription protocol fixture only.',citations:[{sourceId:source.id,location:'PDF page 1, unverified transcript paragraph 1',quote:'Synthetic transcription protocol fixture only.'}]}]]};
+    await buildEmail(root,input);const report=JSON.parse(await readFile(join(root,'outputs/internal/email-build.json'),'utf8'));assert.equal(report.mapping[1].citations[0].sourceTranscript.sha256,artifact.sha256);assert.equal(report.mapping[1].citations[0].sourceSha256,source.sha256);assert.equal(report.mapping[1].citations[0].supportVerified,false);
+    await saveArtifact({...artifact,sha256:'0'.repeat(64)});await assert.rejects(buildEmail(root,input),/SHA-256/);
+    for(const a of [{...artifact,purpose:'workpaper'},{...artifact,state:'blocked'}]){await saveArtifact(a);await assert.rejects(buildEmail(root,input),/OCR\/transcript/);}
+    await saveArtifact();await writeFile(join(root,'plan.json'),transcript);await buildTranscript(root,'plan.json');
+    const localContext=await emailContext(root);assert.equal(localContext.additionalSourceFiles.length,1);
+    const localBuild=await buildEmail(root,input);assert.ok(localBuild.files.some(f=>f.purpose==='source_transcript'&&f.visibility==='client'),'Current-stage transcripts must be declared for persistence along with the email draft');
+  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('email transcript access matches its private source and private words cannot become client claims',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'zora-transcript-private-'));
+  try{
+    const policyId=randomUUID(),policy=Buffer.from(JSON.stringify({maxWords:100,hypeWords:[]}));await writeFile(join(root,'source.pdf'),pdf);await writeFile(join(root,'policy.json'),policy);
+    await writeFile(join(root,'sources.json'),JSON.stringify([{...source,path:'source.pdf'},{id:policyId,filename:'policy.json',mime_type:'application/json',path:'policy.json',visibility:'client',sha256:transcriptHash(policy)}]));
+    const transcript=Buffer.from(JSON.stringify(plan()));await writeFile(join(root,'transcript.json'),transcript);
+    const artifact={id:randomUUID(),filename:'transcript.json',mime_type:'application/json',path:'transcript.json',sha256:transcriptHash(transcript),visibility:'internal',purpose:'source_transcript'};
+    await writeFile(join(root,'artifacts.json'),JSON.stringify([artifact]));await emailContext(root);
+    const input={policySourceId:policyId,to:['buyer@example.test'],cc:[],subject:{kind:'courtesy',text:'Discussion',reason:'Neutral greeting'},paragraphs:[[{kind:'claim',text:'Synthetic transcription protocol fixture only.',citations:[{sourceId:source.id,location:'PDF page 1, unverified transcript paragraph 1',quote:'Synthetic transcription protocol fixture only.'}]}]]};
+    await assert.rejects(buildEmail(root,input),/private source/);
+    await assert.rejects(buildEmail(root,{...input,paragraphs:[[{kind:'courtesy',text:input.paragraphs[0][0].text,reason:'Misclassified private text.'}]]}),/copied private/);
+    await writeFile(join(root,'artifacts.json'),JSON.stringify([{...artifact,visibility:'client'}]));await assert.rejects(emailContext(root),/access classification/);
   }finally{await rm(root,{recursive:true,force:true});}
 });

@@ -2,7 +2,7 @@
 
 An image-only PDF can now enter independent word-level QC with a page-linked transcript. The original PDF stays in the packet. A separate fresh `SOURCE_TRANSCRIPT` reviewer must compare the transcript with every original page before any ordinary checker can claim a task in that loop. Hash/page checks prove association and coverage, not transcription accuracy or approval of the source claims.
 
-This path applies to **PDF sources**. It cannot replace the locked requirement baseline, supply structure for an untagged PDF draft or bypass a human gate. Recording-only requests, unsupported media, draft PDF structure, and the native W8 email helper's direct text-source requirement retain their existing holds.
+This path applies to **PDF sources**. It cannot replace the locked requirement baseline, supply structure for an untagged PDF draft or bypass a human gate. Recording-only requests, unsupported media and draft PDF structure retain their existing holds. The native W8 email helper consumes these page-linked transcripts while preserving the independent review requirement; read [native email drafts](NATIVE_EMAILS.md).
 
 ## Native preparation
 

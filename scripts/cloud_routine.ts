@@ -15,7 +15,7 @@ const stageJobSchema = z.object({
   stage: z.object({ id: z.string(), title: z.string() }).passthrough(),
   instructions: z.string(), requiresIndependentReview: z.boolean(),
   sources: z.array(z.object({ id: z.uuid(), filename: z.string(), mime_type: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive() }).passthrough()),
-  artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),purpose:z.string().optional(),source_path:z.string()})).default([]),
+  artifacts: z.array(z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/),byte_size:z.number().int().positive(),visibility:z.string(),purpose:z.string().optional(),state:z.string().optional(),source_path:z.string()})).default([]),
 }).passthrough();
 const fileSchema=z.object({id:z.uuid(),filename:z.string(),mime_type:z.string(),sha256:z.string(),byte_size:z.number().int().positive(),kind:z.enum(['sources','artifacts']),role:z.enum(['source','reference','draft'])}).passthrough();
 const reviewJobSchema=z.object({kind:z.literal('review'),id:z.uuid(),leaseId:z.uuid(),contextId:contextSchema,runId:z.uuid(),checker:z.string(),method:z.string(),packetHash:z.string(),elementCount:z.number().int().positive(),instructions:z.string(),packet:z.object({files:z.array(fileSchema)}).passthrough()}).passthrough();

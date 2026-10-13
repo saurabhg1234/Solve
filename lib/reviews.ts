@@ -27,7 +27,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
   const withdrawn=await knowledgeHolds(db,c.id);if(withdrawn.length)return {missingInputs:withdrawn};
   if(!job.context_id)return {missingInputs:['Independent QC requires a native task identity; claim this stage in a fresh Codex cloud task.']};
   const plan=reviewPlan(job.stage_id);if(!plan)return {missingInputs:['Independent QC review plan is missing.']};
-  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference','source_transcript') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC",[c.id,c.sourceRevision,job.id])).rows;
+  const available=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.purpose,a.visibility,octet_length(a.data)::int AS byte_size,a.job_id FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND (j.state='completed' OR a.job_id=$3) AND (a.purpose IN ('draft','reference','source_transcript') OR (a.purpose='rfi_review' AND j.stage_id='W5-11')) ORDER BY a.created_at DESC,a.id DESC",[c.id,c.sourceRevision,job.id])).rows;
   let targets;
   if(result.reviewArtifactIds?.length){
     targets=available.filter(a=>a.purpose==='draft'&&result.reviewArtifactIds!.includes(a.id));

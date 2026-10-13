@@ -6,11 +6,12 @@ import { dirname, join, resolve, sep } from 'node:path';
 import { z } from 'zod';
 import { brandedEmail, zoraRecipients } from './email';
 import { inventory, MAX_REVIEW_ELEMENTS, type ReviewElement } from './review-manifest';
+import { parseSourceTranscript,matchTranscript,TRANSCRIPT_LIMIT,type SourceTranscript } from './source-transcript';
 
 const hash = (bytes: Uint8Array | string) => createHash('sha256').update(bytes).digest('hex');
 const clean = (max: number) => z.string().trim().min(1).max(max).refine(s => !/[\x00-\x08\x0b-\x1f\x7f-\x9f\u202a-\u202e\u2066-\u2069]/u.test(s), 'Control characters are not allowed');
 const line = (max: number) => clean(max).refine(s => !/[\r\n\t]/u.test(s), 'Use one line');
-const sourceSchema = z.object({ id: z.uuid(), filename: line(250), mime_type: line(150), path: z.string().min(1), sha256: z.string().regex(/^[a-f0-9]{64}$/) }).passthrough();
+const sourceSchema = z.object({ id: z.uuid(), filename: line(250), mime_type: line(150), path: z.string().min(1), visibility:z.enum(['client','internal']).default('client'), sha256: z.string().regex(/^[a-f0-9]{64}$/) }).passthrough();
 const policySchema = z.object({ maxWords: z.number().int().min(1).max(2000), hypeWords: z.array(line(100)).max(200) }).strict();
 const citationSchema = z.object({ sourceId: z.uuid(), location: line(1000), quote: clean(12000) }).strict();
 const segmentSchema = z.discriminatedUnion('kind', [
@@ -21,7 +22,8 @@ const planSchema = z.object({
   policySourceId: z.uuid(), to: z.array(line(254)).min(1).max(50), cc: z.array(line(254)).max(50),
   subject: segmentSchema, paragraphs: z.array(z.array(segmentSchema).min(1).max(20)).min(1).max(30),
 }).strict();
-type Source = z.infer<typeof sourceSchema> & { bytes: Buffer; elements: ReviewElement[] };
+type TranscriptLink={artifactId?:string;path:string;sha256:string;status:'unverified'};
+type Source = z.infer<typeof sourceSchema> & { bytes: Buffer; elements: ReviewElement[]; transcript?:TranscriptLink };
 
 async function containedFile(root: string, path: string, max: number) {
   const actual = await realpath(resolve(root, path));
@@ -35,16 +37,40 @@ async function loadSources(workspace: string) {
   const root = await realpath(workspace);
   const files = z.array(sourceSchema).min(1).max(30).parse(JSON.parse((await containedFile(root, 'sources.json', 1024 * 1024)).toString('utf8')));
   if (new Set(files.map(f => f.id)).size !== files.length) throw new Error('Source IDs must be unique');
-  const sources: Source[] = []; let total = 0, count = 0;
+  let artifacts:unknown[]=[];
+  try{artifacts=z.array(z.unknown()).max(200).parse(JSON.parse((await containedFile(root,'artifacts.json',1024*1024)).toString('utf8')));}
+  catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
+  const transcripts=new Map<string,{value:SourceTranscript;link:TranscriptLink;bytes:number}>();
+  // The claim manifest is ordered newest first. Only explicit transcript artifacts enter
+  // this path; extraction caches and prior author workpapers never become source truth.
+  for(const candidate of artifacts){
+    if(!candidate||typeof candidate!=='object'||!('purpose' in candidate)||candidate.purpose!=='source_transcript'||'state' in candidate&&candidate.state==='blocked')continue;
+    const artifact=sourceSchema.parse(candidate),bytes=await containedFile(root,artifact.path,TRANSCRIPT_LIMIT);
+    if(hash(bytes)!==artifact.sha256)throw new Error('Email transcript artifact failed its SHA-256');
+    const value=parseSourceTranscript(bytes),source=files.find(f=>f.id===value.sourceId);if(!source)continue;
+    matchTranscript(value,source,artifact.visibility);
+    if(!transcripts.has(source.id))transcripts.set(source.id,{value,link:{artifactId:artifact.id,path:artifact.path,sha256:artifact.sha256,status:'unverified'},bytes:bytes.length});
+  }
+  // W8-1 can package its transcription before completing its source-context task.
+  // Such a file must also be declared with purpose source_transcript at completion.
+  for(const source of files){
+    const path=`outputs/${source.visibility}/source-transcript-${source.id}.json`;let bytes:Buffer;
+    try{bytes=await containedFile(root,path,TRANSCRIPT_LIMIT);}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')continue;throw error;}
+    const value=parseSourceTranscript(bytes);matchTranscript(value,source,source.visibility);
+    transcripts.set(source.id,{value,link:{path,sha256:hash(bytes),status:'unverified'},bytes:bytes.length});
+  }
+  const sources: Source[] = []; let total = [...transcripts.values()].reduce((sum,t)=>sum+t.bytes,0), count = 0;
   for (const file of files) {
     const bytes = await containedFile(root, file.path, 32 * 1024 * 1024); total += bytes.length;
     if (total > 64 * 1024 * 1024 || hash(bytes) !== file.sha256) throw new Error('Email source bytes exceed the packet bound or fail their SHA-256');
     // Rebuild references from actual bytes rather than accepting an edited extraction cache.
-    const elements = await inventory({ ...file, data: bytes, role: 'source' }); count += elements.length;
+    const transcript=transcripts.get(file.id);
+    const elements = await inventory({ ...file, data: bytes, role: 'source' },transcript?.value); count += elements.length;
     if (count > MAX_REVIEW_ELEMENTS) throw new Error('Split the email source packet into bounded sections');
-    sources.push({ ...file, bytes, elements });
+    sources.push({ ...file, bytes, elements,...(transcript?{transcript:transcript.link}:{}) });
   }
-  return { root, sources };
+  const localTranscripts=sources.filter(s=>s.transcript&&!s.transcript.artifactId).map(s=>({path:s.transcript!.path,sha256:s.transcript!.sha256,mimeType:'application/json',visibility:s.visibility,purpose:'source_transcript'}));
+  return { root, sources,localTranscripts };
 }
 
 async function privateOutput(root: string, path: string, bytes: string) {
@@ -62,11 +88,11 @@ async function privateOutput(root: string, path: string, bytes: string) {
 }
 
 export async function emailContext(workspace: string) {
-  const { root, sources } = await loadSources(workspace);
+  const { root, sources,localTranscripts } = await loadSources(workspace);
   const context = { version: 1, status: 'unverified-source-context', sourceApprovalRecorded: false,
-    sources: sources.map(({ id, filename, sha256, visibility, elements }) => ({ id, filename, sha256, visibility, elements: elements.filter(e => e.kind !== 'word') })),
-    note: 'Exact-byte extraction only. Codex must select the facts the email may use; citations do not establish truth, permission to disclose or semantic support. Visual source checks and independent W8 QC still apply.' };
-  return { ...await privateOutput(root, 'outputs/internal/email-context.json', JSON.stringify(context, null, 2)), mimeType: 'application/json', visibility: 'internal', purpose: 'workpaper' };
+    sources: sources.map(({ id, filename, sha256, visibility, elements,transcript }) => ({ id, filename, sha256, visibility,transcript, elements: elements.filter(e => e.kind !== 'word') })),
+    note: 'Hash-bound source context, including explicitly unverified page transcripts when supplied. A fresh transcription reviewer must compare each with the original PDF before ordinary QC. Declare any locally packaged transcript in result.json as source_transcript; hashes do not verify its wording. Codex must select the facts the email may use; citations do not establish truth, permission to disclose or semantic support. Visual source checks and independent W8 QC still apply.' };
+  return { ...await privateOutput(root, 'outputs/internal/email-context.json', JSON.stringify(context, null, 2)), mimeType: 'application/json', visibility: 'internal', purpose: 'workpaper',additionalSourceFiles:localTranscripts };
 }
 
 const normalized = (text: string) => text.normalize('NFKC').toLocaleLowerCase('en').replace(/[\u200b-\u200d\ufeff]/gu, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
@@ -87,7 +113,7 @@ function checkWording(text: string, hypeWords: string[]) {
 
 export async function buildEmail(workspace: string, input: unknown) {
   const plan = planSchema.parse(input);
-  const { root, sources } = await loadSources(workspace);
+  const { root, sources,localTranscripts } = await loadSources(workspace);
   const policyFile = sources.find(f => f.id === plan.policySourceId);
   if (!policyFile) throw new Error('Select an actual email policy source; deferred values have no defaults');
   const policy = policySchema.parse(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(policyFile.bytes)));
@@ -106,7 +132,7 @@ export async function buildEmail(workspace: string, input: unknown) {
       if (!source || source.id === plan.policySourceId) throw new Error('A client claim must cite a factual source, not the email policy');
       const element = source.elements.find(e => e.location === citation.location && ['paragraph', 'caption', 'table_cell'].includes(e.kind) && e.text?.includes(citation.quote));
       if (!element) throw new Error('A claim citation must quote an actual source passage at its exact location');
-      return { ...citation, filename: source.filename, sourceSha256: source.sha256, elementId: element.id, supportVerified: false };
+      return { ...citation, filename: source.filename, sourceSha256: source.sha256,...(source.transcript?{sourceTranscript:source.transcript}:{}), elementId: element.id, supportVerified: false };
     });
     return { location, ...segment, citations };
   });
@@ -134,7 +160,7 @@ export async function buildEmail(workspace: string, input: unknown) {
     ...recipients, mapping, files,
     limitations: ['Exact quotes do not prove the paraphrase or claim is supported.', 'Courtesy classification is supplied by the author and must be independently checked.', 'Pattern checks are conservative and incomplete; D8, D4 and D6 still check every word.', 'No attachment is added or represented as approved; sending is a human action.'] };
   const receipt = await privateOutput(root, 'outputs/internal/email-build.json', JSON.stringify(report, null, 2));
-  return { status: 'draft', files: [...files, { ...receipt, mimeType: 'application/json', visibility: 'internal', purpose: 'workpaper' }], sent: false, qcRequired: true };
+  return { status: 'draft', files: [...localTranscripts,...files, { ...receipt, mimeType: 'application/json', visibility: 'internal', purpose: 'workpaper' }], sent: false, qcRequired: true };
 }
 
 export async function readEmailPlan(workspace: string, path: string) {
