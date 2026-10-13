@@ -15,13 +15,28 @@ test('proposal commercials occur after human proofreading, with both S1 gates be
   for(const workflow of ['W3','W4'] as const){const s=stagesFor(workflow).map(s=>s.id);assert.ok(s.indexOf(`${workflow}-G3`)<s.indexOf('S1-1'));assert.ok(s.indexOf('S1-G1')<s.indexOf('S1-G2'));assert.ok(s.indexOf('S1-10')<s.indexOf(`${workflow}-${workflow==='W3'?'20':'23'}`));assert.equal(s.at(-1),`${workflow}-G4`);}
 });
 test('an admin role does not bypass technical or pricing approval',()=>{
-  const s=stagesFor('W3');assert.equal(canApprove(s.find(s=>s.id==='W3-G2')!,['admin']),false);assert.equal(canApprove(s.find(s=>s.id==='S1-G2')!,['consultant']),false);assert.equal(canApprove(s.find(s=>s.id==='S1-G2')!,['pricing_owner']),true);
+  const s=stagesFor('W3','brd');assert.equal(canApprove(s.find(s=>s.id==='W3-G2')!,['admin']),false);assert.equal(canApprove(s.find(s=>s.id==='S1-G2')!,['consultant']),false);assert.equal(canApprove(s.find(s=>s.id==='S1-G2')!,['pricing_owner']),true);
 });
 test('joint effort approval needs architect and delivery lead',()=>{
-  const gate=stagesFor('W3').find(s=>s.id==='S1-G1')!;assert.equal(approvalComplete(gate,['architect']),false);assert.equal(approvalComplete(gate,['architect','delivery_lead']),true);
+  const gate=stagesFor('W3','brd').find(s=>s.id==='S1-G1')!;assert.equal(approvalComplete(gate,['architect']),false);assert.equal(approvalComplete(gate,['architect','delivery_lead']),true);
 });
 test('demo readiness requires domain owner, consultant and demo builder',()=>{
-  const gate=stagesFor('W6').find(s=>s.id==='W6-G2')!;assert.equal(approvalComplete(gate,['domain_owner','consultant']),false);assert.equal(approvalComplete(gate,['domain_owner','consultant','demo_builder']),true);
+  const gate=stagesFor('W6','brd').find(s=>s.id==='W6-G2')!;assert.equal(approvalComplete(gate,['domain_owner','consultant']),false);assert.equal(approvalComplete(gate,['domain_owner','consultant','demo_builder']),true);
+});
+test('pilot delegates technical reviews to Codex without granting it human approval roles',()=>{
+  for(const workflow of ['W3','W4','W6'] as const){
+    const stages=stagesFor(workflow,'mindmap-pilot');
+    for(const stage of stages.filter(s=>['W3-G2','W4-G2','S1-G1','W6-G1'].includes(s.id))){
+      assert.equal(stage.kind,'task');assert.deepEqual(stage.approvers,[]);assert.equal(needsIndependentReview(stage.id),true);assert.equal(canApprove(stage,['admin','architect','domain_owner']),false);
+    }
+    assert.ok(stages.filter(s=>s.kind==='gate').every(s=>!s.approvers.some(r=>['architect','domain_owner','delivery_lead'].includes(r))));
+    if(workflow!=='W6')assert.equal(stages.at(-1)?.kind,'gate');
+    else assert.equal(stages.find(s=>s.id==='W6-G2')?.kind,'gate');
+  }
+  const demo=stagesFor('W6','mindmap-pilot').find(s=>s.id==='W6-G2')!;
+  assert.equal(approvalComplete(demo,['consultant']),false);assert.equal(approvalComplete(demo,['consultant','demo_builder']),true);
+  const price=stagesFor('W3','mindmap-pilot').find(s=>s.id==='S1-G2')!;
+  assert.equal(canApprove(price,['consultant','admin']),false);assert.equal(canApprove(price,['pricing_owner']),true);
 });
 test('empty, duplicate, incomplete or extra QC coverage cannot pass',()=>{
   assert.equal(validateCoverage({expectedElementIds:[],checkedElementIds:[]}),false);

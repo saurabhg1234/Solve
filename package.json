@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "db:migrate": "tsx scripts/migrate.ts",
-    "worker": "tsx worker/run.ts"
+    "worker": "tsx worker/run.ts",
+    "routine": "tsx scripts/cloud_routine.ts"
   },
   "dependencies": {
     "jose": "^6.1.0",
@@ -21,6 +22,7 @@
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@neondatabase/serverless": "1.2.0",
     "@types/node": "^24.0.0",
     "@types/pg": "^8.15.0",
     "@types/react": "^19.0.0",

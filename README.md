@@ -1,6 +1,6 @@
 # Zora · Mindmap Digital
 
-Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. Proposal reasoning and creation run in signed-in **Codex sessions**, with no Claude or model API integration. Vercel hosts the review portal and Microsoft notification endpoints. Automatic session launch needs a separate Mindmap-controlled Codex runner.
+Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. Proposal reasoning and creation run in **Codex sessions**, with no Claude or model API integration. Vercel hosts the review portal and Microsoft notification endpoints. The chosen pilot dispatch is a native cloud scheduled task; its bridge and prompt are prepared, but schedule creation still needs the product's Scheduled UI.
 
 This checkout now includes a **tested application foundation**, not a completed production implementation of every BRD requirement. It includes the magenta orb identity, request portal, persistent queue/schema, Microsoft sign-in and isolated email monitoring code, Codex request packs, explicit human gates, and a guarded runner scaffold. Artifact import, full independent QC orchestration/verification, source attachment ingestion, revision/resume handling and end-to-end acceptance remain implementation work. QC and generated-file completion deliberately hold rather than accepting unverified claims.
 
@@ -34,11 +34,12 @@ The database migration is repeatable and does not delete tables. Preserve provid
 ## Decisions already made
 
 - All eight workflows are in the first pilot; no workflow has been silently removed.
-- Mailbox: `apex.ap@mindmapdigital.ai`, shared with Jarvis. Proposed routing uses a dedicated Zora folder and `[ZORA]` subject marker, pending final confirmation.
+- Mailbox: `apex.ap@mindmapdigital.ai`, shared with Jarvis. Saurabh confirms the dedicated Zora folder / `[ZORA]` Outlook rule and Entra callback setup are done.
 - Reuse existing `Tenant`, `Client`, `Client_secret`, `Object`, and `EMAIL` cloud variables; canonical `MS_*` names are supported too.
 - Zora’s identity is a magenta orb and a magenta stripe at the top of every email draft.
 - Emails are drafts. The app has no automatic email sending or bid submission implementation.
 - Word proposal drafting requires the pending approved Word template; slides must be edited template duplicates.
+- Pilot ownership: sales owns bids, Zora performs architecture/domain review, Ganesh owns pricing and Advait supplies demo-builder names. Delivery approval is outside this phase. Use `ZORA_APPROVAL_POLICY=mindmap-pilot`; see the configuration guide.
 
 ## Project guides
 
@@ -46,5 +47,7 @@ The database migration is repeatable and does not delete tables. Preserve provid
 - [Microsoft 365 setup and shared mailbox isolation](docs/MICROSOFT_365_SETUP.md)
 - [Environment variables and deployment](docs/ENVIRONMENT_AND_DEPLOYMENT.md)
 - [Advait’s eight-workflow pilot acceptance plan](docs/ADVAIT_PILOT.md)
+- [Cloud scheduled task and native-session bridge](docs/CLOUD_ROUTINE.md)
+- [Pilot roles and exact variable guidance](docs/PILOT_CONFIGURATION.md)
 
-The portal is deployed at `https://zora-mindmap.vercel.app`, retaining Vercel protection. Microsoft application authentication, folder access, repeated local delta sync, local PostgreSQL migrations/intake/queue checks, and deployed connector/access/webhook-validation checks pass. Continuous production webhook delivery, interactive Entra sign-in, production storage, runner sessions and all eight deliverables still require connected validation. Configure the Outlook `[ZORA]` rule and Entra callback described in the updated setup guide.
+The portal is deployed at `https://zora-mindmap.vercel.app`, retaining Vercel protection. Microsoft application authentication, folder access, local PostgreSQL intake/queue checks and deployed connector/access/webhook-validation checks pass. The approved Neon database is connected and its schema migration passes twice through supported HTTPS transport. The four cloud application secrets are securely aligned with Vercel. Advait has been emailed for inputs/team details. Interactive sign-in, actual recurring dispatch and all-eight outputs still need acceptance; a connected database or manually run bridge does not complete the pilot.

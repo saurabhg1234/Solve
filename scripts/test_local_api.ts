@@ -24,13 +24,24 @@ async function main() {
     await db.query('INSERT INTO zora_inbox(id,mailbox,message_id,subject,sender,body_text,received_at) VALUES($1,$2,$3,$4,$5,$6,now())',[inboxId,'local-fixture','fixture-'+inboxId,'[ZORA] W8 integration fixture','sender@example.test','A synthetic email source for local intake validation.']);
     const created=await request('/api/cases','POST',{title:'Local email intake fixture',client:'Synthetic Client',workflow:'W8',briefing:'Draft an internal test note with no client commitments.',inboxId});
     assert.equal(created.status,201);const c=created.body.case;ids.push(c.id);assert.equal(c.source,'email');assert.equal(c.status,'queued');
-    const source=(await db.query('SELECT filename,data,sha256 FROM zora_sources WHERE case_id=$1',[c.id])).rows;
+    const source=(await db.query('SELECT id,filename,data,sha256 FROM zora_sources WHERE case_id=$1',[c.id])).rows;
     assert.equal(source.length,1);assert.equal(source[0].filename,'request-email.txt');assert.ok(source[0].data.toString().includes('synthetic email source'));assert.equal(source[0].sha256.length,64);
     const duplicate=await request('/api/cases','POST',{title:'Duplicate email fixture',client:'Synthetic Client',workflow:'W8',briefing:'Do not duplicate this existing email-linked pursuit.',inboxId});assert.equal(duplicate.status,409);
     const pack=await fetch(new URL(`/api/cases/${c.id}/pack`,origin),{headers:{Cookie:`zora_session=${token}`}});assert.equal(pack.status,200);assert.equal((await pack.json()).case.source,'email');
     const done={status:'completed',summary:'Synthetic stage result for local queue verification.',missingInputs:[],outputFiles:[],citations:[],reviewReports:[]};
+    const other=await request('/api/cases','POST',{title:'Other pursuit source fixture',client:'Other Synthetic Client',workflow:'W1',briefing:'Await human confirmation; this fixture must not enter the stage queue.'});
+    assert.equal(other.status,201);ids.push(other.body.case.id);const otherSource=randomUUID();
+    await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256) VALUES($1,$2,$3,$4,$5,$6)',[otherSource,other.body.case.id,'other.txt','text/plain',source[0].data,source[0].sha256]);
     for(const stage of ['W8-1','W8-2','W8-3']){
       const claim=await request('/api/worker/claim','POST',{workerId:'local-integration-test'},true);assert.equal(claim.status,200);const job=claim.body.job;assert.equal(job.case.id,c.id);assert.equal(job.stage.id,stage);
+      if(stage==='W8-1'){
+        const path=`/api/worker/${job.id}/sources/${source[0].id}?leaseId=${job.leaseId}`;
+        const headers={Authorization:`Bearer ${state.ZORA_RUNNER_TOKEN}`};
+        assert.equal((await fetch(new URL(path,origin))).status,401);
+        const downloaded=await fetch(new URL(path,origin),{headers});assert.equal(downloaded.status,200);assert.equal(downloaded.headers.get('x-zora-sha256'),source[0].sha256);assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()),source[0].data);
+        assert.equal((await fetch(new URL(`/api/worker/${job.id}/sources/${source[0].id}?leaseId=${randomUUID()}`,origin),{headers})).status,409);
+        assert.equal((await fetch(new URL(`/api/worker/${job.id}/sources/${otherSource}?leaseId=${job.leaseId}`,origin),{headers})).status,404);
+      }
       const heartbeat=await request(`/api/worker/${job.id}/heartbeat`,'POST',{leaseId:job.leaseId},true);assert.equal(heartbeat.status,200);
       const finish=await request(`/api/worker/${job.id}/complete`,'POST',{leaseId:job.leaseId,result:done},true);assert.equal(finish.status,200);
       const replay=await request(`/api/worker/${job.id}/complete`,'POST',{leaseId:job.leaseId,result:done},true);assert.equal(replay.status,409);
@@ -39,7 +50,7 @@ async function main() {
     const report=(await db.query('SELECT result FROM zora_jobs WHERE case_id=$1 AND stage_id=$2',[c.id,'W8-3'])).rows[0].result;
     assert.ok(report.missingInputs.some((s:string)=>s.includes('Independent QC')));
     const wrongOrigin=await fetch(new URL('/api/cases',origin),{method:'POST',headers:{Origin:'https://wrong.example',Cookie:`zora_session=${token}`,'Content-Type':'application/json'},body:JSON.stringify({})});assert.equal(wrongOrigin.status,403);
-    console.log('Local PostgreSQL/API checks passed: authentication, email-source preservation, duplicate protection, request pack, leased jobs, heartbeat, replay denial, QC hold and origin enforcement.');
+    console.log('Local PostgreSQL/API checks passed: authentication, source integrity, lease-bound/case-scoped source downloads, duplicate protection, request pack, heartbeat, replay denial, QC hold and origin enforcement.');
   } finally {
     await db.query('DELETE FROM zora_inbox WHERE id=$1',[inboxId]);
     for(const id of ids){

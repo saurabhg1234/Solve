@@ -2,11 +2,13 @@
 
 Zora’s content engine uses Codex sessions. Do **not** add `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, model endpoints or an AI SDK. Microsoft Graph and hosting/queue transport remain infrastructure connections.
 
+**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. The Neon schema is migrated and verified, and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). The bridge's manual maintenance/empty-queue check passes and the Graph subscription is registered; actual scheduled recurrence still needs the Scheduled UI. Outlook routing and Entra callback setup are confirmed by Saurabh. Full artifact/QC/revision implementation and all-eight acceptance remain unfinished.
+
 ## Current verified deployment
 
 `https://zora-mindmap.vercel.app` is deployed in Saurabh's existing Vercel team, with deployment protection retained. Microsoft credentials, the Zora folder ID, application origin, initial team access, session/runner/webhook/maintenance secrets and the service callback's Vercel automation bypass are securely configured in that project. The deployment's Microsoft connector, unsigned-access denial and webhook validation checks pass.
 
-Production storage and the always-on Codex/maintenance runner are not configured. The application still opens as a protected foundation preview; this is not a completed automatic pilot. A separate local PostgreSQL 16 database has passed migration repeatability, email-to-pursuit/source integrity, duplicate prevention, leased jobs, replay denial and QC-hold tests using synthetic local fixtures.
+Production Neon storage is configured; its migration passes twice through supported HTTPS and all ten tables are verified. Vercel also verifies its database connection and installed schema. A native cloud task bridge is prepared and manually checked; recurring scheduling is not verified. The application remains a foundation rather than a completed automatic pilot. Local synthetic fixtures additionally verify source downloads bound to the current lease and pursuit.
 
 ## Variables and where they belong
 
@@ -69,7 +71,7 @@ The database destination cannot be listed until the actual provider/host is sele
 
 ## 2. Prepare durable storage and access
 
-Choose a PostgreSQL provider and region approved for Mindmap’s presales client data. Supply `DATABASE_URL` securely. Run `npm run db:migrate` against that chosen database after reviewing `db/001_init.sql`. The migration is additive and repeatable. Live database validation has not been performed yet.
+Saurabh connected Neon and supplied `DATABASE_URL` securely. Use `NODE_USE_ENV_PROXY=1 npm run db:migrate` in this cloud workspace: direct PostgreSQL sockets are unavailable, so verified Neon hostnames use supported HTTPS transport with explicit statement boundaries and a transaction. Both migrations and the live Vercel connection are verified. The portal keeps PostgreSQL connections from Vercel.
 
 Supply the allowlist, role map, secrets, callback origin and Microsoft folder variables. The current portal is a safe preview until its database and identity are configured; it contains no live client records when unauthenticated. Data isolation, artifact/source storage and team access must pass the acceptance plan before production use.
 
@@ -88,9 +90,9 @@ Deployment has been confirmed by Vercel's READY result and deployed HTTP checks.
 
 After deployment, register the exact Microsoft redirect URI and configure `ZORA_APP_URL` to that stable origin. Verify the deployed HTTP response, sign-in, authenticated database operations and webhook verification. A successful build alone is not a deployment test.
 
-## 4. Provide the Codex runner
+## 4. Optional separate Codex CLI runner
 
-For automatic processing, use a dedicated always-on Mindmap-controlled machine with Node, Codex CLI, Python document tooling and appropriate browser/media tools. The account and its data region/usage policies must suit the team. Vercel hosts the portal; it does not host the permanent Codex session process.
+The chosen pilot uses [native cloud scheduling](CLOUD_ROUTINE.md). The separate CLI runner below is an alternative, not a prerequisite for that choice. Vercel hosts the portal rather than a permanent Codex process.
 
 1. Install the official Codex CLI on the runner using its supported distribution.
 2. Sign in interactively with the designated Codex account on that machine. Do not extract or upload its OAuth/session files to Vercel.

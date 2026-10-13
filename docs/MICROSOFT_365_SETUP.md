@@ -2,6 +2,8 @@
 
 The requested mailbox already exists: **apex.ap@mindmapdigital.ai**. Jarvis also uses it. Reuse it; do not create another mailbox, rename the shared identity globally, change Jarvis’s secret, or replace existing mailbox rules as part of Zora setup.
 
+**Latest update:** Saurabh confirms Outlook routing and the Entra Web callback are done. Neon is migrated and the deployed connection is verified. A manual native cloud routine check registered the Graph subscription and synced the empty Zora folder; recurring dispatch is not yet scheduled. Ganesh owns pricing, Zora handles architecture/domain review, and delivery approval is outside this pilot. See [current configuration](PILOT_CONFIGURATION.md) and [cloud schedule instructions](CLOUD_ROUTINE.md). Advait has now received the authorised branded input/team request email. Interactive sign-in and full deliverables still need acceptance.
+
 The cloud has `Tenant`, `Client`, `Client_secret`, `Object`, and `EMAIL`. Native application authentication and mailbox-folder access now pass. The deployed Vercel connector also authenticates successfully and reads the Zora folder. These credentials were reused and configured securely in the Zora Vercel project.
 
 ## Verified status and remaining email steps
@@ -12,7 +14,7 @@ The cloud has `Tenant`, `Client`, `Client_secret`, `Object`, and `EMAIL`. Native
 - Microsoft folder delta queries pass repeatedly against the local development database. The new folder currently contains no messages; this does not validate incoming-request processing.
 - Deployed mailbox connector returns authenticated access; unsigned case requests return 401; webhook validation returns the expected plain text.
 - Inbox-rule metadata access returns **403 ErrorAccessDenied**. The credential grants mailbox read/write, but not the settings permission needed to administer rules. Use the Outlook rule below; no new secret is needed.
-- Continuous production monitoring is **not active**: production `DATABASE_URL` and the maintenance/dispatch runner remain unconfigured. The full Codex workflow and artifact/QC implementation is also still in progress.
+- The production Graph subscription is registered and manual maintenance/catch-up passes. Continuous renewal/dispatch still needs the native cloud schedule. Full Codex workflow and artifact/QC implementation remains in progress.
 
 In Outlook, create an Inbox rule: **subject contains `[ZORA]` → move to `Zora`**. Keep Jarvis routing separate. In the Entra application, add the Web redirect URI **`https://zora-mindmap.vercel.app/api/auth/callback`** before testing interactive sign-in. The app token's successful authentication does not prove that this new redirect URI is registered.
 
