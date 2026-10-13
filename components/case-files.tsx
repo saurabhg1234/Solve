@@ -5,7 +5,7 @@ import type { CaseRecord } from '@/lib/catalogue';
 import { emailPreview } from '@/lib/email-preview';
 import { Orb } from './orb';
 
-export type PursuitFile={id:string;filename:string;mime_type:string;sha256:string;size:number;visibility?:string;purpose?:string;active?:boolean;provenance?:{knowledge?:{entryId:string;versionId:string;version:number}};case_version?:number;source_revision?:number;stage_id?:string};
+export type PursuitFile={id:string;filename:string;mime_type:string;sha256:string;size:number;visibility?:string;purpose?:string;state?:string;active?:boolean;provenance?:{knowledge?:{entryId:string;versionId:string;version:number}};case_version?:number;source_revision?:number;stage_id?:string};
 export type FileDetail={case:CaseRecord;sources:PursuitFile[];artifacts:PursuitFile[];team:string[];canManage:boolean;canUploadInternal?:boolean;availableTeam:string[];sourceNotices?:string[];blockedTask?:{stage_id:string;summary:string;missing_inputs:string[]}|null};
 const CHUNK=2*1024*1024,LIMIT=32*1024*1024;
 async function json(response:Response){const body=await response.json();if(!response.ok)throw new Error(body.error||'This operation could not be saved');return body;}

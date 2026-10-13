@@ -26,3 +26,6 @@ The saved cloud allowlist omitted Ganesh while production already includes him. 
 The latest build adds **Add private inputs** for assigned pricing/internal reviewers on paused pursuits. Ganesh can use it for policies when you choose to provide them; those settings remain deferred now. No new environment variable or account role is required. Source disclosure rules are in [PRIVATE_SOURCES.md](PRIVATE_SOURCES.md). Full pilot acceptance remains pending; these releases do not imply that real proposals, demos or videos have passed.
 
 Scanned PDF source transcripts now have mandatory independent verification before ordinary QC, and W8 drafts can cite the exact PDF/transcript pair. No additional input or environment variable is needed from you for this engineering change. Actual transcription and proposal quality still require fresh reviewer acceptance; the engineering tests do not approve company claims.
+
+
+Human review feedback and ordinary correction routing need no additional input from you. The remaining fresh-drafter escalation sequence is engineering work; pending implementation is not an outstanding user approval or environment credential.

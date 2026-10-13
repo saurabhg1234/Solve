@@ -4,6 +4,8 @@ Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 co
 
 This checkout includes a **tested application foundation**, not a completed implementation of every BRD requirement. It includes the magenta orb identity, request portal, persistent queue/schema, Microsoft sign-in and isolated email monitoring, Codex request packs, human gates, attachment/private file storage, team access and revision/resume. The native bridge persists real files with hashes and now dispatches independent reviewer tasks. The server inventories document elements, isolates reviewer packets, rejects self-review/incomplete coverage and enforces explicit clean-loop policy before human gates. Native source preparation, approved Word/PPT editing, multi-template slide composition, tagged PDF export and separate buyer/internal RFI workbooks are implemented and locally verified. Word drafting still requires its missing approved template. Real native-review acceptance, complete ESC/fix automation, consultant-quality document/demo/video production and all-eight acceptance remain pending. See [the review contract](docs/INDEPENDENT_REVIEW.md) and [your remaining actions](docs/YOUR_PENDING_ACTIONS.md).
 
+Human review now retains file-linked feedback and routes ordinary corrections back through required checks and approvals. Document-gate QC escapes are recorded and block approval across revisions; the remaining fresh-drafter ESC sequence is unfinished. See [gate feedback](docs/GATE_FEEDBACK.md).
+
 The private reusable knowledge library retains source bytes/versions and human reuse decisions, pins selected snapshots to pursuits and holds on withdrawals or integrity failures. Its supplied-asset bootstrap creates drafts only; it does not approve company claims or deliver a proposal.
 
 Sources and generated files support 32 MB per file, transferred in 2 MB chunks. Email intake retains file and inline attachments with provenance, with explicit holds for linked/nested attachments or limits. The portal displays saved drafts and restricted internal workpapers; text/JSON can be read safely in place, while Word/PDF/PPT files download for review. Saving a file does not establish its quality or authorise release. See [current build evidence](docs/BUILD_STATUS.md).
@@ -58,6 +60,7 @@ The database migration is repeatable and does not delete tables. Preserve provid
 - [Reusable Mindmap knowledge](docs/REUSABLE_KNOWLEDGE.md)
 - [Native source and document tools](docs/NATIVE_DOCUMENTS.md)
 - [Scanned PDF source transcripts and independent checks](docs/SOURCE_TRANSCRIPTS.md)
+- [Human gate feedback and correction routes](docs/GATE_FEEDBACK.md)
 - [Pilot roles and exact variable guidance](docs/PILOT_CONFIGURATION.md)
 
 The portal is deployed at `https://zora-mindmap.vercel.app`, retaining Vercel protection. Microsoft application authentication, folder access, local PostgreSQL intake/queue checks and deployed connector/access/webhook-validation checks pass. The approved Neon database is connected and its schema migration passes twice through supported HTTPS transport. The four cloud application secrets are securely aligned with Vercel. Advait has been emailed for inputs/team details. Interactive sign-in, actual recurring dispatch and all-eight outputs still need acceptance; a connected database or manually run bridge does not complete the pilot.

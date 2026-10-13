@@ -1,3 +1,4 @@
+import { readGateFeedback } from '@/lib/gate-feedback';
 import { randomUUID } from 'node:crypto';
 import { requireRunner,responseError,HttpError } from '@/lib/auth';
 import { transaction } from '@/lib/db';
@@ -24,7 +25,7 @@ export async function POST(request:Request) {
       const sources=(await db.query('SELECT id,filename,mime_type,sha256,visibility,octet_length(data)::int AS byte_size,provenance FROM zora_sources WHERE case_id=$1 AND active',[c.id])).rows;
       const artifacts=(await db.query("SELECT a.id,a.filename,a.mime_type,a.sha256,a.visibility,a.purpose,a.source_path,a.source_revision,j.state,octet_length(a.data)::int AS byte_size FROM zora_artifacts a JOIN zora_jobs j ON j.id=a.job_id WHERE a.case_id=$1 AND a.source_revision=$2 AND a.lease_id=j.lease_id AND j.state IN ('completed','blocked') ORDER BY a.created_at DESC,a.id DESC",[c.id,c.sourceRevision])).rows;
       const prior=(await db.query("SELECT stage_id,result FROM zora_jobs WHERE case_id=$1 AND source_revision=$2 AND state='completed' ORDER BY completed_at",[c.id,c.sourceRevision])).rows;
-      return {kind:'stage',id:j.id,leaseId,contextId,case:c,stage,requiresIndependentReview:needsIndependentReview(stage.id),instructions:taskInstructions(c.workflow,stage),sources,artifacts,prior};
+      return {kind:'stage',id:j.id,leaseId,contextId,case:c,stage,requiresIndependentReview:needsIndependentReview(stage.id),instructions:taskInstructions(c.workflow,stage),sources,artifacts,prior,gateFeedback:await readGateFeedback(db,c.id)};
     });
     return Response.json({job},{headers:{'Cache-Control':'no-store'}});
   }catch(e){return responseError(e);}

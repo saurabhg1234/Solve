@@ -163,3 +163,12 @@ ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS source_origin jsonb
 ALTER TABLE zora_knowledge_versions ADD COLUMN IF NOT EXISTS ingestion_complete boolean NOT NULL DEFAULT true;
 -- zora:statement-breakpoint
 ALTER TABLE zora_sources ADD COLUMN IF NOT EXISTS visibility text NOT NULL DEFAULT 'client' CHECK(visibility IN ('client','internal'));
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_gate_feedback (
+  id uuid PRIMARY KEY, case_id uuid NOT NULL REFERENCES zora_cases(id) ON DELETE CASCADE,
+  stage_id text NOT NULL, case_version integer NOT NULL, source_revision integer NOT NULL,
+  created_by text NOT NULL, note text NOT NULL, findings jsonb NOT NULL DEFAULT '[]',
+  escalation_required boolean NOT NULL, return_stage text NOT NULL, restricted boolean NOT NULL,
+  state text NOT NULL DEFAULT 'open' CHECK(state IN ('open','reworking','addressed','superseded')),
+  created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(case_id,case_version,stage_id)
+);
