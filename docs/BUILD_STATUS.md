@@ -66,4 +66,8 @@ The latest related-email check at **23:12 Dubai** found no Advait reply and no t
 
 ## Internal cost worksheet milestone
 
+Deployed from **33a79f4**, deployment **dpl_H3a98Xxs3cQ9C4rj8EkoxF6q1mdT**, **READY**, at https://zora-mindmap.vercel.app. Verification at **23:50 Dubai on 13 October** confirms full schema/storage health, an active Microsoft subscription and protected knowledge/case access. Production retains nine real source drafts and zero client pursuits/active jobs/human approvals; no business pricing configuration was applied.
+
 The native S1-6 bridge generates internal-only XLSX/JSON build-ups with exact decimal arithmetic, hours-weighted AI reduction, configured policy/ranges and explicit currency rounding. Source/artifact hashes and package/requirement mapping are retained; missing values hold. Four Python arithmetic/guard/privacy fixtures and the real local lease/upload/role fixture pass. Consultants cannot read these files; pricing/internal reviewers can. No production rules, rates, client price, infrastructure/revenue share or pricing approval is inferred. See docs/NATIVE_COSTS.md.
+
+Across this active task: **23 TypeScript domain/parser tests**, **10 native document tests** and **4 internal arithmetic tests** pass, with appropriate local queue/access/browser/concurrency fixtures. Three milestones are committed, pushed and deployed. Their fixtures do not establish semantic quality or W1–W8 acceptance. The newest startup-only configuration save still returns **INVALID_ARGUMENT**; reread remains **revision 16**. Committed handoff/native guides are the tested startup authority. Recurring execution remains unverified; no invisible background build continues after the final reply.
