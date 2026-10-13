@@ -1,4 +1,18 @@
 export const ZORA_MAGENTA = '#d62ca4';
+export const ZORA_OWNER_EMAIL = 'saurabh@mindmapdigital.ai';
+
+/** Every authorised outgoing message includes Saurabh visibly, without duplicate recipients. */
+export function zoraRecipients(to: string[], cc: string[] = []) {
+  const addresses = (values: string[]) => [...new Set(values.map(value => {
+    const address = value.trim().toLowerCase();
+    if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(address)) throw new Error('Invalid email recipient');
+    return address;
+  }))];
+  const recipients = addresses(to);
+  if (!recipients.length) throw new Error('An email needs a primary recipient');
+  const copies = addresses([...cc, ZORA_OWNER_EMAIL]).filter(address => !recipients.includes(address));
+  return { toRecipients: recipients.map(address => ({ emailAddress: { address } })), ccRecipients: copies.map(address => ({ emailAddress: { address } })) };
+}
 
 export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]!));

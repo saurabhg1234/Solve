@@ -48,6 +48,8 @@ The four application secrets are now supplied in the cloud runtime and securely 
 
 ## Advait coordination
 
+**Outgoing email visibility:** Saurabh requires a visible copy of every outgoing Zora email. Put `saurabh@mindmapdigital.ai` in Cc for messages to others; if he is the primary To recipient, avoid duplicating him in Cc. Use `zoraRecipients` from `lib/email.ts`. All messages retain the magenta stripe/orb and a send receipt. This instruction does not authorise automatic client sending or bypass human release gates.
+
 An authorised email was sent from `apex.ap@mindmapdigital.ai` to `advait.mahajan@mindmapdigital.ai`, subject **[ZORA] Pilot inputs and team details — all eight workflows**, with Zora's magenta stripe and orb. Microsoft accepted sending and the saved message has `isDraft=false` and a send timestamp. It requests the Word template, historical RFP/RFI/response sets, tender-agent code, demo/video assets, sample pursuits/transcripts, video-tool preferences, sales/demo names and test availability. No reply or meeting is confirmed yet.
 
 Other BRD business settings are deferred at Saurabh's request. Missing values must hold the relevant stage; never turn a guess into a client commitment.

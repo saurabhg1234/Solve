@@ -21,6 +21,8 @@ With the environment's supported HTTPS proxy enabled, run npm run routine -- cla
 
 For a claimed job, read its private instructions.txt, request.json and sources.json, then read the actual downloaded sources. Process only that stage in this native Codex session. Zora owns architecture/domain review. Sales/consultant, Ganesh pricing and named demo builders retain applicable human decisions. Do not send mail, submit bids, change infrastructure or invent approvals during a routine run.
 
+Any email draft must identify saurabh@mindmapdigital.ai as a visible Cc recipient for an eventual authorised send to others, using zoraRecipients from lib/email.ts. If he is the primary To recipient, do not duplicate him in Cc. Keep the magenta stripe/orb. This copy requirement does not authorise the routine to send email.
+
 Renew the lease with npm run routine -- heartbeat <workspace> at least every two minutes during active work. Save result.json against result.schema.json, then use npm run routine -- complete <workspace>. Pending generated-file import, independent reviewer orchestration or other unfinished stages must return blocked with exact missing inputs or implementation. Never claim verified QC, delivered files or release without evidence.
 
 Report a new actionable request, human gate, failure/missing input or substantive reviewed outcome, with case/stage and required action. Do not repeat unchanged blockers or print credentials/private client content. If cloud access or bindings are unavailable, report the prerequisite and stop that run. Continue on later scheduled runs until Saurabh pauses the task.
