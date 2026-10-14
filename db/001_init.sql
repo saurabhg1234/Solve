@@ -174,3 +174,13 @@ CREATE TABLE IF NOT EXISTS zora_gate_feedback (
 );
 -- zora:statement-breakpoint
 ALTER TABLE zora_gate_feedback ADD COLUMN IF NOT EXISTS explanations jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(explanations)='array');
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs ADD COLUMN IF NOT EXISTS reset_packet jsonb;
+-- zora:statement-breakpoint
+ALTER TABLE zora_jobs ADD COLUMN IF NOT EXISTS reset_packet_hash text;
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_draft_contexts (
+ case_id uuid NOT NULL REFERENCES zora_cases(id) ON DELETE CASCADE,
+ context_id text NOT NULL, job_id uuid NOT NULL REFERENCES zora_jobs(id) ON DELETE CASCADE,
+ created_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY(case_id,context_id)
+);

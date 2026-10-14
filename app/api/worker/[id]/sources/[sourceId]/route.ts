@@ -1,3 +1,4 @@
+import { requireResetFile } from '@/lib/trust-reset-contract';
 import { z } from 'zod';
 import { requireRunner, responseError, HttpError } from '@/lib/auth';
 import { transaction } from '@/lib/db';
@@ -14,7 +15,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     return await transaction(async db=>{
       const job=await leasedJob(db,id,leaseId);
       const source=(await db.query('SELECT filename,mime_type,sha256,octet_length(data)::int AS size FROM zora_sources WHERE id=$1 AND case_id=$2 AND active',[sourceId,job.case_id])).rows[0];
-      if(!source)throw new HttpError(404,'Source not found in this pursuit');
+      if(!source)throw new HttpError(404,'Source not found in this pursuit');requireResetFile(job,'sources',sourceId,source.sha256);
       const range=byteRange(request.headers.get('range'),source.size);
       const bytes=(await db.query('SELECT substring(data FROM $3 FOR $4) AS bytes FROM zora_sources WHERE id=$1 AND case_id=$2',[sourceId,job.case_id,range.start+1,range.end-range.start+1])).rows[0].bytes;
       return fileResponse(bytes,source,range);

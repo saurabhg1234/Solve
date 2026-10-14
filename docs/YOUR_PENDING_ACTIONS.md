@@ -32,3 +32,6 @@ Human review feedback and ordinary correction routing need no additional input f
 
 
 The ESC-2 explanation step also adds no user setup requirement. Original-task resumption and the fresh whole-document trust reset remain engineering/platform work, not missing credentials from you. Existing pilot assets and sign-in/schedule acceptance remain the pending external inputs listed above.
+
+
+Fresh-drafter packet isolation and the re-evaluation note are now implemented as engineering work, with no additional user setup. Independent return-point checks, root-cause learning and the gate-reading/closure flow remain unfinished. A stored re-evaluation is still unapproved.

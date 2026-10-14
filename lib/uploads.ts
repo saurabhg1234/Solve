@@ -1,3 +1,4 @@
+import { resetDigest } from './trust-reset-contract';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import type { PoolClient } from 'pg';
@@ -15,8 +16,8 @@ export async function leasedJob(db:PoolClient,id:string,leaseId:string) {
   if(!z.uuid().safeParse(id).success||!z.uuid().safeParse(leaseId).success)throw new HttpError(400,'Invalid session identity');
   const ref=(await db.query('SELECT case_id FROM zora_jobs WHERE id=$1',[id])).rows[0];if(!ref)throw new HttpError(409,'Session lease is no longer valid');
   await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[ref.case_id]);
-  const row=(await db.query("SELECT j.*,c.source_revision FROM zora_jobs j JOIN zora_cases c ON c.id=j.case_id WHERE j.id=$1 AND j.lease_id=$2 AND j.state='leased' AND j.lease_expires_at>now() AND j.case_version=c.version FOR UPDATE OF j",[id,leaseId])).rows[0];
-  if(!row)throw new HttpError(409,'Session lease is no longer valid');return row;
+  const row=(await db.query("SELECT j.*,c.source_revision FROM zora_jobs j JOIN zora_cases c ON c.id=j.case_id WHERE j.id=$1 AND j.lease_id=$2 AND j.state='leased' AND j.lease_expires_at>now() AND j.case_version=c.version AND j.source_revision=c.source_revision FOR UPDATE OF j",[id,leaseId])).rows[0];
+  if(!row)throw new HttpError(409,'Session lease is no longer valid');if(row.reset_packet&&resetDigest(row.reset_packet)!==row.reset_packet_hash)throw new HttpError(409,'Trust-reset packet integrity changed');return row;
 }
 function sourceEditor(user:Actor,visibility:string){
   if(visibility==='internal'){if(!canReadInternal(user))throw new HttpError(403,'Private source uploads require a pricing or internal review role');}

@@ -106,7 +106,7 @@ async function complete(path: string) {
   }
   await persistOutputs(job,result,dir);
   const outcome=await(await request(`/api/worker/${job.id}/complete`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId,contextId:job.contextId, result })).json();
-  console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
+  console.log(JSON.stringify({ recorded: true, resultStatus:outcome.resultStatus,artifactCount:outcome.artifactCount,escalationResolved:outcome.escalationResolved,independentRerunRequired:outcome.independentRerunRequired,note:'Files are stored for review. Independent QC and human gates still apply; this response does not claim release.' }));
 }
 async function documentTool(path:string,action:'prepare'|'build'|'build-rfi'|'build-costs'|'email-context'|'build-email'|'build-transcript',plan?:string){
   const {dir,job}=await workspace(path);

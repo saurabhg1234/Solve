@@ -1,6 +1,8 @@
+import { resetReportSchema } from './trust-reset-contract';
 import { z } from 'zod';
 
 export const resultSchema=z.object({
+  resetReport:resetReportSchema.optional(),
   status:z.enum(['completed','blocked']),
   summary:z.string().min(10).max(10000),
   missingInputs:z.array(z.string().max(2000)).max(100),

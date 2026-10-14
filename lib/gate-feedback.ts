@@ -1,3 +1,4 @@
+import type { ResetReport } from './trust-reset-contract';
 import type { SavedExplanation } from './escalation-explanation';
 import { randomUUID } from 'node:crypto';
 import type { Pool,PoolClient } from 'pg';
@@ -16,7 +17,7 @@ export const gateFindingSchema=z.object({
 export const gateFindingsSchema=z.array(gateFindingSchema).max(20);
 export type GateFinding=z.infer<typeof gateFindingSchema>;
 export type SavedGateFinding=GateFinding&{filename:string;sha256:string;qcEscape:boolean};
-export type GateFeedback={id:string;stage_id:string;case_version:number;source_revision:number;note:string|null;findings:SavedGateFinding[]|null;escalation_required:boolean;return_stage:string;state:string;created_by:string;created_at:string;restricted:boolean;explanations:SavedExplanation[]|null;explanationCount:number;findingCount:number};
+export type GateFeedback={id:string;stage_id:string;case_version:number;source_revision:number;note:string|null;findings:SavedGateFinding[]|null;escalation_required:boolean;return_stage:string;state:string;created_by:string;created_at:string;restricted:boolean;explanations:SavedExplanation[]|null;explanationCount:number;findingCount:number;resetRuns:{id:string;state:string;sourceRevision:number;report:ResetReport|null}[]};
 
 export function gateReturnStage(workflow:WorkflowId,stage:string,findings:Pick<GateFinding,'scope'>[]):string {
   if(stage==='W3-G3')return 'W3-17';if(stage==='W4-G3')return 'W4-18';
@@ -59,6 +60,8 @@ export async function recordGateFeedback(db:PoolClient,c:CaseRecord,stage:string
 }
 export async function readGateFeedback(db:Pool|PoolClient,caseId:string,user?:Actor):Promise<GateFeedback[]>{
   const rows=(await db.query("SELECT id,stage_id,case_version,source_revision,created_by,created_at,note,findings,escalation_required,return_stage,restricted,state,explanations,jsonb_array_length(explanations) AS \"explanationCount\",jsonb_array_length(findings) AS \"findingCount\" FROM zora_gate_feedback WHERE case_id=$1 ORDER BY (state IN ('open','reworking')) DESC,created_at DESC,id DESC LIMIT 50",[caseId])).rows;
+  const runs=rows.length?(await db.query("SELECT id,state,source_revision AS \"sourceRevision\",feedback_id,report FROM (SELECT id,state,source_revision,reset_packet->>'feedbackId' AS feedback_id,CASE WHEN $3 THEN result->'resetReport' ELSE null END AS report,row_number() OVER(PARTITION BY reset_packet->>'feedbackId' ORDER BY created_at DESC,id DESC) AS position FROM zora_jobs WHERE case_id=$1 AND reset_packet->>'feedbackId'=ANY($2::text[])) ranked WHERE position<=5 ORDER BY feedback_id,position",[caseId,rows.map(r=>r.id),!user||canReadInternal(user)])).rows:[];
+  for(const row of rows)row.resetRuns=runs.filter(run=>run.feedback_id===row.id).map(({feedback_id,...run})=>run);
   return rows.map(row=>({...row,...(user&&row.restricted&&!canReadInternal(user)?{note:null,findings:null}:{}),explanations:user&&!canReadInternal(user)?null:row.explanations}));
 }
 export async function requireEscalationResolved(db:PoolClient,caseId:string,stage:string){

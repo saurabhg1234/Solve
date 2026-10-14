@@ -56,3 +56,8 @@ Test with **Run now**: confirm cloud access, a real Zora-only email, a queued st
 ## Continuing an original drafter for ESC-2
 
 An escalated document finding can receive an immutable explanation from its original completed producer task. This is a continuation of that task, not a second claim. Read [ESCALATION_EXPLANATIONS.md](ESCALATION_EXPLANATIONS.md): use `routine escalations <original-private-workspace>` and `routine explain <original-private-workspace> explanation.json`. The real native identity must match; a fresh scheduled task cannot impersonate the producer. Automatic original-task resumption is not implemented. Missing history/workspaces hold explicitly. Fresh re-evaluation and later checks remain required after every explanation is recorded.
+
+
+## Fresh whole-document re-evaluation
+
+An owner/admin can queue an eligible document escalation from the portal after ESC-2. The ordinary `routine claim` command then offers an isolated ESC-3 stage to a fresh context. Read [TRUST_RESET.md](TRUST_RESET.md). Use only its sources, locked baseline, findings and explanations; old draft and prior-result endpoints are excluded. Submit actual draft files and `resetReport` through `routine complete`. The result stays blocked for ESC-4; it does not approve or close the pursuit. Context history now also retains new ordinary stage claims so expired attempts remain excluded from fresh drafting/review.

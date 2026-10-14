@@ -1,3 +1,4 @@
+import { claimTrustReset } from '@/lib/trust-reset';
 import { readGateFeedback } from '@/lib/gate-feedback';
 import { randomUUID } from 'node:crypto';
 import { requireRunner,responseError,HttpError } from '@/lib/auth';
@@ -14,12 +15,13 @@ export async function POST(request:Request) {
     const context=body.contextId===undefined?undefined:contextSchema.safeParse(body.contextId);if(context&&!context.success)throw new HttpError(400,'Supply the native Codex task identity');
     const contextId=context?.success?context.data:null;
     const job=await transaction(async db=>{
-      if(contextId){const review=await claimReview(db,worker,contextId);if(review)return review;}
-      const selected=await db.query("SELECT c.* FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.case_version=c.version AND (j.state='queued' OR (j.state='leased' AND j.lease_expires_at<now()))) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId]);
+      if(contextId){const reset=await claimTrustReset(db,worker,contextId);if(reset)return reset;const review=await claimReview(db,worker,contextId);if(review)return review;}
+      const selected=await db.query("SELECT c.* FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.case_version=c.version AND j.reset_packet IS NULL AND (j.state='queued' OR (j.state='leased' AND j.lease_expires_at<now()))) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_draft_contexts d JOIN zora_jobs used ON used.id=d.job_id WHERE d.case_id=c.id AND d.context_id=$1 AND used.reset_packet IS NOT NULL) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId]);
       if(!selected.rows[0])return null;const c=mapCase(selected.rows[0]);
-      const result=await db.query("SELECT * FROM zora_jobs WHERE case_id=$1 AND case_version=$2 AND (state='queued' OR (state='leased' AND lease_expires_at<now())) ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1",[c.id,c.version]);
+      const result=await db.query("SELECT * FROM zora_jobs WHERE case_id=$1 AND case_version=$2 AND reset_packet IS NULL AND (state='queued' OR (state='leased' AND lease_expires_at<now())) ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1",[c.id,c.version]);
       if(!result.rows[0])return null;const j=result.rows[0];const leaseId=randomUUID();const stage=stagesFor(c.workflow)[c.stageIndex];
       if(!stage||stage.kind!=='task'||stage.id!==j.stage_id)throw new HttpError(409,'Queue stage is out of date');
+      if(contextId)await db.query('INSERT INTO zora_draft_contexts(case_id,context_id,job_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[c.id,contextId,j.id]);
       await db.query("UPDATE zora_jobs SET state='leased',lease_id=$2,worker_id=$3,context_id=$4,lease_expires_at=now()+interval '5 minutes' WHERE id=$1",[j.id,leaseId,worker,contextId]);
       await db.query("UPDATE zora_cases SET status='running',updated_at=now() WHERE id=$1",[c.id]);await event(db,c.id,'session.claimed',worker,{stage:stage.id,jobId:j.id});
       const sources=(await db.query('SELECT id,filename,mime_type,sha256,visibility,octet_length(data)::int AS byte_size,provenance FROM zora_sources WHERE case_id=$1 AND active',[c.id])).rows;

@@ -1,3 +1,4 @@
+import { completeTrustReset } from '@/lib/trust-reset';
 import { requireRunner,responseError,HttpError } from '@/lib/auth';
 import { transaction } from '@/lib/db';
 import { event,mapCase,queueStage } from '@/lib/cases';
@@ -18,13 +19,14 @@ export async function POST(request:Request,context:{params:Promise<{id:string}>}
       if(j.context_id&&body.contextId!==j.context_id)throw new HttpError(409,'Stage completion must use its claimed native task identity');
       const c=mapCase((await db.query('SELECT * FROM zora_cases WHERE id=$1 FOR UPDATE',[j.case_id])).rows[0]);
       if(c.version!==j.case_version)throw new HttpError(409,'Pursuit version changed during the session');
-      const stage=stagesFor(c.workflow)[c.stageIndex];if(stage.id!==j.stage_id)throw new HttpError(409,'Pursuit stage changed');
+      const stage=stagesFor(c.workflow)[c.stageIndex];if(!j.reset_packet&&stage.id!==j.stage_id)throw new HttpError(409,'Pursuit stage changed');
       let result=parsed.data;
       const withdrawn=await knowledgeHolds(db,c.id);
       if(withdrawn.length)result={...result,status:'blocked',missingInputs:[...result.missingInputs,...withdrawn]};
       const saved=(await db.query('SELECT source_path,mime_type,visibility,purpose,sha256 FROM zora_artifacts WHERE job_id=$1 AND lease_id=$2',[id,body.leaseId])).rows;
       const declared=new Set(result.outputFiles.map(f=>f.path));
       if(declared.size!==result.outputFiles.length||saved.length!==declared.size||result.outputFiles.some(f=>!saved.some(a=>a.source_path===f.path&&a.mime_type===f.mimeType&&a.visibility===f.visibility&&a.purpose===(f.purpose||(f.visibility==='client'?'draft':'workpaper')))))throw new HttpError(409,'Every declared output must first be stored with its verified hash and matching metadata');
+      if(j.reset_packet)return completeTrustReset(db,j,c,result);
       // Fail closed until independent review orchestration can verify the actual artifact
       // element manifest, every fresh session pass, clean loops and escalation evidence.
       // A model-supplied "passed" or an empty coverage list must never advance QC.

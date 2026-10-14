@@ -103,7 +103,7 @@ async function main(){
       }assert.deepEqual(errors,[]);}finally{await browser.close();}
       console.log('Compiled gate-feedback browser checks passed: file-linked rejection form, visible issue/history and trust-reset hold, desktop/mobile layout and zero page errors.');
     }
-    console.log('Local gate feedback checks passed: note/file evidence retention, ordinary correction through fresh QC and a new human gate, one synthetic human release, concurrent/stale/role guards, QC-link/hash/severity checks, BRD escape/commercial routes, privacy and unresolved escalation blocking approval across a full revision. Fresh-drafter ESC-3/4 automation is still pending.');
+    console.log('Local gate feedback checks passed: note/file evidence retention, ordinary correction through fresh QC and a new human gate, one synthetic human release, concurrent/stale/role guards, QC-link/hash/severity checks, BRD escape/commercial routes, privacy and unresolved escalation blocking approval across a full revision. ESC-4 return checks and semantic acceptance are still pending.');
   }finally{
     for(const id of cases){for(const table of ['zora_review_contexts','zora_reviews','zora_qc_runs','zora_uploads','zora_case_members','zora_approvals','zora_artifacts','zora_sources','zora_events','zora_jobs'])await db.query(`DELETE FROM ${table} WHERE case_id=$1`,[id]);await db.query('DELETE FROM zora_cases WHERE id=$1',[id]);}await db.end();
   }
