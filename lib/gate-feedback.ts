@@ -1,10 +1,12 @@
-import type { ResetReport } from './trust-reset-contract';
+import { resetDigest,type ResetReport } from './trust-reset-contract';
+import { rerunCheckers,type ChecklistRule } from './checklist';
 import type { SavedExplanation } from './escalation-explanation';
 import { randomUUID } from 'node:crypto';
 import type { Pool,PoolClient } from 'pg';
 import { z } from 'zod';
 import { HttpError,type Actor } from './auth';
 import { canReadArtifact,canReadInternal } from './files';
+import { stagesFor } from './engine';
 import type { CaseRecord,WorkflowId } from './catalogue';
 
 export const documentGates=new Set(['W3-G3','W3-G4','W4-G3','W4-G4']);
@@ -17,7 +19,7 @@ export const gateFindingSchema=z.object({
 export const gateFindingsSchema=z.array(gateFindingSchema).max(20);
 export type GateFinding=z.infer<typeof gateFindingSchema>;
 export type SavedGateFinding=GateFinding&{filename:string;sha256:string;qcEscape:boolean};
-export type GateFeedback={id:string;stage_id:string;case_version:number;source_revision:number;note:string|null;findings:SavedGateFinding[]|null;escalation_required:boolean;return_stage:string;state:string;created_by:string;created_at:string;restricted:boolean;explanations:SavedExplanation[]|null;explanationCount:number;findingCount:number;resetRuns:{id:string;state:string;sourceRevision:number;report:ResetReport|null}[]};
+export type GateFeedback={id:string;stage_id:string;case_version:number;source_revision:number;note:string|null;findings:SavedGateFinding[]|null;escalation_required:boolean;return_stage:string;state:string;created_by:string;created_at:string;restricted:boolean;explanations:SavedExplanation[]|null;explanationCount:number;findingCount:number;resetRuns:{id:string;state:string;sourceRevision:number;report:ResetReport|null;reportHash:string|null}[];rerun:{returnStage:string;sourceRevision:number;qcRunId:string;reportHash:string;draftFiles:{id:string;sha256:string}[];startedBy:string;startedAt:string}|null;resolution:{stageId:string;caseVersion:number;closedBy:string;closedAt:string;passedQcRunId:string;reviewedDrafts:{id:string;sha256:string}[]}|null;noteReads:{actor:string;stageId:string;caseVersion:number;reportHash:string;readAt:string}[];checklist:ChecklistRule[];rerunCheckers:string[]};
 
 export function gateReturnStage(workflow:WorkflowId,stage:string,findings:Pick<GateFinding,'scope'>[]):string {
   if(stage==='W3-G3')return 'W3-17';if(stage==='W4-G3')return 'W4-18';
@@ -59,13 +61,24 @@ export async function recordGateFeedback(db:PoolClient,c:CaseRecord,stage:string
   return {id,escalationRequired:escalation,returnStage};
 }
 export async function readGateFeedback(db:Pool|PoolClient,caseId:string,user?:Actor):Promise<GateFeedback[]>{
-  const rows=(await db.query("SELECT id,stage_id,case_version,source_revision,created_by,created_at,note,findings,escalation_required,return_stage,restricted,state,explanations,jsonb_array_length(explanations) AS \"explanationCount\",jsonb_array_length(findings) AS \"findingCount\" FROM zora_gate_feedback WHERE case_id=$1 ORDER BY (state IN ('open','reworking')) DESC,created_at DESC,id DESC LIMIT 50",[caseId])).rows;
-  const runs=rows.length?(await db.query("SELECT id,state,source_revision AS \"sourceRevision\",feedback_id,report FROM (SELECT id,state,source_revision,reset_packet->>'feedbackId' AS feedback_id,CASE WHEN $3 THEN result->'resetReport' ELSE null END AS report,row_number() OVER(PARTITION BY reset_packet->>'feedbackId' ORDER BY created_at DESC,id DESC) AS position FROM zora_jobs WHERE case_id=$1 AND reset_packet->>'feedbackId'=ANY($2::text[])) ranked WHERE position<=5 ORDER BY feedback_id,position",[caseId,rows.map(r=>r.id),!user||canReadInternal(user)])).rows:[];
-  for(const row of rows)row.resetRuns=runs.filter(run=>run.feedback_id===row.id).map(({feedback_id,...run})=>run);
-  return rows.map(row=>({...row,...(user&&row.restricted&&!canReadInternal(user)?{note:null,findings:null}:{}),explanations:user&&!canReadInternal(user)?null:row.explanations}));
+  const rows=(await db.query("SELECT f.id,f.stage_id,f.case_version,f.source_revision,f.created_by,f.created_at,f.note,f.findings,f.escalation_required,f.return_stage,f.restricted,f.state,f.explanations,f.rerun,f.resolution,f.note_reads AS \"noteReads\",c.workflow,jsonb_array_length(f.explanations) AS \"explanationCount\",jsonb_array_length(f.findings) AS \"findingCount\" FROM zora_gate_feedback f JOIN zora_cases c ON c.id=f.case_id WHERE f.case_id=$1 ORDER BY (f.state IN ('open','reworking','rerunning')) DESC,f.created_at DESC,f.id DESC LIMIT 50",[caseId])).rows;
+  const ids=rows.map(r=>r.id);
+  const runs=rows.length?(await db.query("SELECT id,state,source_revision AS \"sourceRevision\",feedback_id,report FROM (SELECT id,state,source_revision,reset_packet->>'feedbackId' AS feedback_id,result->'resetReport' AS report,row_number() OVER(PARTITION BY reset_packet->>'feedbackId' ORDER BY created_at DESC,id DESC) AS position FROM zora_jobs WHERE case_id=$1 AND reset_packet->>'feedbackId'=ANY($2::text[])) ranked WHERE position<=5 ORDER BY feedback_id,position",[caseId,ids])).rows:[];
+  const rules=rows.length?(await db.query('SELECT id,feedback_id,finding_index AS "findingIndex",checkers,rule,standing,created_by AS "createdBy",created_at AS "createdAt",decided_by AS "decidedBy",decided_at AS "decidedAt",decision_note AS "decisionNote" FROM zora_checklist_rules WHERE case_id=$1 ORDER BY finding_index,created_at',[caseId])).rows:[];
+  return rows.map(({workflow,...row})=>{
+    const internal=!user||canReadInternal(user),note=!user||canReadResetNote(user,workflow,row.restricted),hidden=!internal&&row.restricted;
+    const resetRuns=runs.filter(run=>run.feedback_id===row.id).map(({feedback_id,report,...run})=>({...run,report:note?report:null,reportHash:report?resetDigest(report):null}));
+    const checklist=rules.filter(r=>r.feedback_id===row.id).map(({feedback_id,...r})=>({...r,rule:hidden?null:r.rule}));
+    return {...row,...(hidden?{note:null,findings:null}:{}),explanations:internal?row.explanations:null,resetRuns,checklist,rerunCheckers:row.escalation_required?rerunCheckers(workflow,row.return_stage,row.stage_id):[]};
+  });
 }
 export async function requireEscalationResolved(db:PoolClient,caseId:string,stage:string){
   if(!documentGates.has(stage))return;
   if((await db.query("SELECT 1 FROM zora_gate_feedback WHERE case_id=$1 AND escalation_required AND state IN ('open','reworking') LIMIT 1",[caseId])).rows.length)
-    throw new HttpError(409,'A document-gate escalation remains open. Record the explanation, fresh whole-document trust reset and independent rerun before approval; an ordinary revision cannot clear it.');
+    throw new HttpError(409,'A document-gate escalation remains open. Record the explanation, fresh whole-document trust reset and independent re-run from the return point before approval; an ordinary revision cannot clear it.');
+}
+/** The re-evaluation note may be read by internal reviewers, or by this workflow's document-gate approvers when nothing private is involved. */
+export function canReadResetNote(user:Actor,workflow:WorkflowId,restricted:boolean){
+  if(canReadInternal(user))return true;
+  return !restricted&&stagesFor(workflow).some(s=>documentGates.has(s.id)&&s.approvers.some(r=>user.roles.includes(r)));
 }

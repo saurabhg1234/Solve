@@ -38,6 +38,12 @@ The native bridge now resolves the existing valid Vercel token securely using su
 Build work runs while a Codex task is actively executing. A final reply ends execution; “unfinished” means pending implementation, not an invisible background build. No automatic recurrence is verified.
 
 
+## ESC-4 re-run milestone (Claude, 15 October 2026)
+
+Implemented on `claude/busy-turing-x034n2` (from `codex/zora-foundation`); **not deployed**. ESC-4 now re-runs QC from the BRD return point with new reviewer instances on the regenerated ESC-3 draft only, records one checklist rule per finding before reviewers start, requires reviewers to report every applicable rule ID, requires the next document-gate approver to acknowledge the exact re-evaluation note hash, and closes the escalation only when that approval completes after a passed re-run. Administrators decide standing/retired workflow rules. Migration adds `zora_checklist_rules` (19 tables) and `zora_gate_feedback.rerun/resolution/note_reads`. See [ESCALATION_RERUN.md](ESCALATION_RERUN.md).
+
+Verified on a fresh local PostgreSQL 16 + Next dev stack (synthetic config, loopback only): typecheck, **47/47** TypeScript tests, production build, migration twice, and local fixtures `test_local_escalation_rerun`, `test_local_trust_reset` (including the native CLI), `test_local_reviews`, `test_local_gate_feedback`, `test_local_explanations` and `test_local_api`; a compiled-browser check exercised the re-run form, note acknowledgement and resolved state at desktop and 390 px widths. Python document tests and live production checks were not rerun in this session. Behaviour change: unrestricted ESC-3 notes are now visible to the workflow's document-gate approvers (they must read them at the gate).
+
 ## Native document milestone
 
 Deployed from **7fa46df**, deployment **dpl_AUEcok8TWE5FTiA41Gp19wnKYpAX**, **READY**, at https://zora-mindmap.vercel.app. Live verification at **21:51 Dubai** confirms connector/schema health, an active subscription, unsigned case/review denial, retained Vercel protection and zero production pursuits/review runs/active jobs. No generated local fixture was published.

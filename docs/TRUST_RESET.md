@@ -31,9 +31,9 @@ The native `result.schema.json` includes this contract. Sections and text are bo
 
 The portal records progress and renders the section note for assigned internal reviewers. Details remain private in case APIs and request packs; other members see status only. A full revision retains prior notes. Regenerated drafts remain unapproved artifacts. Completion leaves the pursuit **blocked** and the escalation **open**; the feedback panel states that independent checks are pending.
 
-## Outstanding ESC work
+## ESC-4 and remaining ESC work
 
-ESC-4 still needs root-cause checklist updates, new reviewer execution from the correct return point, validated linkage to the corrected draft and a controlled escalation-resolution transition. The next human gate must receive and record reading an appropriate re-evaluation note; that gate-reading flow is not implemented here. Original-producer resumption and pre-draft D2/D3 escalation continuation also remain incomplete. No human approval or sending permission is inferred from an ESC-3 result.
+ESC-4 is implemented in [ESCALATION_RERUN.md](ESCALATION_RERUN.md): checklist rules per finding, a fresh-reviewer re-run from the return point on the regenerated draft, note-hash reading at the next document gate and controlled closure. Unrestricted re-evaluation notes are now visible to the workflow's document-gate approvers so they can read them at the gate. Original-producer resumption and pre-draft D2/D3 escalation continuation remain incomplete. No human approval or sending permission is inferred from an ESC-3 result.
 
 Changed-source escalations need a fresh confirmed baseline and a future explicit reconciliation path; they cannot reuse this same-source shortcut. A recorded section note is not full W1–W8 acceptance.
 

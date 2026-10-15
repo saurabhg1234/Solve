@@ -8,6 +8,8 @@ import type { StageResult } from './result';
 import { inventory,MAX_REVIEW_ELEMENTS,ReviewInputError,type ReviewElement,type ReviewFile } from './review-manifest';
 import { reviewPlan,reviewInstructions,type ReviewResult } from './review-plan';
 import { knowledgeHolds } from './knowledge';
+import { CHECKLIST_PACKET_LIMIT,packetRules,rulesFor } from './checklist';
+import { exactIds } from './trust-reset-contract';
 import { parseSourceTranscript,matchTranscript,transcriptHash,TRANSCRIPT_LIMIT,type SourceTranscript } from './source-transcript';
 
 async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string,loop:number){
@@ -72,7 +74,9 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
     if(error instanceof ReviewInputError)return {missingInputs:[error.message]};
     return {missingInputs:['A review document could not be inventoried completely. Supply a valid, unencrypted review copy; coverage will not be guessed.']};
   }
-  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,sourceTranscripts:[...transcripts.values()].map(({artifact,transcript})=>({sourceId:transcript.sourceId,sourceSha256:transcript.sourceSha256,transcriptId:artifact.id,transcriptSha256:artifact.sha256,pageCount:transcript.pages.length,status:'unverified'})),files:files.map(({job_id,...file})=>file),elements};
+  const checklist=await packetRules(db,c.id,c.workflow,plan.passes.map(p=>p.checker));
+  if(checklist.length>CHECKLIST_PACKET_LIMIT)return {missingInputs:[`More than ${CHECKLIST_PACKET_LIMIT} checklist rules apply; consolidate standing rules before QC.`]};
+  const packet={caseId:c.id,workflow:c.workflow,stageId:job.stage_id,sourceRevision:c.sourceRevision,brief:c.briefing,checklist,sourceTranscripts:[...transcripts.values()].map(({artifact,transcript})=>({sourceId:transcript.sourceId,sourceSha256:transcript.sourceSha256,transcriptId:artifact.id,transcriptSha256:artifact.sha256,pageCount:transcript.pages.length,status:'unverified'})),files:files.map(({job_id,...file})=>file),elements};
   const hash=digest(packet),runId=randomUUID();
   const policy=(await db.query('SELECT qc_clean_loops,qc_max_loops FROM zora_cases WHERE id=$1',[c.id])).rows[0];
   await db.query('INSERT INTO zora_qc_runs(id,case_id,job_id,case_version,source_revision,creator_context,packet,packet_hash,clean_loops,max_loops) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',[runId,c.id,job.id,c.version,c.sourceRevision,job.context_id,JSON.stringify(packet),hash,policy.qc_clean_loops,policy.qc_max_loops]);
@@ -109,6 +113,7 @@ export async function completeReview(db:PoolClient,id:string,leaseId:string,cont
   const expected=review.packet.elements.map((e:ReviewElement)=>e.id);
   if(result.packetHash!==review.packet_hash||!validateCoverage({expectedElementIds:expected,checkedElementIds:result.checkedElementIds}))throw new HttpError(422,'Review hash and complete, unique element coverage are required');
   const ids=new Set(expected);if(result.findings.some(f=>!ids.has(f.elementId)))throw new HttpError(422,'Every finding must reference an inventoried element');
+  if(!exactIds(rulesFor(review.packet,review.checker),result.checkedRuleIds??[]))throw new HttpError(422,'Report every applicable checklist rule exactly once in checkedRuleIds');
   const withdrawn=await knowledgeHolds(db,review.case_id);if(withdrawn.length)result={...result,missingInputs:[...result.missingInputs,...withdrawn]};
   await db.query("UPDATE zora_reviews SET state='completed',result=$2,completed_at=now() WHERE id=$1",[id,JSON.stringify(result)]);
   await event(db,review.case_id,'qc.pass_recorded',review.worker_id,{reviewId:id,checker:review.checker,findings:result.findings.length,checked:result.checkedElementIds.length,loop:review.loop_number});

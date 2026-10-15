@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { stagesFor } from '../lib/engine';
 
 async function main(){
-  const s=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));
+  const s=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));
   if(process.env.ZORA_LOCAL_TEST_ORIGIN)s.ZORA_APP_URL=process.env.ZORA_LOCAL_TEST_ORIGIN;
   const origin=new URL(s.ZORA_APP_URL);assert.equal(origin.hostname,'127.0.0.1');assert.equal(new URL(s.DATABASE_URL).hostname,'127.0.0.1');
   const db=new Pool({connectionString:s.DATABASE_URL}),cases:string[]=[],cookies:Record<string,string>={};
@@ -103,7 +103,7 @@ async function main(){
       }assert.deepEqual(errors,[]);}finally{await browser.close();}
       console.log('Compiled gate-feedback browser checks passed: file-linked rejection form, visible issue/history and trust-reset hold, desktop/mobile layout and zero page errors.');
     }
-    console.log('Local gate feedback checks passed: note/file evidence retention, ordinary correction through fresh QC and a new human gate, one synthetic human release, concurrent/stale/role guards, QC-link/hash/severity checks, BRD escape/commercial routes, privacy and unresolved escalation blocking approval across a full revision. ESC-4 return checks and semantic acceptance are still pending.');
+    console.log('Local gate feedback checks passed: note/file evidence retention, ordinary correction through fresh QC and a new human gate, one synthetic human release, concurrent/stale/role guards, QC-link/hash/severity checks, BRD escape/commercial routes, privacy and unresolved escalation blocking approval across a full revision. ESC-4 re-run and closure are covered by test_local_escalation_rerun.ts; semantic acceptance is still pending.');
   }finally{
     for(const id of cases){for(const table of ['zora_review_contexts','zora_reviews','zora_qc_runs','zora_uploads','zora_case_members','zora_approvals','zora_artifacts','zora_sources','zora_events','zora_jobs'])await db.query(`DELETE FROM ${table} WHERE case_id=$1`,[id]);await db.query('DELETE FROM zora_cases WHERE id=$1',[id]);}await db.end();
   }

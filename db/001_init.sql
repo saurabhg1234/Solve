@@ -184,3 +184,26 @@ CREATE TABLE IF NOT EXISTS zora_draft_contexts (
  context_id text NOT NULL, job_id uuid NOT NULL REFERENCES zora_jobs(id) ON DELETE CASCADE,
  created_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY(case_id,context_id)
 );
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback DROP CONSTRAINT IF EXISTS zora_gate_feedback_state_check;
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback ADD CONSTRAINT zora_gate_feedback_state_check CHECK(state IN ('open','reworking','rerunning','addressed','superseded'));
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback ADD COLUMN IF NOT EXISTS rerun jsonb;
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback ADD COLUMN IF NOT EXISTS resolution jsonb;
+-- zora:statement-breakpoint
+ALTER TABLE zora_gate_feedback ADD COLUMN IF NOT EXISTS note_reads jsonb NOT NULL DEFAULT '[]' CHECK(jsonb_typeof(note_reads)='array');
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_checklist_rules (
+ id uuid PRIMARY KEY, case_id uuid NOT NULL REFERENCES zora_cases(id) ON DELETE CASCADE,
+ feedback_id uuid NOT NULL REFERENCES zora_gate_feedback(id) ON DELETE CASCADE,
+ finding_index integer NOT NULL CHECK(finding_index BETWEEN 0 AND 19), workflow text NOT NULL,
+ checkers jsonb NOT NULL CHECK(jsonb_typeof(checkers)='array'), rule text NOT NULL,
+ standing text NOT NULL DEFAULT 'proposed' CHECK(standing IN ('proposed','standing','declined')),
+ created_by text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(),
+ decided_by text, decided_at timestamptz, decision_note text,
+ UNIQUE(feedback_id,finding_index)
+);
+-- zora:statement-breakpoint
+CREATE INDEX IF NOT EXISTS zora_checklist_rules_standing ON zora_checklist_rules(workflow) WHERE standing='standing';

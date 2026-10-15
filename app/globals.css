@@ -36,3 +36,6 @@ main{padding:42px 42px 0;max-width:1640px;margin:auto}.page-title{display:flex;j
 .mailbox-monitor dl > div { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; line-height: 1.5; }
 .mailbox-monitor dt { color: var(--muted); }
 .mailbox-monitor dd { margin: 0; text-align: right; color: var(--ink); }
+.checker-options{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 10px}.checker-option,.modal .checker-option{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:12px;font-weight:600;color:var(--ink)}.checker-option input,.modal .checker-option input{display:inline-block;width:auto;height:auto;margin:0;padding:0}
+.checklist-rule{margin:10px 0;padding:10px;background:#fff;border-radius:6px}.checklist-rule p{margin:0 0 4px;white-space:pre-wrap;overflow-wrap:anywhere}.checklist-rule .detail-actions{margin-top:8px}
+.note-reading{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:6px;background:#fff}.note-reading .checker-option,.modal .note-reading .checker-option{margin-top:10px}

@@ -8,11 +8,11 @@ import assert from 'node:assert/strict';
 import { stagesFor } from '../lib/engine';
 
 async function main(){
- const env=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));
+ const env=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));
  if(process.env.ZORA_LOCAL_TEST_ORIGIN)env.ZORA_APP_URL=process.env.ZORA_LOCAL_TEST_ORIGIN;
  const origin=new URL(env.ZORA_APP_URL);assert.equal(origin.hostname,'127.0.0.1');assert.equal(new URL(env.DATABASE_URL).hostname,'127.0.0.1');
  const db=new Pool({connectionString:env.DATABASE_URL}),cases:string[]=[],cookies:Record<string,string>={};
- const root='/workspace/solve-environment/explanation-fixture-'+randomUUID();
+ const root=(process.env.ZORA_LOCAL_WORK_ROOT||'/workspace/solve-environment')+'/explanation-fixture-'+randomUUID();
  for(const email of ['tester@mindmapdigital.ai','pricing-tester@mindmapdigital.ai','outsider@mindmapdigital.ai'])cookies[email]=await new SignJWT({name:'Synthetic explanation test'}).setProtectedHeader({alg:'HS256'}).setSubject(email).setIssuer('zora').setAudience('zora-portal').setIssuedAt().setExpirationTime('30m').sign(new TextEncoder().encode(env.ZORA_SESSION_SECRET));
  async function call(path:string,body?:unknown,worker=false,email='tester@mindmapdigital.ai'){
   const r=await fetch(new URL(path,origin),{method:body===undefined?'GET':'POST',headers:{Origin:origin.origin,'Content-Type':'application/json',...(worker?{Authorization:`Bearer ${env.ZORA_RUNNER_TOKEN}`}:{Cookie:`zora_session=${cookies[email]}`})},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,body:await r.json()};

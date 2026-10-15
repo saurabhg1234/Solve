@@ -6,7 +6,7 @@ import { SignJWT } from 'jose';
 import { Pool } from 'pg';
 
 async function main() {
-  const state=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));
+  const state=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));
   const origin=new URL(state.ZORA_APP_URL);
   assert.equal(origin.hostname,'127.0.0.1','These fixtures are restricted to the local test server');
   const token=await new SignJWT({name:'Local Integration Tester'}).setProtectedHeader({alg:'HS256'}).setSubject('tester@mindmapdigital.ai').setIssuer('zora').setAudience('zora-portal').setIssuedAt().setExpirationTime('10m').sign(new TextEncoder().encode(state.ZORA_SESSION_SECRET));

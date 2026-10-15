@@ -7,7 +7,7 @@ import { Pool } from 'pg';
 import { knowledgeHolds } from '../lib/knowledge';
 
 async function main(){
-  const local=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));if(process.env.ZORA_LOCAL_TEST_ORIGIN)local.ZORA_APP_URL=process.env.ZORA_LOCAL_TEST_ORIGIN;
+  const local=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));if(process.env.ZORA_LOCAL_TEST_ORIGIN)local.ZORA_APP_URL=process.env.ZORA_LOCAL_TEST_ORIGIN;
   const origin=new URL(local.ZORA_APP_URL);assert.equal(origin.hostname,'127.0.0.1');assert.equal(new URL(local.DATABASE_URL).hostname,'127.0.0.1');
   const db=new Pool({connectionString:local.DATABASE_URL});const cases:string[]=[];const entries:string[]=[];const cookies:Record<string,string>={};
   for(const email of ['tester@mindmapdigital.ai','admin-tester@mindmapdigital.ai','outsider@mindmapdigital.ai','demo-tester@mindmapdigital.ai'])cookies[email]=await new SignJWT({name:'Synthetic knowledge fixture'}).setProtectedHeader({alg:'HS256'}).setSubject(email).setIssuer('zora').setAudience('zora-portal').setIssuedAt().setExpirationTime('20m').sign(new TextEncoder().encode(local.ZORA_SESSION_SECRET));
