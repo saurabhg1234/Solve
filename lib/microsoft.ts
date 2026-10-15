@@ -6,6 +6,7 @@ import { HttpError } from './auth';
 import { cleanFilename,FILE_LIMIT,hashBytes } from './files';
 
 let cached: {token:string;until:number}|undefined;
+export const EMAIL_ATTACHMENT_LIMIT=24;
 export function safeGraphUrl(pathOrUrl:string):string {
   const url=new URL(pathOrUrl,'https://graph.microsoft.com/v1.0/');
   if(url.origin!=='https://graph.microsoft.com'||!url.pathname.startsWith('/v1.0/')) throw new Error('Invalid Microsoft continuation URL');
@@ -49,8 +50,9 @@ export async function emailAttachments(mailbox:string,messageId:string,io={json:
     if(!Array.isArray(result.value))throw new HttpError(502,'Microsoft returned an invalid attachment list');
     for(const item of result.value){
       if(item['@odata.type']!=='#microsoft.graph.fileAttachment')throw new HttpError(422,`Provide a file copy of the linked or nested attachment: ${cleanFilename(String(item.name||'attachment'))}`);
-      if(files.length>=12||Number(item.size)>FILE_LIMIT||total+Number(item.size||0)>64*1024*1024)throw new HttpError(413,'Email intake supports up to 12 files, 32 MB per file and 64 MB total; provide larger inputs separately');
+      if(files.length>=EMAIL_ATTACHMENT_LIMIT||Number(item.size)>FILE_LIMIT||total+Number(item.size||0)>64*1024*1024)throw new HttpError(413,'Email intake supports up to 24 files, 32 MB per file and 64 MB total; provide larger inputs separately');
       const data=await io.bytes(`${prefix}/attachments/${encodeURIComponent(item.id)}/$value`);total+=data.length;
+      if(!data.length||data.length>FILE_LIMIT)throw new HttpError(413,'An email attachment is empty or exceeds the 32 MB limit');
       if(total>64*1024*1024)throw new HttpError(413,'Email attachments exceed the 64 MB intake limit');
       const mimeType=/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+$/.test(item.contentType||'')?item.contentType:'application/octet-stream';
       files.push({filename:cleanFilename(String(item.name||'attachment')),mimeType,data,sha256:hashBytes(data),provenance:{kind:'email_attachment',mailbox,messageId,attachmentId:item.id,originalFilename:String(item.name||'attachment'),inline:!!item.isInline}});

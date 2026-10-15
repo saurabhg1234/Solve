@@ -30,3 +30,15 @@ test('private sources require both pursuit access at the route and an internal r
   for(const role of ['admin','architect','pricing_owner','delivery_lead'])assert.equal(canReadSource(user(role),'internal'),true);
   assert.equal(canReadSource(user('admin'),undefined),false);assert.equal(canReadSource(user('admin'),'unknown'),false);
 });
+
+test('email intake accepts a 13-file pilot pack and enforces the expanded file bound',async()=>{
+  const previous={mailbox:process.env.MS_ZORA_MAILBOX,folder:process.env.MS_ZORA_FOLDER_ID};
+  process.env.MS_ZORA_MAILBOX='fixture@example.test';process.env.MS_ZORA_FOLDER_ID='fixture-folder';
+  let count=13,read=0;
+  const io={json:async(path:string)=>path.includes('/attachments?')?{value:Array.from({length:count},(_,i)=>({'@odata.type':'#microsoft.graph.fileAttachment',id:`asset-${i}`,name:`asset-${i}.txt`,contentType:'text/plain',size:1}))}:{parentFolderId:'fixture-folder',subject:'Re: [ZORA] Pilot assets',categories:[]},bytes:async()=>{read++;return Buffer.from('x');}};
+  try{
+    assert.equal((await emailAttachments('fixture@example.test','pilot',io)).length,13);
+    count=25;read=0;await assert.rejects(emailAttachments('fixture@example.test','too-many',io),/up to 24 files/);assert.equal(read,24);
+    await assert.rejects(emailAttachments('fixture@example.test','empty',{...io,bytes:async()=>Buffer.alloc(0)}),/empty/);
+  }finally{for(const [key,value] of Object.entries({MS_ZORA_MAILBOX:previous.mailbox,MS_ZORA_FOLDER_ID:previous.folder})){if(value===undefined)delete process.env[key];else process.env[key]=value;}}
+});

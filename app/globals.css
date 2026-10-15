@@ -30,3 +30,9 @@ main{padding:42px 42px 0;max-width:1640px;margin:auto}.page-title{display:flex;j
 
 /* Email identity remains distinct from the portal palette. */
 .orb-email{--orb-fill:radial-gradient(circle at 30% 25%,#fff2fc 0%,#ffb5e9 10%,#ec57c3 32%,#c01a93 55%,#76135c 82%,#541043 100%);--orb-shadow:inset -3px -4px 9px #4c053c66,0 3px 12px #b52c8c26;--orb-glint:#ffe6fd80;--orb-orbit-top:#f6a3e7b3;--orb-orbit-bottom:#8016645c}
+
+.mailbox-monitor { margin-top: 20px; }
+.mailbox-monitor dl { display: grid; gap: 10px; margin: 18px 0; }
+.mailbox-monitor dl > div { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; line-height: 1.5; }
+.mailbox-monitor dt { color: var(--muted); }
+.mailbox-monitor dd { margin: 0; text-align: right; color: var(--ink); }
