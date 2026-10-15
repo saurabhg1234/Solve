@@ -89,7 +89,7 @@ export async function syncMailbox() {
   const claim=await db.query("UPDATE zora_mail_state SET syncing_until=now()+interval '55 seconds',sync_lease=$3 WHERE mailbox=$1 AND folder_id=$2 AND (syncing_until IS NULL OR syncing_until<now()) RETURNING *",[ms.mailbox,ms.folder,lease]);
   if(!claim.rows[0]) return {synced:0,busy:true};
   let synced=0;
-  const base=`users/${encodeURIComponent(ms.mailbox)}/mailFolders/${encodeURIComponent(ms.folder)}/messages/delta?$select=id,subject,from,body,receivedDateTime,hasAttachments,categories`;
+  const base=`users/${encodeURIComponent(ms.mailbox)}/mailFolders/${encodeURIComponent(ms.folder)}/messages/delta?$select=id,subject,from,body,receivedDateTime,hasAttachments,categories,conversationId`;
   let link:string=claim.rows[0].delta_link||base;
   try {
     const started=Date.now();
@@ -103,7 +103,7 @@ export async function syncMailbox() {
           const receipt=await client.query('INSERT INTO zora_mail_receipts(mailbox,message_id,disposition) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING message_id',[ms.mailbox,item.id,owned?'zora':'ignored']);
           if(!receipt.rows.length||!owned) return;
           // Mail is never marked read, moved, categorised or deleted. Jarvis retains its own state.
-          await client.query('INSERT INTO zora_inbox(id,mailbox,message_id,subject,sender,body_text,received_at,attachment_notice) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[randomUUID(),ms.mailbox,item.id,String(item.subject||'').slice(0,500),String(item.from?.emailAddress?.address||''),String(item.body?.content||''),item.receivedDateTime||new Date().toISOString(),item.hasAttachments?'File attachments will be imported when a pursuit is created.':null]);
+          await client.query('INSERT INTO zora_inbox(id,mailbox,message_id,subject,sender,body_text,received_at,attachment_notice,conversation_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[randomUUID(),ms.mailbox,item.id,String(item.subject||'').slice(0,500),String(item.from?.emailAddress?.address||''),String(item.body?.content||''),item.receivedDateTime||new Date().toISOString(),item.hasAttachments?'File attachments will be imported when a pursuit is created.':null,typeof item.conversationId==='string'?item.conversationId.slice(0,500):null]);
           synced++;
         });
       }

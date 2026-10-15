@@ -207,3 +207,17 @@ CREATE TABLE IF NOT EXISTS zora_checklist_rules (
 );
 -- zora:statement-breakpoint
 CREATE INDEX IF NOT EXISTS zora_checklist_rules_standing ON zora_checklist_rules(workflow) WHERE standing='standing';
+-- zora:statement-breakpoint
+ALTER TABLE zora_inbox ADD COLUMN IF NOT EXISTS conversation_id text;
+-- zora:statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='zora_inbox' AND column_name='triage') THEN
+    ALTER TABLE zora_inbox ADD COLUMN triage jsonb;
+    -- Automatic intake starts with new mail only; earlier messages stay with manual triage.
+    UPDATE zora_inbox SET triage=jsonb_build_object('state','preexisting','reason','Received before automatic intake was enabled','at',now()) WHERE case_id IS NULL;
+  END IF;
+END $$;
+-- zora:statement-breakpoint
+CREATE INDEX IF NOT EXISTS zora_inbox_untriaged ON zora_inbox(received_at) WHERE triage IS NULL AND case_id IS NULL;
+-- zora:statement-breakpoint
+CREATE INDEX IF NOT EXISTS zora_inbox_conversation ON zora_inbox(conversation_id) WHERE conversation_id IS NOT NULL;

@@ -394,3 +394,9 @@ This handoff transfers the existing implementation and evidence. It does not cla
 - Verified locally only (fresh PostgreSQL 16 on loopback, synthetic config/secrets, `next dev` with the Graph fixture): see BUILD_STATUS. Local fixtures now accept `ZORA_LOCAL_TEST_CONFIG` / `ZORA_LOCAL_WORK_ROOT`.
 - Production: Vercel API confirmed `dpl_352vJ2KSipPy93LisTnqAxR21ogH` still READY from `a5d99c5`. Live DB/monitor checks were **not** run: `DATABASE_URL` is a Vercel "sensitive" variable (not readable via API) and pulling the other secrets into the session was blocked. **Not deployed; the ESC-4 migration has not been run on Neon.** Deploying requires running `npm run db:migrate` against Neon before or with the release.
 - Still open: unattended runtime/dispatcher choice (now Claude-based options exist — see the PR/summary), inbox triage, changed-source and pre-draft ESC continuation, Parker W3/W4/W5 benchmark, all-eight acceptance.
+
+**15 October 2026 — automatic intake, Ganesh onboarding.**
+
+- Saurabh authorised Claude to send Zora correspondence (“you are authorized and permitted to send … always”). Sent to Ganesh, Cc Saurabh, from the shared mailbox at **05:34:47 UTC**: “[ZORA] Your Zora access as pricing owner, and the pricing inputs we need” (portal sign-in steps, role, eight pricing-policy inputs). Verified in Sent Items; private receipt `.zora/ganesh-onboarding-receipt.json` (ignored by Git). Do not resend.
+- Real-time automatic intake added (`docs/AUTO_INTAKE.md`): tagged email → proposed pursuit right after the Microsoft notification, with routing confirmation retained. Not deployed.
+- Saurabh asked to “go auto” (deploy). Production migration/deploy from this session was blocked by the session's permission policy. Both migrations (ESC-4 and intake) are additive and repeatable; deploy = run `npm run db:migrate` against Neon, then deploy the branch to the existing Vercel project.
