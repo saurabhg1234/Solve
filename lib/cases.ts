@@ -6,6 +6,7 @@ import { HttpError, type Actor } from './auth';
 import type { CaseRecord, WorkflowId } from './catalogue';
 import { emailAttachments } from './microsoft';
 import { FILE_LIMIT } from './files';
+import { defaultQcPolicy } from './config';
 
 export function mapCase(row: Record<string, unknown>): CaseRecord {
   return { id: String(row.id), title: String(row.title), client: String(row.client), workflow: row.workflow as WorkflowId,
@@ -48,7 +49,8 @@ export async function createCase(input: { title: string; client: string; workflo
       if (inbox.case_id) throw new HttpError(409,'This email is already linked to a pursuit');
       source = 'email';
     }
-    const result = await db.query("INSERT INTO zora_cases(id,title,client,workflow,status,source,requested_by,briefing) VALUES($1,$2,$3,$4,'awaiting_confirmation',$5,$6,$7) RETURNING *",[id,input.title,input.client,input.workflow,source,user.email,input.briefing]);
+    const qc = defaultQcPolicy();
+    const result = await db.query("INSERT INTO zora_cases(id,title,client,workflow,status,source,requested_by,briefing,qc_clean_loops,qc_max_loops) VALUES($1,$2,$3,$4,'awaiting_confirmation',$5,$6,$7,$8,$9) RETURNING *",[id,input.title,input.client,input.workflow,source,user.email,input.briefing,qc?.cleanLoops??null,qc?.maxLoops??null]);
     await event(db,id,'request.created',user.email,{workflow:input.workflow,source});
     if (inbox) {
       const bytes = Buffer.from(`Subject: ${inbox.subject}\nFrom: ${inbox.sender}\nReceived: ${new Date(inbox.received_at).toISOString()}\nMicrosoft message ID: ${inbox.message_id}\n\n${inbox.body_text}`);

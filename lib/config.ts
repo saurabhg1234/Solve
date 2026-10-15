@@ -25,3 +25,10 @@ export function ready() {
   const ms = microsoftConfig();
   return { database: !!process.env.DATABASE_URL, identity: !!(ms.tenant && ms.client && ms.secret && process.env.ZORA_SESSION_SECRET && process.env.ZORA_ALLOWED_EMAILS && process.env.ZORA_APP_URL), mailbox: !!(ms.tenant && ms.client && ms.secret && ms.folder && process.env.ZORA_WEBHOOK_SECRET), runner: !!process.env.ZORA_RUNNER_TOKEN };
 }
+/** Pilot-wide QC exit rule ("clean/max", e.g. "1/3") applied to new pursuits. Malformed or absent → no default (QC holds). */
+export function defaultQcPolicy(value = process.env.ZORA_QC_POLICY): { cleanLoops: number; maxLoops: number } | null {
+  const match = /^\s*(\d{1,2})\s*\/\s*(\d{1,2})\s*$/.exec(value || '');
+  if (!match) return null;
+  const cleanLoops = Number(match[1]), maxLoops = Number(match[2]);
+  return cleanLoops >= 1 && cleanLoops <= 10 && maxLoops >= cleanLoops && maxLoops <= 20 ? { cleanLoops, maxLoops } : null;
+}

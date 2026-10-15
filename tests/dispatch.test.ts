@@ -26,3 +26,10 @@ test('native context comes from the platform session identity, Codex first',()=>
   assert.equal(claude,'claude:cse_01ABCDEFGHJKMNPQRSTVWXYZ');assert.ok(contextSchema.safeParse(claude).success);
   assert.equal(nativeContext({}),undefined);
 });
+
+test('pilot QC default parses clean/max and fails closed on anything else',async()=>{
+  const { defaultQcPolicy }=await import('../lib/config');
+  assert.deepEqual(defaultQcPolicy('1/3'),{cleanLoops:1,maxLoops:3});
+  assert.deepEqual(defaultQcPolicy(' 2 / 5 '),{cleanLoops:2,maxLoops:5});
+  for(const bad of [undefined,'','3/1','0/3','1/21','11/12','one/three','1,3'])assert.equal(defaultQcPolicy(bad),null,String(bad));
+});
