@@ -22,7 +22,7 @@ This is a tested foundation. None of W1–W8 has full end-to-end acceptance. Loc
 
 ## Identity, roles and mailbox
 
-Zora is Mindmap Digital's magenta-orb solutions agent. All eight BRD workflows are in the first pilot, with S1 commercials and S2 QC. All reasoning and document generation run in native Codex sessions: no Claude, model APIs or nested model CLI. Vercel hosts the portal and notification endpoints.
+Zora is Mindmap Digital's solutions agent. Saurabh requested a clean blue-and-white portal on 15 October: white navigation, blue accents/orb, cool gray backgrounds and dark text. Outgoing emails and email previews retain the previously requested magenta stripe/orb, using the email-specific Orb tone. All eight BRD workflows are in the first pilot, with S1 commercials and S2 QC. All reasoning and document generation run in native Codex sessions: no Claude, model APIs or nested model CLI. Vercel hosts the portal and notification endpoints.
 
 Mailbox **apex.ap@mindmapdigital.ai** is shared with Jarvis. Process only explicit `[ZORA]` requests in the dedicated Zora folder; preserve other mailbox state. Saurabh confirmed Outlook routing and the Entra callback setup. Interactive work-account sign-in and actual native recurrence remain unaccepted.
 
