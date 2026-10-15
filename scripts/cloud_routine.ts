@@ -1,4 +1,4 @@
-/** A bounded bridge for a native cloud Codex session. Never launches another model or daemon. */
+/** A bounded bridge for a native cloud agent session (Codex or Claude Code). Never launches another model or daemon. */
 import { explanationBatchSchema } from '../lib/escalation-explanation';
 import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, realpath, stat, writeFile,access } from 'node:fs/promises';
@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { resultSchema, safeOutputPath } from '../lib/result';
 import { portalRequest,downloadFiles,persistOutputs } from '../worker/transport';
 import { contextSchema,reviewResultSchema } from '../lib/review-plan';
+import { nativeContext } from '../lib/native-context';
 import { spawn,type ChildProcess } from 'node:child_process';
 
 const stageJobSchema = z.object({
@@ -23,7 +24,6 @@ const reviewJobSchema=z.object({kind:z.literal('review'),id:z.uuid(),leaseId:z.u
 const jobSchema=z.union([reviewJobSchema,stageJobSchema]);
 type Job = z.infer<typeof jobSchema>;
 const root = resolve(process.env.ZORA_WORK_ROOT || '.zora/routine');
-
 function origin() {
   const value = process.env.ZORA_APP_URL;
   if (!value) throw new Error('ZORA_APP_URL is missing');
@@ -43,14 +43,14 @@ async function workspace(path: string): Promise<{ dir: string; job: Job }> {
   const actualRoot = await realpath(root);
   if (!dir.startsWith(actualRoot + sep)) throw new Error('Routine workspace is outside its private root');
   const job = jobSchema.parse(JSON.parse(await readFile(join(dir, 'request.json'), 'utf8')));
-  if(job.contextId!==process.env.CODEX_THREAD_ID)throw new Error('Use the same claimed native task for heartbeat/completion; a fresh reviewer must claim its own packet');
+  if(job.contextId!==nativeContext())throw new Error('Use the same claimed native task for heartbeat/completion; a fresh reviewer must claim its own packet');
   return { dir, job };
 }
 async function heartbeat(job: Job) {
   await request(`/api/${job.kind==='review'?'reviews':'worker'}/${job.id}/heartbeat`, 'ZORA_RUNNER_TOKEN', { leaseId: job.leaseId });
 }
 async function claim() {
-  const contextId=contextSchema.parse(process.env.CODEX_THREAD_ID);
+  const contextId=contextSchema.parse(nativeContext());
   const marker=join(root,'contexts',`${contextId}.json`);
   let claimed=false;try{await access(marker);claimed=true;}catch{}
   if(claimed)throw new Error('This native task already claimed a stage or review; finish it and start a fresh standalone task for the next claim');
@@ -77,6 +77,11 @@ async function claim() {
   await writeFile(join(dir, 'result.schema.json'), JSON.stringify(z.toJSONSchema(job.kind==='review'?reviewResultSchema:resultSchema), null, 2), { mode: 0o600 });
   await heartbeat(job);
   console.log(JSON.stringify({ workspace: dir,kind:job.kind,sources:manifest.length,next:job.kind==='review'?'Read only this isolated packet and inventory.json. Check every element in this fresh native session; complete with the review schema. Do not read other session directories or earlier reports.':'Read instructions.txt, request.json, sources.json and artifacts.json. Work on this stage, label drafts/references separately from workpapers, then save result.json and routine complete. QC stages enqueue fresh independent reviewers; they do not approve themselves.' }));
+}
+async function dispatch() {
+  const contextId=contextSchema.parse(nativeContext());
+  const body=await(await request('/api/worker/dispatch','ZORA_RUNNER_TOKEN',{workerId:process.env.ZORA_WORKER_ID||'zora-dispatcher',contextId})).json();
+  console.log(JSON.stringify({...body.plan,next:body.plan.action==='claim'?'Run routine claim in this session (one item), then complete it. Start at most extraSessions additional fresh worker sessions; each claims one item under its own identity.':'Nothing for an agent to claim. End this session; people handle the human items listed.'}));
 }
 async function escalation(path:string,plan?:string){
   const {dir,job}=await workspace(path);
@@ -136,12 +141,13 @@ async function main() {
   const [action = 'check', path,plan] = process.argv.slice(2);
   if (action === 'check') return maintenance();
   if (action === 'claim') return claim();
+  if (action === 'dispatch') return dispatch();
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
   if (action === 'escalations') return escalation(path);
   if (action === 'explain') {if(!plan)throw new Error('Supply an explanation plan');return escalation(path,plan);}
   if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email'||action==='build-transcript') return documentTool(path,action,plan);
-  throw new Error('Use check, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
+  throw new Error('Use check, dispatch, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
 }
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });
