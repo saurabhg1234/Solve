@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { dispatchPlan,MAX_EXTRA_SESSIONS } from '../lib/dispatch';
+import { dispatchPlan,MAX_WORKER_SESSIONS } from '../lib/dispatch';
 import { nativeContext } from '../lib/native-context';
 import { contextSchema } from '../lib/review-plan';
 
@@ -8,15 +8,15 @@ const none={stages:0,resets:0,reviews:0,leased:0,needsTriage:0,awaitingConfirmat
 
 test('dispatcher stays idle when only human work or active leases exist',()=>{
   const plan=dispatchPlan({...none,needsTriage:2,awaitingConfirmation:1,awaitingApproval:1,leased:1});
-  assert.equal(plan.action,'idle');assert.equal(plan.extraSessions,0);
+  assert.equal(plan.action,'idle');assert.equal(plan.workerSessions,0);
   assert.deepEqual(plan.human,{needsTriage:2,awaitingConfirmation:1,awaitingApproval:1,blocked:0});
   assert.match(plan.reason,/already leased/);
 });
 
-test('dispatcher claims one item per session and bounds extra fresh sessions',()=>{
-  assert.deepEqual([dispatchPlan({...none,stages:1}).action,dispatchPlan({...none,stages:1}).extraSessions],['claim',0]);
-  assert.equal(dispatchPlan({...none,stages:1,reviews:2}).extraSessions,2);
-  assert.equal(dispatchPlan({...none,reviews:40,resets:1}).extraSessions,MAX_EXTRA_SESSIONS);
+test('dispatcher starts one fresh worker per claimable item, bounded per wake',()=>{
+  assert.deepEqual([dispatchPlan({...none,stages:1}).action,dispatchPlan({...none,stages:1}).workerSessions],['claim',1]);
+  assert.equal(dispatchPlan({...none,stages:1,reviews:2}).workerSessions,3);
+  assert.equal(dispatchPlan({...none,reviews:40,resets:1}).workerSessions,MAX_WORKER_SESSIONS);
 });
 
 test('native context comes from the platform session identity, Codex first',()=>{
