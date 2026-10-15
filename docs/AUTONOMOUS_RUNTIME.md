@@ -1,5 +1,7 @@
 # Completing Zora's unattended runtime
 
+**Transfer update:** after this recommendation, Saurabh asked Claude to take over development because the proposed setup was too burdensome. Read [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md). No route below was activated, and the receiving team should establish the actual supported runtime before promising autonomy.
+
 Design and official-documentation check: **15 October 2026**. This is a deployment plan, not an activated worker. The five-minute Vercel mailbox monitor is already live; no unattended Codex dispatcher is deployed.
 
 ## Why incoming mail does not yet produce a proposal

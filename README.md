@@ -1,6 +1,8 @@
 # Zora · Mindmap Digital
 
-Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. Proposal reasoning and creation run in **Codex sessions**, with no Claude or model API integration. Vercel hosts the review portal and Microsoft notification endpoints. The chosen pilot dispatch is a native cloud scheduled task; its bridge and prompt are prepared, but schedule creation still needs the product's Scheduled UI.
+**Claude takeover:** start with [CLAUDE.md](CLAUDE.md) and the [comprehensive handoff](docs/CLAUDE_HANDOFF.md). The complete implementation is on **`codex/zora-foundation`**; at handoff, `main` still contains only the original uploaded assets. Private credentials/client files are held in the existing services and private workspace, with recovery instructions in the handoff.
+
+Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. The current reasoning bridge targets **Codex sessions**, with no model API integration. Saurabh has now selected Claude to continue development; production agent-runtime migration is separate unfinished work. Vercel hosts the review portal, Microsoft notification endpoints and a verified five-minute mailbox monitor. **No unattended reasoning-agent dispatcher is deployed.** Earlier native scheduling assumptions are unverified; see [runtime options and gaps](docs/AUTONOMOUS_RUNTIME.md).
 
 This checkout includes a **tested application foundation**, not a completed implementation of every BRD requirement. It includes the blue-and-white portal identity (with magenta retained for Zora emails), request portal, persistent queue/schema, Microsoft sign-in and isolated email monitoring, Codex request packs, human gates, attachment/private file storage, team access and revision/resume. The native bridge persists real files with hashes and now dispatches independent reviewer tasks. The server inventories document elements, isolates reviewer packets, rejects self-review/incomplete coverage and enforces explicit clean-loop policy before human gates. Native source preparation, approved Word/PPT editing, multi-template slide composition, tagged PDF export and separate buyer/internal RFI workbooks are implemented and locally verified. Advait has supplied the CompareIQ Word layout and real pilot packs; their originals are retained as private drafts. Real native-review acceptance, complete ESC/fix automation, consultant-quality document/demo/video production and all-eight acceptance remain pending. See [the review contract](docs/INDEPENDENT_REVIEW.md) and [your remaining actions](docs/YOUR_PENDING_ACTIONS.md).
 
@@ -49,6 +51,8 @@ The database migration is repeatable and does not delete tables. Preserve provid
 
 ## Project guides
 
+- [Comprehensive Claude handoff and continuation plan](docs/CLAUDE_HANDOFF.md)
+- [Unattended runtime options and missing intake/dispatcher work](docs/AUTONOMOUS_RUNTIME.md)
 - [Product and architecture](docs/ZORA_BLUEPRINT.md)
 - [Microsoft 365 setup and shared mailbox isolation](docs/MICROSOFT_365_SETUP.md)
 - [Environment variables and deployment](docs/ENVIRONMENT_AND_DEPLOYMENT.md)

@@ -1,8 +1,8 @@
 # Environment variables, Codex runner and Vercel deployment
 
-Zora’s content engine uses Codex sessions. Do **not** add `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, model endpoints or an AI SDK. Microsoft Graph and hosting/queue transport remain infrastructure connections.
+**Current handoff:** Saurabh selected Claude to continue development on 15 October 2026. Read [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) for the consolidated setup, live evidence and private asset recovery. The existing content bridge targets Codex sessions and has no model API integration. Moving development to Claude does not itself deploy a new production provider/runtime. Microsoft Graph and hosting/queue transport remain infrastructure connections.
 
-**Latest pilot configuration:** Saurabh selected native cloud scheduling, superseding the separate CLI-host prerequisite below. Neon is migrated and the four cloud application secrets match Vercel. Use [the cloud task bridge](CLOUD_ROUTINE.md) and [current roles/variable values](PILOT_CONFIGURATION.md). Manual maintenance/empty-queue checks pass and the Graph subscription is registered; scheduled recurrence still needs verification. Outlook routing and Entra callback are confirmed. Attachment/file storage, team assignments and revision/resume are implemented; The independent review protocol is implemented; actual fresh native reviews, full ESC/fix automation, complete document/demo/video production and all-eight acceptance remain pending.
+**Current runtime:** Neon is migrated and the four cloud application secrets match Vercel. Microsoft notifications and a five-minute Vercel maintenance cron are live and verified. Automatic agent dispatch is not deployed. Saurabh previously selected native cloud scheduling, but access to the required execution environment and recurrence were never verified. See [runtime options and gaps](AUTONOMOUS_RUNTIME.md), [the existing bridge](CLOUD_ROUTINE.md) and [current roles/variables](PILOT_CONFIGURATION.md). Attachments, team access, revisions and the independent review protocol are implemented; real fresh semantic review, ESC-4, complete document/demo/video production and all-eight acceptance remain pending.
 
 ## Current verified deployment
 
@@ -20,6 +20,7 @@ Production Neon storage is configured; repeatable migrations use supported HTTPS
 | `ZORA_ALLOWED_EMAILS` | Sign-in | No | Approved work emails separated by commas; empty denies access |
 | `ZORA_ROLE_MAP` | Human gates | No | JSON email-to-role mapping; pricing access is explicit |
 | `ZORA_RUNNER_TOKEN` | Portal ↔ runner | Yes | At least 32 random characters, separate from session/webhook secrets |
+| `ZORA_WEBHOOK_SECRET` | Graph notification client-state verification | Yes | Existing secret, 32–128 characters |
 | `ZORA_NOTIFICATION_BYPASS` | Microsoft callback on protected Vercel hosting | Yes | Already configured; use the Vercel automation token, not an AI/session credential |
 | `CRON_SECRET` | Mail renewal and catch-up | Yes | At least 32 random characters, stored in portal and maintenance runner |
 | `Tenant` or `MS_TENANT_ID` | Microsoft | No | Existing binding is present |
@@ -48,7 +49,7 @@ Supported role names are `consultant`, `bid_owner`, `architect`, `delivery_lead`
 }
 ```
 
-Those are shape examples, not actual configured accounts. An admin can access pursuits but cannot approve a role-specific gate merely by being an admin. The current foundation permits owner/admin pursuit access; assigning a full cross-role pursuit team is part of the next implementation milestone.
+Those are shape examples, not actual configured accounts. An admin can access pursuits but cannot approve a role-specific gate merely by being an admin. Pursuit team assignment is implemented; it does not replace account allowlists or role-specific access checks.
 
 ## 1. Review the cloud network draft
 
@@ -84,7 +85,7 @@ npm test
 npm run build
 ```
 
-The **zora-mindmap** Vercel project is linked through ignored `.vercel/project.json`, using the Next.js preset and repository root. Its protected stable hostname, production storage and registered Microsoft subscription are available; continuous renewal/processing still requires verified recurring maintenance.
+The **zora-mindmap** Vercel project is linked through ignored `.vercel/project.json`, using the Next.js preset and repository root. Its protected stable hostname, production storage and registered Microsoft subscription are available. Recurring mailbox maintenance is verified; unattended reasoning/processing remains unfinished.
 
 Deployment has been confirmed by Vercel's READY result and deployed HTTP checks. Reuse the existing token and project link for subsequent deployments. Root-only `.vercelignore` exclusions preserve the hosted `app/api/worker` routes while excluding the local worker, test scripts and original document assets.
 
@@ -92,7 +93,7 @@ After deployment, register the exact Microsoft redirect URI and configure `ZORA_
 
 ## 4. Optional separate Codex CLI runner
 
-The chosen pilot uses [native cloud scheduling](CLOUD_ROUTINE.md). The separate CLI runner below is an alternative, not a prerequisite for that choice. Vercel hosts the portal rather than a permanent Codex process.
+The earlier native cloud schedule was never verified. The separate CLI design below is historical planning, not an active or launch-ready service. **Do not run the existing `npm run worker` unchanged:** it predates the current context/reviewer protocol. Use [the current runtime plan](AUTONOMOUS_RUNTIME.md) and [Claude handoff](CLAUDE_HANDOFF.md) before choosing or implementing a dispatcher. Vercel hosts the portal and mailbox monitor.
 
 1. Install the official Codex CLI on the runner using its supported distribution.
 2. Sign in interactively with the designated Codex account on that machine. Do not extract or upload its OAuth/session files to Vercel.
@@ -100,14 +101,14 @@ The chosen pilot uses [native cloud scheduling](CLOUD_ROUTINE.md). The separate 
 4. Configure `ZORA_APP_URL`, `ZORA_RUNNER_TOKEN`, `CRON_SECRET`, runner identity and private work/repository directories on the runner.
 5. Prepare PDF/DOCX/PPTX/Pillow/PyMuPDF and English Tesseract tools. W6 needs browser/test tooling; W7 needs an agreed local voice/recording/editing toolchain. Raw audio transcription tools must also be selected before expecting recording-only requests to work.
 6. Complete independent QC orchestration and all-eight acceptance before allowing automatic delivery progression.
-7. Run `npm run worker` under an OS service manager and monitor lease loss, failures and queued jobs. Do not use sandbox bypass flags or expose infrastructure secrets inside content-generation sessions.
+7. Only after upgrading and testing the dispatcher against the current queue/reviewer/continuation contract, register the new worker with a service manager and verify lease recovery, failures and queued jobs. Do not expose infrastructure secrets inside content-generation sessions.
 
 The optional CLI runner uses a new `codex exec` session per stage, structured results and five-minute leases renewed every minute. It withholds infrastructure credentials from child sessions, validates paths and imports actual files through the same chunked transport as the native bridge. This optional legacy runner does not attest a native task identity; use the chosen native bridge for the new independent reviewer queue. Missing identity/evidence/policy holds QC.
 
-For a manual pilot, an authorised user can download a Codex request pack and open a session themselves. A result/approval import path still needs completion before the portal can reflect that work. Manual handoff is not automatic email-to-Codex dispatch.
+For a manual pilot, an authorised user can download a request pack and open an appropriate session. The current native bridge persists actual results/files and independent-review reports, and human approvals remain portal actions. Another provider needs an adapter preserving those contracts. Manual handoff is not automatic email-to-agent dispatch.
 
 ## 5. Validate all connected operations
 
 Use [Advait’s pilot plan](ADVAIT_PILOT.md). Required evidence includes mailbox isolation/duplicate/catch-up tests, actual session launch, source/attachment hashes, reviewed artifacts, independent QC pass and element IDs, permission checks, human decisions bound to versions and all eight workflow outcomes. Record failed, blocked, skipped and unrun checks separately.
 
-For this foundation, TypeScript, domain tests, production build and HTTP/browser checks pass. Microsoft authentication/folder reads, local PostgreSQL migrations and local queue/intake checks, plus deployed connector/access/webhook checks have also passed. Production database transactions, continuous notification delivery, interactive Entra sign-in, automatic Codex dispatch and all-eight deliverables remain unverified.
+For this foundation, TypeScript, domain tests, production build and HTTP/browser checks pass. Microsoft authentication/folder reads, local PostgreSQL migrations and local queue/intake checks, deployed connector/access/webhook checks, durable production source imports and recurring mailbox maintenance have passed. Interactive Entra sign-in, automatic reasoning-agent dispatch, real fresh semantic reviews and all-eight deliverables remain unaccepted. See the dated handoff/build evidence for checks actually rerun.

@@ -1,6 +1,6 @@
 # Remaining inputs and decisions
 
-Updated **15 October 2026 (Dubai)**. Engineering continues with the inputs now received. No new Microsoft, Vercel, model API or application secret is required.
+Updated **15 October 2026 (Dubai)**. Saurabh has handed continued development to Claude; see [the comprehensive transfer](CLAUDE_HANDOFF.md). No new Microsoft or Vercel secret is required for the existing application. A new workspace needs secure access to existing bindings/private sources; a future unattended provider/runtime may have separate prerequisites.
 
 **Received from Advait:** CompareIQ Word layout, seven PowerPoint files, Indigrid/Parker/Coty pilot packs, tender code, demo transcripts/Drive library and four team contacts. All thirteen attachments are imported as private drafts, and the Word/PDF format trial passed. See [the received-input inventory](ADVAIT_INPUTS.md). Do not ask for these files again.
 
@@ -13,7 +13,7 @@ Updated **15 October 2026 (Dubai)**. Engineering continues with the inputs now r
 | Working demo and reuse details | Advait | Supply direct app links/access for a first W6/W7 demo, expected test outputs/tolerances, maturity and any client-data/branding reuse limits. The Drive recordings and transcripts are already accessible. |
 | Existing recording/voice/editing tools | Advait | Identify approved tools/licences. No accent preference is recorded; a fixed meeting is not required. |
 | Additional historical clarifications | Advait, if available | Any missing Indigrid buyer answers/RFI/addenda. Parker's RFP, questionnaire, buyer answers, transcript and response are already received. |
-| Unattended Codex execution | Zora engineering; Saurabh supplies workspace/host access for the selected route | Hosted recurrence and access to the Solve tools remain unverified. The recommended alternative is a persistent cloud worker using official Codex CLI sessions with ChatGPT authentication. The legacy dispatcher and automatic inbox triage need engineering before activation. See `docs/AUTONOMOUS_RUNTIME.md`; no worker was activated by that deployment plan. |
+| Unattended agent execution | Receiving implementation team; Saurabh supplies access for the selected route | Claude now takes over development. The production runtime route remains unresolved; hosted Codex recurrence was unverified and the proposed CLI host was not provisioned. Intake triage and a current queue/reviewer dispatcher need implementation. See `CLAUDE_HANDOFF.md` and `AUTONOMOUS_RUNTIME.md`; no worker is active. |
 
 Zora sent the authorised progress email to Advait at **07:16 Dubai on 15 October**, visibly copying Saurabh, and verified it in Sent Items. The receipt and details are in BUILD_STATUS.md and ZORA_HANDOFF.md. Do not send duplicate progress emails automatically. Every authorised outgoing email to others Ccs `saurabh@mindmapdigital.ai` and retains the magenta stripe/orb.
 

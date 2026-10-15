@@ -1,0 +1,16 @@
+# Start here: Zora / Mindmap Digital
+
+Saurabh has explicitly handed this project to Claude to continue development. Read **[docs/CLAUDE_HANDOFF.md](docs/CLAUDE_HANDOFF.md)** first. It is the current consolidated handoff, dated 15 October 2026, and includes the product brief, deployed state, source assets, credentials map, setup, verification, unfinished work and correspondence.
+
+- Repository: `saurabhg1234/Solve`; **the complete implementation is on `codex/zora-foundation`**. At handoff, `main` still contains only the original uploaded assets. Select the implementation branch before working. Preserve existing changes and source files; do not reset to main.
+- Read `AGENTS.md`. Next.js is 16.4.0; read the installed `node_modules/next/dist/docs/` guides before changing framework code.
+- Use repository/database state. Do not import or resume the broken old Codex conversation. Do not assume another provider receives the previous cloud machine, secrets or private files when it clones Git.
+- The portal and five-minute mailbox monitor are live. **Automatic agent dispatch is not deployed; all eight workflows remain unaccepted end to end.** Do not describe a queue, heartbeat, passing fixture or generated sample as an autonomous completed pilot.
+- Earlier documents' “Codex only / no Claude” wording records the previous application-runtime decision. It does not prohibit Claude from developing this project under Saurabh's latest instruction. The production app currently has no model API integration; a runtime/provider migration is separate engineering work and has not been performed by this handoff.
+- Mailbox `apex.ap@mindmapdigital.ai` is shared with Jarvis. Process only explicit Zora requests in the dedicated folder; preserve other mail and mailbox state.
+- Every authorised email to another person must visibly **Cc `saurabh@mindmapdigital.ai`**, retain Zora's magenta stripe/orb, and have a verified Sent Items receipt. Use `zoraRecipients` in `lib/email.ts`. This visibility rule does not authorise automatic sending or bypass release gates.
+- Keep the requested blue/white portal and magenta email identity. Sales owns bids, Ganesh pricing, Zora architecture/domain review, and Advait nominates demo builders. No delivery approval is required for this pilot.
+- Reuse existing service credentials through secure bindings. Never commit secrets, auth caches, private client assets, extracted evidence, database exports or local receipts. Do not ask for already-received templates/packs again.
+- Continue useful implementation without repeated permission requests. Report concrete verified progress and specific remaining inputs. Do not promise work continues after execution stops unless an independently deployed worker has actually been tested.
+
+Recommended next work: preserve and check the live monitor, choose a supported unattended execution route with the user, implement automatic inbox triage and current queue/reviewer dispatch, complete ESC-4, and run the Parker W3/W4/W5 benchmark while retaining the agreed all-eight scope. Detailed sequencing and acceptance criteria are in the handoff.

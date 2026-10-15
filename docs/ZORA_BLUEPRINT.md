@@ -1,5 +1,7 @@
 # Zora: product and implementation blueprint
 
+**Current transfer note — 15 October 2026:** Saurabh selected Claude to continue development. Read [the comprehensive handoff](CLAUDE_HANDOFF.md) for current state and the distinction between the development assistant and the still-unimplemented unattended application runtime. Provider-specific choices below describe the existing design; they do not forbid the requested Claude takeover. The live mailbox monitor does not launch reasoning sessions.
+
 ## Intended outcome
 
 Zora is Mindmap Digital’s first-level solutions consultant: it receives a pursuit request, establishes what the client is buying, assembles the right deliverable, checks it independently and works with named humans until release. The first pilot includes **all eight BRD workflows**, plus S1 commercials and S2 QC.

@@ -1,5 +1,7 @@
 # Zora: startup and current handoff
 
+**Claude transfer, 15 October 2026:** Saurabh has asked Claude to take over development. Start with [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) and root `CLAUDE.md`. They consolidate this file, live service checks, setup, private asset recovery and unfinished work. The Codex-specific identity/claim commands below describe the existing implementation; another provider must not spoof those identities. Earlier no-Claude wording records the former application-runtime choice, not a prohibition on the requested development handoff.
+
 Use the published Solve environment and existing `/workspace/Solve` checkout on `codex/zora-foundation`. Preserve the checkout, private runtime files and all original source assets. Do not create another worktree or reset to main. Do not resume, fork or import thread `01a13551-d307-7611-94a6-476ff4aa0f2a`: its missing-source-rollout history error is a platform failure. Use saved repository/database state. This handoff replaces accumulated historical startup notes; deployment history remains in BUILD_STATUS.md.
 
 ## Startup checks
@@ -85,3 +87,5 @@ The authorised progress email was verified in Sent Items at **07:16:18 Dubai on 
 ## Unattended runtime clarification — 15 October
 
 Read AUTONOMOUS_RUNTIME.md before claiming automatic proposal dispatch. The existing Vercel mailbox cron is live. A persistent Codex worker, or a verified compatible hosted task, is still required. Incoming email also needs autonomous triage into proposed pursuits; `routine claim` only handles already-queued jobs. The legacy `worker/run.ts` cannot be enabled unchanged because it predates the native context/reviewer protocol. Official CLI unattended execution and Codex-scoped Business/Enterprise access tokens are documented alternatives; the account/host choice is not yet supplied. No worker or new credential was activated by this documentation update.
+
+At the Claude transfer, live checks at **08:42 Dubai** reverified the same READY deployment, successful automatic cron heartbeats at 08:30/08:35/08:40, 22 complete sources (13 from email), zero pursuits/approvals and unsigned API denial. Fresh checks passed **44 TypeScript tests, 21 Python tests, type checking and the production build**. This handoff changed documentation only and sent no new email.
