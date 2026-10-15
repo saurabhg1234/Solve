@@ -4,4 +4,5 @@
 !.env.example
 /tests/
 /worker/
-/scripts/
+/scripts/*
+!/scripts/migrate.ts

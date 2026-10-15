@@ -16,12 +16,17 @@ export async function actor(): Promise<Actor | null> {
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, key(), { issuer: 'zora', audience: 'zora-portal', algorithms: ['HS256'] });
-    const email = String(payload.sub || '').toLowerCase();
-    const allowed = (process.env.ZORA_ALLOWED_EMAILS || '').toLowerCase().split(',').map(e => e.trim());
-    if (!allowed.includes(email)) return null;
-    const map = JSON.parse(process.env.ZORA_ROLE_MAP || '{}');
-    return { email, name: String(payload.name || email), roles: parseRoles(map[email] ?? ['consultant']) };
+    const found = actorFor(String(payload.sub || ''));
+    return found ? { ...found, name: String(payload.name || found.email) } : null;
   } catch { return null; }
+}
+/** Resolves an approved account and its configured roles; used for sessions and verified mailbox senders. */
+export function actorFor(address: string): Actor | null {
+  const email = address.trim().toLowerCase();
+  const allowed = (process.env.ZORA_ALLOWED_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
+  if (!email || !allowed.includes(email)) return null;
+  const map = JSON.parse(process.env.ZORA_ROLE_MAP || '{}');
+  return { email, name: email, roles: parseRoles(map[email] ?? ['consultant']) };
 }
 export async function requireActor(): Promise<Actor> {
   const user = await actor(); if (!user) throw new HttpError(401, 'Please sign in with your approved work account'); return user;

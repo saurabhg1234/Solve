@@ -3,6 +3,7 @@ import { constantTimeEqual } from '@/lib/engine';
 import { database } from '@/lib/db';
 import { microsoftConfig } from '@/lib/config';
 import { syncMailbox } from '@/lib/microsoft';
+import { autoIntake } from '@/lib/triage';
 import { responseError,HttpError } from '@/lib/auth';
 
 export const maxDuration=60;
@@ -20,7 +21,7 @@ export async function POST(request:Request) {
       if(notice.lifecycleEvent==='reauthorizationRequired') await database().query('UPDATE zora_mail_state SET subscription_expires_at=now() WHERE mailbox=$1',[ms.mailbox]);
       await database().query('INSERT INTO zora_mail_signals(mailbox,kind) VALUES($1,$2)',[ms.mailbox,notice.lifecycleEvent||'message.created']);accepted++;
     }
-    if(accepted) after(async()=>{try{await syncMailbox();}catch{console.error('Mailbox catch-up remains queued for the next maintenance run.');}});
+    if(accepted) after(async()=>{try{await syncMailbox();await autoIntake();}catch{console.error('Mailbox catch-up remains queued for the next maintenance run.');}});
     return new Response(null,{status:202});
   } catch(e){return responseError(e);}
 }

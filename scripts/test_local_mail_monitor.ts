@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {SignJWT} from 'jose';
 import {Pool} from 'pg';
 async function main(){
- const env=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));
+ const env=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));
  const origin=new URL(env.ZORA_APP_URL);assert.equal(origin.hostname,'127.0.0.1');assert.equal(env.MS_ZORA_MAILBOX,'local-fixture');
  const db=new Pool({connectionString:env.DATABASE_URL});const mailbox=env.MS_ZORA_MAILBOX;
  const before=(await db.query('SELECT * FROM zora_mail_state WHERE mailbox=$1',[mailbox])).rows[0];

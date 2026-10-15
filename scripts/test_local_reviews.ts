@@ -10,7 +10,7 @@ import { brandedEmail } from '../lib/email';
 import { downloadFiles } from '../worker/transport';
 
 async function main(){
-  const s=JSON.parse(await readFile('/workspace/solve-environment/zora-local-test.json','utf8'));
+  const s=JSON.parse(await readFile(process.env.ZORA_LOCAL_TEST_CONFIG||'/workspace/solve-environment/zora-local-test.json','utf8'));
   if(process.env.ZORA_LOCAL_TEST_ORIGIN)s.ZORA_APP_URL=process.env.ZORA_LOCAL_TEST_ORIGIN;
   const origin=new URL(s.ZORA_APP_URL);assert.equal(origin.hostname,'127.0.0.1');
   const db=new Pool({connectionString:s.DATABASE_URL}),cases:string[]=[];

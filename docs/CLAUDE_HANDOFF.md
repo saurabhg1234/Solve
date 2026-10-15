@@ -53,7 +53,7 @@ Fresh live verification at **2026-10-15 04:42 UTC / 08:42 Dubai** confirmed:
 - **22 complete private source versions**, including **13 email attachments**, **zero customer pursuits** and **zero human approvals**.
 - Unsigned mailbox-status and maintenance requests return **401**, after passing Vercel's outer deployment protection through the authorised automation transport.
 
-The database schema has 18 application tables from the deployed migration. Sources are retained as drafts; their import is not knowledge approval. No real all-eight proposal run has been accepted.
+The deployed migration has 18 application tables; the undeployed ESC-4 migration on `claude/busy-turing-x034n2` adds a 19th (`zora_checklist_rules`). Sources are retained as drafts; their import is not knowledge approval. No real all-eight proposal run has been accepted.
 
 **Running after this handoff:** Vercel portal, Microsoft notifications and the Vercel five-minute mailbox monitor. **Not running:** an unattended Codex/Claude dispatcher, background autonomous developer or complete automatic proposal pipeline. Do not switch off the working monitor during a runtime migration.
 
@@ -205,7 +205,7 @@ Not completed or not accepted:
 
 - Automatic incoming-email classification/thread linking into proposed pursuits, plus an actually deployed unattended execution dispatcher.
 - Actual fresh independent semantic reviewer runs on real proposal outputs; synthetic context IDs/tests do not establish reviewer quality or session isolation.
-- **ESC-4:** root-cause checklist updates, independent checks from the BRD return point, linkage to regenerated draft hashes, a next-human-gate re-evaluation-note reading flow, and controlled escalation closure.
+- ESC-4 is implemented and locally verified but **not deployed** (see §17 and `docs/ESCALATION_RERUN.md`).
 - Changed-source escalation reconciliation; pre-draft D2/D3 continuation; automatic original-producer resumption; complete fix/disagreement orchestration.
 - Buyer-specific spreadsheet-template mapping and unsupported/large-media paths where the current code holds.
 - Verified speaker/timestamp transcription for recording-only requests; actual W6 demos, W7 recording/voice/editing and functional acceptance.
@@ -359,7 +359,7 @@ No new Microsoft or Vercel credential is needed to continue ordinary engineering
 1. Read this handoff, `AGENTS.md`, the BRD/index, `ZORA_BLUEPRINT.md`, `PILOT_CONFIGURATION.md`, `ADVAIT_INPUTS.md` and `ADVAIT_PILOT.md`. Check out the implementation branch and preserve current state.
 2. Verify production mailbox monitoring and private source counts. Restore needed source files privately from Neon/mailbox if the old workspace is unavailable. Do not resend setup emails or create duplicate imports.
 3. Resolve an executable unattended runtime path compatible with the user's current provider preference, then implement intake triage/thread association and the dispatcher against the existing queue. Retain genuine fresh session identities, leases, isolation and resumable producer handling; expose errors/paused state in the portal. Use a test proving operation after chat closure.
-4. Complete ESC-4 and changed-source/pre-draft continuation without bypassing feedback, source hashes, independent review or human gates. Extend the existing meaningful fixtures for these new transitions.
+4. ESC-4 is done (undeployed). Complete changed-source/pre-draft continuation without bypassing feedback, source hashes, independent review or human gates. Extend the existing meaningful fixtures for these new transitions.
 5. Use Parker for an actual W3/W4/W5 benchmark, approved CompareIQ/slide layouts and source-backed outputs. Test real draft/review isolation and keep the historical response out of independent reasoning packets.
 6. Complete W1/W2/W6/W7/W8 with real source/demo/video evidence. Resolve only genuinely blocking missing business/tool inputs. Keep all-eight scope visible.
 7. Run Advait's acceptance plan, including deliberate defect injection: contradictory/security claims, unsupported metrics, invented sources, hidden costs, answered RFIs, unrequested scope and free-POC promises. Record exact outputs, hashes, findings, fixes, run IDs and human decisions.
@@ -380,8 +380,23 @@ No new Microsoft or Vercel credential is needed to continue ordinary engineering
 | `INDEPENDENT_REVIEW.md`, `SOURCE_TRANSCRIPTS.md` | QC protocol and image-only PDF source checking |
 | `NATIVE_DOCUMENTS.md`, `NATIVE_COSTS.md`, `NATIVE_EMAILS.md` | Deterministic document/cost/email helpers and bounds |
 | `REUSABLE_KNOWLEDGE.md`, `PRIVATE_SOURCES.md` | Source versions/reuse and internal commercial access |
-| `GATE_FEEDBACK.md`, `ESCALATION_EXPLANATIONS.md`, `TRUST_RESET.md` | ESC-1/2/3 contracts and the outstanding ESC-4 boundary |
+| `GATE_FEEDBACK.md`, `ESCALATION_EXPLANATIONS.md`, `TRUST_RESET.md`, `ESCALATION_RERUN.md` | ESC-1/2/3/4 contracts |
 
 Private continuity files are intentionally absent from Git: source originals/expanded passages, website snapshots, generated format trials, local test settings/TLS material, deployment receipts and send receipts. Key paths are listed above. Additional important receipts are `zora-mail-monitor-receipt.json`, `zora-advait-assets-receipt.json`, `zora-trust-reset-milestone-receipt.json` and `zora-blue-portal-receipt.json` in `/workspace/solve-environment`. Use them only if that private workspace is available; otherwise reconstruct current evidence from authorised service queries rather than treating missing local receipts as lost production data.
 
 This handoff transfers the existing implementation and evidence. It does not claim a completed autonomous agent, migrate credentials, release client content, send new emails or approve a provider integration.
+
+## 17. Claude session log
+
+**15 October 2026 — ESC-4.** Claude continued from this handoff in a cloud container (Node 22, no private workspace). Work branch `claude/busy-turing-x034n2`, based on `codex/zora-foundation`; PR targets `codex/zora-foundation`.
+
+- Implemented ESC-4 (`lib/escalation-rerun.ts`, `lib/checklist.ts`, `POST /api/cases/{id}/escalation-rerun`, `POST /api/checklist/{id}`, decision-route note reading/closure, QC packet `checklist` + reviewer `checkedRuleIds`, portal form/acknowledgement/resolution views). Details: `docs/ESCALATION_RERUN.md`.
+- Verified locally only (fresh PostgreSQL 16 on loopback, synthetic config/secrets, `next dev` with the Graph fixture): see BUILD_STATUS. Local fixtures now accept `ZORA_LOCAL_TEST_CONFIG` / `ZORA_LOCAL_WORK_ROOT`.
+- Production: Vercel API confirmed `dpl_352vJ2KSipPy93LisTnqAxR21ogH` still READY from `a5d99c5`. Live DB/monitor checks were **not** run: `DATABASE_URL` is a Vercel "sensitive" variable (not readable via API) and pulling the other secrets into the session was blocked. **Not deployed; the ESC-4 migration has not been run on Neon.** Deploying requires running `npm run db:migrate` against Neon before or with the release.
+- Still open: unattended runtime/dispatcher choice (now Claude-based options exist — see the PR/summary), inbox triage, changed-source and pre-draft ESC continuation, Parker W3/W4/W5 benchmark, all-eight acceptance.
+
+**15 October 2026 — automatic intake, Ganesh onboarding.**
+
+- Saurabh authorised Claude to send Zora correspondence (“you are authorized and permitted to send … always”). Sent to Ganesh, Cc Saurabh, from the shared mailbox at **05:34:47 UTC**: “[ZORA] Your Zora access as pricing owner, and the pricing inputs we need” (portal sign-in steps, role, eight pricing-policy inputs). Verified in Sent Items; private receipt `.zora/ganesh-onboarding-receipt.json` (ignored by Git). Do not resend.
+- Real-time automatic intake added (`docs/AUTO_INTAKE.md`): tagged email → proposed pursuit right after the Microsoft notification, with routing confirmation retained. Not deployed.
+- Saurabh asked to “go auto” (deploy). Production migration/deploy from this session was blocked by the session's permission policy. Both migrations (ESC-4 and intake) are additive and repeatable; deploy = run `npm run db:migrate` against Neon, then deploy the branch to the existing Vercel project.
