@@ -2,7 +2,7 @@
 
 Saurabh has explicitly handed this project to Claude to continue development. Read **[docs/CLAUDE_HANDOFF.md](docs/CLAUDE_HANDOFF.md)** first. It is the current consolidated handoff, dated 15 October 2026, and includes the product brief, deployed state, source assets, credentials map, setup, verification, unfinished work and correspondence.
 
-- Repository: `saurabhg1234/Solve`; **the complete implementation is on `codex/zora-foundation`**. At handoff, `main` still contains only the original uploaded assets. Select the implementation branch before working. Preserve existing changes and source files; do not reset to main.
+- Repository: `saurabhg1234/Solve`; **all work is on `main`** (the former `codex/zora-foundation` branch was merged into `main` on 15 October 2026 and retired). Codex is no longer used; Claude is the development assistant. Preserve existing changes and source files.
 - Read `AGENTS.md`. Next.js is 16.4.0; read the installed `node_modules/next/dist/docs/` guides before changing framework code.
 - Use repository/database state. Do not import or resume the broken old Codex conversation. Do not assume another provider receives the previous cloud machine, secrets or private files when it clones Git.
 - The portal and five-minute mailbox monitor are live. **Automatic agent dispatch is not deployed; all eight workflows remain unaccepted end to end.** Do not describe a queue, heartbeat, passing fixture or generated sample as an autonomous completed pilot.

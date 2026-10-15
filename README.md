@@ -1,6 +1,6 @@
 # Zora · Mindmap Digital
 
-**Claude takeover:** start with [CLAUDE.md](CLAUDE.md) and the [comprehensive handoff](docs/CLAUDE_HANDOFF.md). The complete implementation is on **`codex/zora-foundation`**; at handoff, `main` still contains only the original uploaded assets. Private credentials/client files are held in the existing services and private workspace, with recovery instructions in the handoff.
+**Claude takeover:** start with [CLAUDE.md](CLAUDE.md) and the [comprehensive handoff](docs/CLAUDE_HANDOFF.md). All work is on **`main`**; the former `codex/zora-foundation` branch was merged into it on 15 October 2026. Private credentials/client files are held in the existing services and private workspace, with recovery instructions in the handoff.
 
 Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. The current reasoning bridge targets **Codex sessions**, with no model API integration. Saurabh has now selected Claude to continue development; production agent-runtime migration is separate unfinished work. Vercel hosts the review portal, Microsoft notification endpoints and a verified five-minute mailbox monitor. **No unattended reasoning-agent dispatcher is deployed.** Earlier native scheduling assumptions are unverified; see [runtime options and gaps](docs/AUTONOMOUS_RUNTIME.md).
 

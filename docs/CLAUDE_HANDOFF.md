@@ -17,7 +17,7 @@ Communication expectations: keep building, avoid repeatedly requesting completed
 | Item | Current value / evidence |
 |---|---|
 | GitHub | https://github.com/saurabhg1234/Solve |
-| Implementation branch | **`codex/zora-foundation`**; all application code and this handoff are here |
+| Working branch | **`main`** (the former `codex/zora-foundation` branch was merged and retired on 15 October 2026) |
 | `main` at handoff | `1421c75ef4aa15a675e0b91f66f818ea7d16ccac`, original uploaded source assets; not the application branch |
 | Last commit before this handoff | `90e1f310da5f7f4b3ad9d21e61f1b9f3268cd8b4`, unattended-runtime documentation |
 | Last deployed application code | `a5d99c5`, mailbox monitoring and thirteen-file intake support |
@@ -33,7 +33,7 @@ Communication expectations: keep building, avoid repeatedly requesting completed
 No merge to main, default-branch change, new application deployment or infrastructure migration is part of this documentation handoff. A clone of main alone will miss the implementation. On a new machine:
 
 ```bash
-git clone --branch codex/zora-foundation https://github.com/saurabhg1234/Solve.git
+git clone https://github.com/saurabhg1234/Solve.git
 cd Solve
 git status --short --branch
 ```
