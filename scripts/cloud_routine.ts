@@ -81,7 +81,7 @@ async function claim() {
 async function dispatch() {
   const contextId=contextSchema.parse(nativeContext());
   const body=await(await request('/api/worker/dispatch','ZORA_RUNNER_TOKEN',{workerId:process.env.ZORA_WORKER_ID||'zora-dispatcher',contextId})).json();
-  console.log(JSON.stringify({...body.plan,next:body.plan.action==='claim'?'Run routine claim in this session (one item), then complete it. Start at most extraSessions additional fresh worker sessions; each claims one item under its own identity.':'Nothing for an agent to claim. End this session; people handle the human items listed.'}));
+  console.log(JSON.stringify({...body.plan,next:body.plan.action==='claim'?'Start workerSessions fresh worker sessions (docs/AGENT_DISPATCHER.md); the dispatcher itself does not claim.':'Nothing for an agent to claim. End this session; people handle the human items listed.'}));
 }
 async function escalation(path:string,plan?:string){
   const {dir,job}=await workspace(path);
