@@ -4,7 +4,7 @@
 export ZORA_APP_URL="${ZORA_APP_URL:-https://zora-mindmap.vercel.app}"
 export VERCEL_PROJECT_ID="${VERCEL_PROJECT_ID:-prj_CMo2oudsZpGIt0JiuYLjV5mPjcyA}"
 export VERCEL_ORG_ID="${VERCEL_ORG_ID:-team_5DBsUWiufrEcP2odn32rtSJD}"
-export ZORA_WORKER_ID="${ZORA_WORKER_ID:-zora-claude-dispatcher}"
+export ZORA_WORKER_ID="${ZORA_WORKER_ID:-zora-claude-worker}"
 export NODE_USE_ENV_PROXY=1
 [ -d node_modules ] || npm ci --no-audit --no-fund >/dev/null 2>&1 || echo "npm ci failed" >&2
 

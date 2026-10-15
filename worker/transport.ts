@@ -14,7 +14,12 @@ export async function portalRequest(path:string,credential:string,body?:unknown,
   const headers:Record<string,string>={Authorization:`Bearer ${secret}`,...extraHeaders};
   const bypass=await protectionBypass();if(bypass)headers['x-vercel-protection-bypass']=bypass;
   const binary=body instanceof Uint8Array;if(body!==undefined&&!binary)headers['Content-Type']='application/json';
-  const response=await fetch(new URL(path,origin.origin),{method:binary?'PUT':body===undefined?'GET':'POST',headers,body:body===undefined?undefined:binary?new Uint8Array(body):JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(60000)});
+  // Retry only when no response arrived (Node's fetch throws TypeError, e.g. a proxy reset). Server replies are never retried.
+  let response:Response|undefined;
+  for(let attempt=1;!response;attempt++){
+    try{response=await fetch(new URL(path,origin.origin),{method:binary?'PUT':body===undefined?'GET':'POST',headers,body:body===undefined?undefined:binary?new Uint8Array(body):JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(60000)});}
+    catch(error){if(!(error instanceof TypeError)||attempt>=3)throw error;await new Promise(done=>setTimeout(done,attempt*2000));}
+  }
   if(!response.ok)throw new Error(`Routine endpoint failed (${response.status}); check bindings, deployment protection, file limits and schema`);return response;
 }
 export async function keepLease(job:Session){await portalRequest(`/api/${job.kind==='review'?'reviews':'worker'}/${job.id}/heartbeat`,'ZORA_RUNNER_TOKEN',{leaseId:job.leaseId});}

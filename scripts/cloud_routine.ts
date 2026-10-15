@@ -80,7 +80,7 @@ async function claim() {
 }
 async function dispatch() {
   const contextId=contextSchema.parse(nativeContext());
-  const body=await(await request('/api/worker/dispatch','ZORA_RUNNER_TOKEN',{workerId:process.env.ZORA_WORKER_ID||'zora-dispatcher',contextId})).json();
+  const body=await(await request('/api/worker/dispatch','ZORA_RUNNER_TOKEN',{workerId:'zora-claude-dispatcher',contextId})).json();
   console.log(JSON.stringify({...body.plan,next:body.plan.action==='claim'?'Start workerSessions fresh worker sessions (docs/AGENT_DISPATCHER.md); the dispatcher itself does not claim.':'Nothing for an agent to claim. End this session; people handle the human items listed.'}));
 }
 async function escalation(path:string,plan?:string){
@@ -150,4 +150,5 @@ async function main() {
   if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email'||action==='build-transcript') return documentTool(path,action,plan);
   throw new Error('Use check, dispatch, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
 }
-main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}); no credential or source values are logged.`); process.exitCode = 1; });
+function networkCode(error:unknown){const cause=error instanceof Error?(error as Error&{cause?:{code?:unknown;name?:unknown}}).cause:undefined;const code=cause?.code??cause?.name;return typeof code==='string'&&/^[A-Za-z0-9_]{1,40}$/.test(code)?`, ${code}`:'';}
+main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}${networkCode(error)}); no credential or source values are logged.`); process.exitCode = 1; });
