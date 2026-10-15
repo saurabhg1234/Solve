@@ -1,6 +1,6 @@
 # Advait’s pilot acceptance plan
 
-The agreed pilot includes **W1–W8**. Advait's tenant address is verified as `advait.mahajan@mindmapdigital.ai` and consultant access is configured. He has been sent the authorised Zora-branded input/team/testing request; no reply or meeting is confirmed. [Current pilot ownership](PILOT_CONFIGURATION.md) supersedes the original human architect/domain/delivery allocation: Zora performs technical review, Ganesh owns pricing, delivery approval is outside this phase, and sales/demo names are requested from Advait. Other human review gates remain.
+The agreed pilot includes **W1–W8**. Advait's tenant address is verified as `advait.mahajan@mindmapdigital.ai` and consultant access is configured. He replied on 14 October with thirteen attachments, a Drive demo library and four team contacts. He prefers asynchronous iteration with no fixed meeting. See [received inputs](ADVAIT_INPUTS.md). [Current pilot ownership](PILOT_CONFIGURATION.md) supersedes the original human architect/domain/delivery allocation: Zora performs technical review, Ganesh owns pricing, delivery approval is outside this phase, and the four supplied contacts still need sales/demo responsibility mapping. Other human review gates remain.
 
 ## Entry conditions
 

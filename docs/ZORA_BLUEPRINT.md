@@ -24,7 +24,7 @@ For client solution architectures, Zora must derive hosting and data movement fr
 
 ## Brand and interaction
 
-Zora is a **magenta orb**, using `#d62ca4` as its identity accent. The portal uses a dark navigation rail, quiet neutral surfaces, restrained magenta accents and clear stage/approval states. Emails use an Outlook-friendly table layout with a magenta stripe as the first visible element, the Zora orb identifier and “Zora · Mindmap Digital” signature.
+Zora uses a clean blue-and-white portal, with blue `#2563eb` accents/orb and white navigation. Its email identity remains a **magenta orb**, using `#d62ca4`. Emails use an Outlook-friendly table layout with a magenta stripe as the first visible element, the Zora orb identifier and “Zora · Mindmap Digital” signature.
 
 The shared mailbox display name must not be renamed globally: Jarvis also uses it. Zora identifies its own messages through the routing marker, HTML header and signature. No automatic sending is implemented; the BRD keeps sending as a human action.
 
@@ -90,8 +90,8 @@ Those items are pending work. Stage results must match stored files; review pass
 1. Create and verify the chosen native cloud schedule; no schedule-management tool is exposed in this task.
 2. Advait's named sales and demo-builder accounts, plus interactive sign-in testing. Mailbox routing, his work email and initial roles are already confirmed.
 3. Any required data-region restriction beyond the currently connected Neon service.
-4. Approved detailed Word proposal template and company-profile claims.
-5. Approved accelerator/demo/video library, with real asset locations and permitted use.
-6. Pending tender agent code and domain-owner input for W6; real RFP/RFI/final-response test sets.
+4. CompareIQ Word layout is supplied; company-profile claims and actual draft/carryover checks remain.
+5. Drive demo/video library and transcripts are supplied; working app access, maturity and permitted reuse still need confirmation.
+6. Tender code and real RFP/RFI/response packs are supplied; domain expectations, numerical tolerances and real functional acceptance remain.
 7. Voice, recording and editing tools for W7, compatible with the no-model-API requirement.
 8. BRD “To set” business values, currency/geographic rate rules, question caps, classifier thresholds, loop limits and other acceptance tolerances. No guessed value should become a client commitment.

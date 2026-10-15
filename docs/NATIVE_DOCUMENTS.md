@@ -25,7 +25,7 @@ All extraction is marked **unverified**. OCR records include confidence and a re
 npm run routine -- build <private-workspace> build-plan.json
 ```
 
-Use `docx` to inspect Word. The native bridge requires the plan to be inside the claimed workspace. The template must be in that private workspace or the supplied `02_Templates` library, have its exact SHA-256 declared and be explicitly identified as approved. The original BRD is rejected as a proposal template, even if copied. A plan flag alone is not proof of human approval: the native task must retain the actual approval/source authority. **The approved Word proposal layout is still missing.** The Word verification fixture is synthetic and does not satisfy this input.
+Use `docx` to inspect Word. The native bridge requires the plan to be inside the claimed workspace. The template must be in that private workspace or the supplied `02_Templates` library, have its exact SHA-256 declared and be explicitly identified as approved. The original BRD is rejected as a proposal template, even if copied. A plan flag alone is not proof of human approval: the native task must retain the actual approval/source authority. **Advait supplied the CompareIQ Word layout on 14 October and explicitly nominated it as the proposal template.** Its real DOCX inspection, retained-layout build and PDF export pass. Preserve that email authority and exact source hash; replace client-specific content and update static contents/page references in each new draft. See [received inputs](ADVAIT_INPUTS.md).
 
 An Office plan includes `format`, `template`, `templateSha256`, `approvedTemplate`, `output` and optional `pdf: true`. PPT plans specify one-to-one source slide duplicates:
 

@@ -4,7 +4,7 @@ Saurabh selected cloud scheduling instead of a separate always-on CLI host. Use 
 
 The current official [scheduled-task documentation](https://developers.openai.com/codex/app/automations) supports tasks in existing chats and minute-based intervals. A web reminder does not automatically have terminal/repository access: verify the scheduled chat can use this published cloud environment. The documented native app-event triggers do not include Outlook, so use a time-based Graph queue check.
 
-No schedule creation/management tool is exposed in this onboarding chat. No schedule or schedule ID has been saved by the agent. In **Scheduled**, create a standalone task every five minutes, with the prompt below, the same published Solve environment and an available default model. If the UI cannot associate the cloud environment, report that limitation rather than substituting a local daemon or model API.
+A five-minute Vercel mailbox schedule is now deployed and its automatic heartbeat verified; it renews Microsoft monitoring and catches up intake without an open chat. See [MAILBOX_MONITOR.md](MAILBOX_MONITOR.md). It does not launch Codex. No native Codex schedule creation/management tool is exposed in this chat, and no native Codex schedule ID or recurrence is verified. In **Scheduled**, create a standalone task every five minutes, with the prompt below, the same published Solve environment and an available default model. If the UI cannot associate the cloud environment, report that limitation rather than substituting a local daemon or model API.
 
 ## Recover from missing source history
 
