@@ -1,9 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Edit(vercel.json)",
-      "Edit(.vercelignore)",
-      "Bash(npx vercel deploy:*)",
+      "Edit",
+      "Write",
+      "Bash(npx vercel:*)",
+      "Bash(npm run db:migrate)",
+      "Bash(npm run routine:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(git push:*)",
+      "mcp__github__create_pull_request",
       "mcp__github__merge_pull_request"
     ]
   }
