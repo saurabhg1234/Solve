@@ -2,6 +2,10 @@
 
 Closes the gap between **email → durable inbox → pursuit → queued stage** and an agent that actually does the work. Added 15 October 2026.
 
+## Live configuration (15 October 2026)
+
+Scheduled task `trig_01FStjqDrd8Bm92CqUg3Zuec` (hourly at :01 UTC) → persistent dispatcher session `session_01E6WrJSA5FkgtMqFuxSXwMy` (repository attached, branch `main`). First scheduled wake recorded 08:01:52 UTC (idle).
+
 ## How it runs
 
 | Part | What it does |
