@@ -1,8 +1,8 @@
-# Zora build status — 14 October 2026 (Dubai)
+# Zora build status — 15 October 2026 (Dubai)
 
 The deployed application is a tested foundation. It is not a completed solutions agent, and none of W1–W8 has passed full end-to-end acceptance.
 
-**Current live release: fe887b4**, deployment **dpl_6WBbW6dwLwnjr7xVu5pYM6w2QfxU**, **READY**, verified **2026-10-14T07:11:14.951Z** (11:11 Dubai on 14 October). Production has **18 application tables**, nine original draft source versions and zero pursuits/active jobs/human approvals. See the fresh drafting milestone below; older deployment entries are historical evidence.
+**Current live release: 7edf57c**, deployment **dpl_4CUhpTeAwL3nXmT6Zq6g7KG3bTEp**, **READY**, verified **2026-10-15T01:29:57.394Z** (05:29 Dubai on 15 October). This is the requested blue-and-white visual update. The last backend/data verification on 14 October found eighteen tables, nine original draft source versions and zero pursuits/active jobs/human approvals. See the visual milestone below; older deployment entries are historical evidence.
 
 The prior file/team/revision milestone was deployed from commit `8719989` on `codex/zora-foundation`, deployment `dpl_BV2Ayry8pHgCoKBdDAyD2ttyxB7A` (`READY`). The new independent-review milestone adds a durable reviewer queue, server-derived inventories, isolated file access, context/coverage guards, policy-bound clean loops and visible findings. Its additive production migration passes. The stable URL shows a public preview; case data requires work-account sign-in. Vercel protection remains configured.
 
@@ -12,7 +12,7 @@ At verification, production held **zero pursuits, zero active jobs and zero unli
 
 | Area | Current state |
 |---|---|
-| Branded portal | Deployed at https://zora-mindmap.vercel.app, with magenta orb identity and Vercel protection |
+| Branded portal | Deployed at https://zora-mindmap.vercel.app with a blue-and-white portal/orb, separate magenta email identity and Vercel protection |
 | Company/BRD sources | Company deck/site research and indexed 272 BRD requirements/120 stages available; original source assets preserved |
 | Production database | Neon connected; additive file/team/review schema migrated; repeatable migrations and deployed connection/schema checks pass |
 | Microsoft mailbox connection | Authentication and dedicated Zora-folder reads verified; Graph subscription registered; manual renewal/catch-up works |
@@ -158,3 +158,12 @@ The additive migration passed twice locally and twice on Neon. Original assets, 
 **ESC-4 remains unfinished:** root-cause checklist updates, independent return-point execution, next-gate reading and controlled escalation resolution. Changed-source reconciliation, pre-draft escalation continuation, automatic original-task resumption, real fresh reviewer acceptance, demo/video production and all-eight acceptance remain pending. Read [TRUST_RESET.md](TRUST_RESET.md).
 
 Latest Advait check at **11:10 Dubai on 14 October** found no related reply with complete pagination. No outbound email was sent. Cloud draft readback is **revision 16**, no pending runtime requirements, startup points to the handoff. No new credential or variable is needed. Native recurrence remains unverified; a final response ends active execution.
+
+
+## Blue-and-white portal — 15 October
+
+Deployed **7edf57c** as **dpl_4CUhpTeAwL3nXmT6Zq6g7KG3bTEp**, READY at https://zora-mindmap.vercel.app. The portal now uses white navigation, blue controls and orb, cool gray backgrounds/borders and dark navy/slate text. Forms, workflow cards, review feedback, status treatments and browser icon follow the palette. Outgoing emails and email-specific previews retain the earlier magenta identity through an explicit Orb tone; email generation and recipient behavior are unchanged.
+
+The production build (including TypeScript) and compiled desktop/mobile checks pass. Visual checks cover five navigation screens, eight workflow cards, focused request forms, review fixtures, no horizontal overflow/page errors, white navigation/blue controls and magenta email accents. Review fixtures are browser-only responses with no API/database writes. Live verification at **05:29 Dubai** confirms deployed CSS/icon/portal identity and unsigned case API denial. Private receipt: `/workspace/solve-environment/zora-blue-portal-receipt.json`.
+
+No dependencies, source assets, schemas, environment variables or workflow behavior changed. Existing ESC-4, scheduling and pilot-acceptance work remains pending. This visual verification does not reassert older mailbox/data counts as newly checked.
