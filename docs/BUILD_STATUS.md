@@ -1,5 +1,9 @@
 # Zora build status — 16 October 2026 (Dubai)
 
+**16 October, 18:07 Dubai — follow-up fixed and answered:** `3903423` clarifies existing-review progress/human gates; `bd27d39` deploys registered conversation monitoring. Both are live. Advait’s 17:23 reply had been ignored for lacking `[ZORA]`; it is now retained once as Pentagon correspondence. The corrected UI shows 0/10 checks and no approval due. A reply was sent at 18:07:58 Dubai with Saurabh/Ganesh copied and Sent Items verified. Fresh reviewer execution is still blocked by the overdue provider dispatcher. See ZORA_HANDOFF.md and MAILBOX_MONITOR.md for current evidence.
+
+The automatic 18:10 Dubai cron then captured Advait’s new leave acknowledgement through the registered thread. The earlier feedback remained a single inbox copy. He supplied no return date; no automatic acknowledgement was sent back. Durable collection is verified independently of a chat invocation; automatic fresh-session execution/reply generation remains unresolved.
+
 **16 October, 16:11 Dubai — deployed:** `79a5ab5` / `dpl_HqV62g2dgixde1QPxbSPnGxucWc8` is READY. Existing-proposal review intake is live and Pentagon’s ten independent passes are queued, version 5 / source revision 3. There are no claimed or completed passes at verification; Claude dispatcher execution is overdue (last wake 12:01 Dubai). See [EXISTING_PROPOSAL_REVIEW.md](EXISTING_PROPOSAL_REVIEW.md) and [ZORA_HANDOFF.md](ZORA_HANDOFF.md). No transcript or re-upload is owed. Earlier entry-path unfinished statements are historical; actual independent execution and all-eight acceptance remain outstanding.
 
 Advait was notified at **16:12:26 Dubai**, with Saurabh and Ganesh copied; Sent Items verified. The update explicitly distinguishes the deployed/queued feature from reviewer sessions that have not started. No client material or credentials were committed.

@@ -1,5 +1,7 @@
 # Advait's received pilot inputs — 15 October 2026
 
+**Availability update — 16 October, 18:08 Dubai:** Advait’s automatic reply says he is currently on leave and will get back ASAP; it gives no return date. The progress/routing correction email had already been sent with Saurabh and Ganesh copied. Do not answer the automatic acknowledgement or assume a new testing date. Continue independent engineering and process substantive replies when received.
+
 Advait replied on **14 October at 11:35 Dubai** to `[ZORA] Pilot inputs and team details — all eight workflows`. The reply is in the dedicated Zora folder and durable intake. It has **13 file attachments**, downloaded with immutable message/attachment provenance and actual byte hashes: **33,864,456 bytes**. All thirteen are now complete private knowledge drafts; a repeat import verified the stored hashes and reused the existing versions. No human approvals or customer pursuits were created. The original nine repository sources remain, giving **22 complete source versions**.
 
 Private originals and the source manifest are at `/workspace/solve-environment/advait-inputs-2026-10-14`. Database receipt: `/workspace/solve-environment/zora-advait-assets-receipt.json`. Never commit customer source contents, extracted passages, credential files or those private receipts.
