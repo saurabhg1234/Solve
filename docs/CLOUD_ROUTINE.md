@@ -1,6 +1,8 @@
 # Zora native-session bridge and original Codex schedule runbook
 
-**Current runtime (16 October):** the active schedule configuration is Claude’s hourly dispatcher in [AGENT_DISPATCHER.md](AGENT_DISPATCHER.md), with current health in [ZORA_HANDOFF.md](ZORA_HANDOFF.md). The Codex scheduling discussion below is historical. Both genuine platform identities are supported; use `main`. The bounded claim/heartbeat/completion and isolation rules still apply.
+**Current instruction (16 October): Claude is off; perform requested work in the active session.** Do not wait for or restore the historical schedule in [AGENT_DISPATCHER.md](AGENT_DISPATCHER.md). Read [ZORA_HANDOFF.md](ZORA_HANDOFF.md) first. The bounded claim/heartbeat/completion commands below remain available for eligible native tasks on `main`; their one-item/context and independence checks still apply. Those API rules do not limit ordinary active-session coding, source analysis, document creation or explicitly authorized correspondence.
+
+The scheduling discussion and saved unattended-task prompt below are historical. Do not invoke that prompt as a reason to defer a current user request. Its no-send/no-infrastructure boundaries apply to unattended routine workers; the active operator follows the actual user's authorization. Keep the independent mailbox collector and truthful QC/approval records. No new active schedule is claimed by this handoff.
 
 Saurabh previously selected cloud scheduling instead of a separate always-on CLI host. The intended native schedule would start a fresh cloud run every five minutes from this saved prompt, with access to the published Solve environment and secure runtime bindings. That environment association and recurrence have not been verified; this document is a candidate runbook, not an active schedule. Microsoft Graph notifications persist signals, and the deployed Vercel monitor renews the subscription and catches up folder changes independently.
 

@@ -1,10 +1,10 @@
 # Remaining inputs and decisions
 
-**16 October update:** the existing-proposal diagnostic entry is implemented; no additional transcript or proposal upload is owed for Pentagon. Native fresh-reviewer dispatch remains the unresolved runtime dependency. See [EXISTING_PROPOSAL_REVIEW.md](EXISTING_PROPOSAL_REVIEW.md).
+**Latest decision, 16 October:** Claude is off for now. Zora must perform requested work in the active session; **re-enabling or troubleshooting Claude is not pending with Saurabh**. Formal Pentagon QC remains unfinished, but that does not prevent direct requested analysis, corrections or other engineering. The diagnostic entry is implemented; no transcript or proposal re-upload is owed. See [ZORA_HANDOFF.md](ZORA_HANDOFF.md).
 
-**16 October update:** development has resumed on main. Advait’s three file/progress issues are addressed in [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md). Advait clarified at 15:21 Dubai that the description is physical-meeting notes and the proposal is the draft for QC. No transcript is owed; see NOTES_AND_EXISTING_DRAFTS.md. Claude’s hourly dispatcher last recorded a wake at 12:01 Dubai on 16 October when checked during this release; its provider-side task needs a status check. Earlier no-runtime statements below are historical; use [ZORA_HANDOFF.md](ZORA_HANDOFF.md) for current state.
+Advait’s file/progress issues are addressed in [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and the later progress/routing fixes. He clarified that the description is physical-meeting notes and the proposal is the draft for QC; see NOTES_AND_EXISTING_DRAFTS.md. His 18:08 Dubai automatic reply says he is on leave, without a return date. The latest substantive response was sent at 18:07:58 with Saurabh and Ganesh copied; do not resend it or chase the automatic acknowledgement.
 
-Updated **16 October 2026 (Dubai)**. Codex development has resumed while preserving Claude’s existing runtime. No new Microsoft or Vercel secret is required. A new workspace still needs secure access to existing bindings/private sources.
+Updated **16 October 2026 (Dubai)**. Existing implementation and private sources are preserved; work is performed on request. No new Microsoft or Vercel secret is required. A new workspace still needs secure access to existing bindings/private sources.
 
 **Received from Advait:** CompareIQ Word layout, seven PowerPoint files, Indigrid/Parker/Coty pilot packs, tender code, demo transcripts/Drive library and four team contacts. All thirteen attachments are imported as private drafts, and the Word/PDF format trial passed. See [the received-input inventory](ADVAIT_INPUTS.md). Do not ask for these files again.
 
@@ -18,7 +18,7 @@ Updated **16 October 2026 (Dubai)**. Codex development has resumed while preserv
 | Existing recording/voice/editing tools | Advait | Identify approved tools/licences. No accent preference is recorded; a fixed meeting is not required. |
 | Additional historical clarifications | Advait, if available | Any missing Indigrid buyer answers/RFI/addenda. Parker's RFP, questionnaire, buyer answers, transcript and response are already received. |
 | Existing Pentagon proposal review | Zora | Use the supplied meeting notes and existing draft. Initial Word/PDF diagnostic was sent. The existing-draft review entry is deployed and ten independent passes are queued; fresh reviewer execution remains runtime work. No transcript request is pending with Advait. |
-| Claude dispatcher health | Saurabh / Claude scheduled-task owner | Inspect task `trig_01FStjqDrd8Bm92CqUg3Zuec` for an error, usage limit or paused state. Last database wake was 12:01 Dubai on 16 October when checked. Intake and dispatch are implemented; the provider-side recurrence needs diagnosis. Existing Microsoft/Vercel credentials are sufficient. |
+| Work execution on request | Zora | Carry requested work through to concrete results during the active session. Preserve honest formal-review records; explain only specific remaining capability limits. Do not require Saurabh to restore Claude's schedule. |
 
 Zora sent the authorised progress email to Advait at **07:16 Dubai on 15 October**, visibly copying Saurabh, and verified it in Sent Items. The receipt and details are in BUILD_STATUS.md and ZORA_HANDOFF.md. Do not send duplicate progress emails automatically. Every authorised outgoing email to others Ccs `saurabh@mindmapdigital.ai` and retains the magenta stripe/orb.
 
@@ -32,4 +32,4 @@ ESC-4 return-point review/checklist updates and controlled escalation closure ar
 
 ## Environment housekeeping
 
-The saved cloud notification-bypass binding is malformed, but the native transport securely resolves the existing production value using supplied Vercel credentials. No new secret is needed. Keep the existing checkout and private source originals. Saved cloud draft revision 16 has startup pointing to ZORA_HANDOFF.md; earlier writes returned INVALID_ARGUMENT and should not be retried blindly.
+The saved cloud notification-bypass binding is malformed, but the native transport securely resolves the existing production value using supplied Vercel credentials. No new secret is needed. Keep the existing checkout and private source originals. The replacement cloud startup draft now records work on request with Claude off; saving succeeded and requires publication. Review/save it in environment settings and publish to activate it for future environments. The repository instructions already apply here; current work does not wait for that publication. See ZORA_HANDOFF.md for the saved draft receipt.

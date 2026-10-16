@@ -1,8 +1,10 @@
 # Automatic agent dispatcher
 
-Closes the gap between **email → durable inbox → pursuit → queued stage** and an agent that actually does the work. Added 15 October 2026.
+**Inactive operating plan — 16 October:** Saurabh says Claude is off for now and requires work to be performed when requested in the active session. Do not restart this schedule, wait for it or ask him to repair it. Provider-side disable state was not inspected or changed by the handoff update. The historical configuration below is retained for reference; [ZORA_HANDOFF.md](ZORA_HANDOFF.md) governs current operation. The separate five-minute Vercel mailbox collector remains in use.
 
-## Live configuration (15 October 2026)
+Added 15 October 2026 to connect **email → durable inbox → pursuit → queued stage** with fresh agent sessions. Individual stages ran, but complete autonomous workflow acceptance was not established. This is not evidence that the ten currently queued Pentagon checks have run.
+
+## Historical configuration (15 October 2026)
 
 Scheduled task `trig_01FStjqDrd8Bm92CqUg3Zuec` (hourly at :01 UTC) → persistent dispatcher session `session_01E6WrJSA5FkgtMqFuxSXwMy` (repository attached, branch `main`). First scheduled wake recorded 08:01:52 UTC (idle).
 

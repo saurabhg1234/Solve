@@ -8,6 +8,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+## Zora work on request — 16 October 2026
+
+Saurabh's latest direction: **Claude is off for now. Whenever work is requested, do the work in the active session.** Read `docs/ZORA_HANDOFF.md` for current state. This supersedes older instructions to wait for, restore or depend on Claude's scheduled dispatcher. Do not ask Saurabh to re-enable Claude as a prerequisite or restart it without a new instruction.
+
+Carry requested implementation, proposal analysis, document creation, testing and authorized email actions through to concrete results. A queued job or handoff is not completion of requested substantive work. Continue all work possible with supplied sources and available tools; report a specific missing capability or input only for the part it actually prevents. Do not end with an unchanged scheduler explanation when useful work remains.
+
+Preserve truthful QC and approval records: direct analysis is not an independent review, and the same context must not impersonate fresh reviewers or bypass human gates. The bridge's one-item-per-context rule describes its current API, not a limit on ordinary development or analysis in the active session. This documentation change does not remove that API restriction or complete queued checks. Keep mailbox collection running separately and never imply an unattended developer is working after a session ends.
+
 ## Zora outgoing email visibility
 
 Saurabh requires a visible copy of every outgoing Zora email. For emails to others, include `saurabh@mindmapdigital.ai` in **Cc**, including setup requests, follow-ups and client emails. If Saurabh is the primary To recipient, do not duplicate his address in Cc. Use `zoraRecipients` from `lib/email.ts` when constructing recipient headers. Keep the magenta stripe/orb on every outgoing email and retain a send receipt with To/Cc and the sent-message location. This preference does not itself authorise sending; proposal/email workflow release and sending remain human actions unless the user explicitly instructs a send.

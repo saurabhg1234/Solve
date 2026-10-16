@@ -1,5 +1,9 @@
 # Zora build status — 16 October 2026 (Dubai)
 
+**Latest user decision — Claude off; work on request:** Saurabh rejected waiting for scheduled agent dispatch. Requested work must be performed in the active session. Re-enabling Claude is not pending with him; preserve mailbox collection and all existing evidence. See [the current operating instructions and handoff](ZORA_HANDOFF.md). This documentation update does not complete formal QC or change the queue/approval rules.
+
+At 18:21 Dubai, deployment `dpl_GwTEPwNuPsyqyAT5YxRHnk2VBDqz` / `654c05c` was READY. The 18:19 database check found ten Pentagon checks still queued, none claimed/completed; the latest implementation evidence remains 58 TypeScript tests plus typecheck/build and the recorded API/browser checks. The dated records below describe earlier releases and the previous scheduler plan, not a requirement to wait for it now.
+
 **16 October, 18:07 Dubai — follow-up fixed and answered:** `3903423` clarifies existing-review progress/human gates; `bd27d39` deploys registered conversation monitoring. Both are live. Advait’s 17:23 reply had been ignored for lacking `[ZORA]`; it is now retained once as Pentagon correspondence. The corrected UI shows 0/10 checks and no approval due. A reply was sent at 18:07:58 Dubai with Saurabh/Ganesh copied and Sent Items verified. Fresh reviewer execution is still blocked by the overdue provider dispatcher. See ZORA_HANDOFF.md and MAILBOX_MONITOR.md for current evidence.
 
 The automatic 18:10 Dubai cron then captured Advait’s new leave acknowledgement through the registered thread. The earlier feedback remained a single inbox copy. He supplied no return date; no automatic acknowledgement was sent back. Durable collection is verified independently of a chat invocation; automatic fresh-session execution/reply generation remains unresolved.
