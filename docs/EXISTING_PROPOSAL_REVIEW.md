@@ -27,3 +27,11 @@ The owner/admin can cancel an active diagnostic review. Cancellation or a full r
 57 TypeScript tests, type checking and production build passed. `scripts/test_existing_draft_review.ts` verifies actual local API permissions, excluded-file privacy, draft/source separation, concurrent start rejection, inventoried notes, packet/coverage checks, ten separate synthetic contexts, collection after findings, clean and failing terminal states, no stage/job/approval fabrication, rerun identity exclusion, cancellation and revision invalidation. The existing independent-review fixture also passed, including normal clean loops, private finding protection and role-gated release.
 
 `scripts/test_existing_draft_ui.mjs` verifies the compiled desktop/mobile flow (1440/390 px): exact file selections/notes, excluded prior report, ten queued passes, overdue dispatcher indication, cancellation, no approval action, no overflow or page errors. All test sessions are explicitly synthetic and local. These tests establish protocol behavior, not real independent semantic review or acceptance of all eight workflows.
+
+## Progress wording correction — 16 October
+
+Advait reported at 13:23:48 UTC that the proposal still showed stage 1 of 36 and an upcoming human gate while Human review was empty. The diagnostic queue had not advanced; ten reviewers were still awaiting fresh sessions. The screen mixed the separate diagnostic task with the paused full workflow.
+
+During an active existing-draft review, the progress panel now shows actual completed checks out of the review total and **No human approval is due**. The full workflow is collapsed and explicitly labelled paused; its first stage is not marked current. Ordinary workflows distinguish a **Later human gate** from a **Human decision due now**. The empty Human review page explains which decisions appear there and links back to Requests. No stage, approval, queue identity or review result was changed to alter the display.
+
+Verification: targeted progress/context tests, typecheck/build, compiled 1440px and 390px checks for actual check counts, no misleading workflow position/current marker, no approval action, the empty Human review explanation and navigation back to the pursuit.

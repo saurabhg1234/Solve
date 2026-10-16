@@ -17,6 +17,7 @@ try{for(const width of [1440,390]){
     const reply=(json,status=200)=>route.fulfill({json,status});
     if(path==='/api/workspace')return reply({configured:true,user:{name:'Fixture',email:'tester@mindmapdigital.ai',roles:['consultant']}});
     if(path==='/api/cases')return reply({cases:[pursuit]});
+    if(path==='/api/inbox')return reply({messages:[]});
     if(path===`/api/cases/${id}`)return reply(detail());
     if(path===`/api/cases/${id}/existing-review`){
       const body=request.postDataJSON();assert.equal(body.version,pursuit.version);
@@ -40,8 +41,10 @@ try{for(const width of [1440,390]){
   assert.ok((await page.locator('[aria-label="Pursuit progress"]').innerText()).includes('dispatcher check is overdue'));
   assert.ok((await page.locator('[aria-label="Pursuit progress"]').innerText()).includes('Existing proposal review'));
   assert.equal(await page.getByRole('button',{name:'Approve this gate',exact:true}).count(),0);
+  const progressText=await page.locator('[aria-label="Pursuit progress"]').innerText();assert.ok(progressText.includes('0 of 10 independent checks recorded'));assert.ok(progressText.includes('No human approval is due'));assert.ok(!progressText.includes('Workflow position'));assert.equal(await page.locator('.stage-current').count(),0);assert.equal(await page.locator('.workflow-roadmap').getAttribute('open'),null);
   assert.ok(await page.locator('body').evaluate(el=>el.scrollWidth<=window.innerWidth));
-  await page.locator('.existing-draft-review').scrollIntoViewIfNeeded();await page.screenshot({path:`/workspace/solve-environment/zora-existing-draft-${width}.png`});
+  await page.locator('[aria-label="Pursuit progress"]').scrollIntoViewIfNeeded();await page.screenshot({path:`/workspace/solve-environment/zora-progress-gates-${width}.png`});
+  await page.getByRole('button',{name:'Close pursuit',exact:true}).click();await page.getByRole('button',{name:'Human review',exact:true}).click();await page.getByText('Nothing waiting for your review.',{exact:true}).waitFor();await page.getByText('Only workflow confirmations and approval gates due now appear here. Agent checks and future gates stay on the pursuit in Requests.',{exact:true}).waitFor();await page.getByRole('button',{name:'View requests',exact:true}).click();await page.getByRole('button',{name:/Existing proposal fixture/}).click();
   await page.getByRole('button',{name:'Cancel existing proposal review',exact:true}).click();await page.getByText('Cancelled by pursuit manager',{exact:true}).waitFor();assert.equal(cancelled,1);
   await context.close();
 }assert.deepEqual(errors,[]);console.log('Compiled existing-proposal UI passed at 1440px and 390px: explicit file roles, excluded prior report, exact notes, queued ten-pass progress, overdue dispatcher, cancellation, no approval button, zero overflow/page errors.');}

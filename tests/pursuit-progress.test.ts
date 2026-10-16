@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {progressSummary,type PursuitProgress} from '../lib/pursuit-progress';
+import {progressSummary,progressContext,type PursuitProgress} from '../lib/pursuit-progress';
 import {sourceContextSchema} from '../lib/source-context';
 
 const now=Date.parse('2026-10-16T10:00:00Z');
@@ -21,4 +21,11 @@ test('progress distinguishes queued work, expired contact, live reviewers and hu
 test('source labels are bounded descriptive metadata, never visibility or approval claims',()=>{
   assert.deepEqual(sourceContextSchema.parse({category:'answers',label:'  Buyer Q&A ',notes:'Use the signed answers.'}),{category:'answers',label:'Buyer Q&A',notes:'Use the signed answers.'});
   for(const value of [{category:'invented'},{category:'template',approved:true},{category:'reference',visibility:'client'},{category:'other',notes:'x'.repeat(3001)}])assert.equal(sourceContextSchema.safeParse(value).success,false);
+});
+test('existing proposal review counts actual checks and does not present a future gate as due',()=>{
+  const stages=[{id:'W3-1',title:'Discovery intake',kind:'task',approvers:[]},{id:'W3-G1',title:'Confirm requirements',kind:'gate',approvers:['consultant']}];
+  const c={status:'queued' as const,stageIndex:0},p={...base,reviewPurpose:'existing_draft',reviewTotal:10,reviewQueued:7,reviewCompleted:2};
+  const actual=progressContext(c,p,stages);assert.equal(actual.position,'2 of 10 independent checks recorded');assert.equal(actual.decision,'No human approval is due');assert.equal(actual.current,'Existing proposal review');
+  assert.equal(progressContext(c,base,stages).decisionLabel,'Later human gate');
+  const due=progressContext({status:'awaiting_approval',stageIndex:1},base,stages);assert.equal(due.decisionLabel,'Human decision due now');assert.equal(due.decision,'Confirm requirements');
 });
