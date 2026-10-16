@@ -1,5 +1,7 @@
 # Native source preparation and document export
 
+Before proposal generation, read [the Mindmap visual design standard](PROPOSAL_DESIGN_STANDARD.md). Saurabh's manual reference establishes substantive diagrams and page-level visual checks as part of the deliverable. [SVG/Word helpers](../scripts/visuals/README.md) support the same active-session authoring work; they do not replace the leased workflow or QC contracts below.
+
 These helpers run inside the current claimed Codex task. They never call a model API or create another model session. Codex reads and reasons about the actual sources, writes a bounded build plan, inspects the resulting files and submits them to independent QC and human gates. The helpers format and extract; they do not establish factual accuracy or approval.
 
 ## Prepare the claimed sources

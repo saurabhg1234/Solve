@@ -19,3 +19,7 @@ Preserve truthful QC and approval records: direct analysis is not an independent
 ## Zora outgoing email visibility
 
 Saurabh requires a visible copy of every outgoing Zora email. For emails to others, include `saurabh@mindmapdigital.ai` in **Cc**, including setup requests, follow-ups and client emails. If Saurabh is the primary To recipient, do not duplicate his address in Cc. Use `zoraRecipients` from `lib/email.ts` when constructing recipient headers. Keep the magenta stripe/orb on every outgoing email and retain a send receipt with To/Cc and the sent-message location. This preference does not itself authorise sending; proposal/email workflow release and sending remain human actions unless the user explicitly instructs a send.
+
+## Proposal design learned from the manual reference
+
+Before producing or revising proposal documents, read `docs/PROPOSAL_DESIGN_STANDARD.md`. Saurabh expects substantive visuals: business journeys, architecture, agent swimlanes, options, timelines and responsibility matrices as appropriate. Do not replace the visual explanation with text/tables alone. Preserve the latest user-supplied design logic, correct claims inside diagrams as well as prose, and inspect every rendered page. Use readable vector figures with Word fallbacks when possible. Reusable helpers are under `scripts/visuals`; client-specific source assets and populated outputs remain private. This is persistent design guidance, not a formal source/QC/release approval.
