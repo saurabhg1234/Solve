@@ -1,6 +1,8 @@
 # Zora build status — 16 October 2026 (Dubai)
 
-**Current work — 16 October:** Claude’s main-branch changes were reconciled at `c69cff1`. The source-context/batch-upload/progress milestone addresses Advait’s three reported issues; see [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and [current startup state](ZORA_HANDOFF.md). Older release/count statements below are historical snapshots.
+**Current release — 16 October:** Claude’s main-branch changes were reconciled at `c69cff1`. The source-context/batch-upload/progress milestone addresses Advait’s three reported issues; see [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and [current startup state](ZORA_HANDOFF.md). Older release/count statements below are historical snapshots.
+
+Application code **`8f07b18`** is pushed to main and deployed: **`dpl_D9owaFwv6dMWuqBfY6eVueTb8gmY`**, READY, verified at **2026-10-16T10:37:43.864Z / 14:37 Dubai**. The stable URL serves the new UI strings; unsigned source-context edits, mailbox status and maintenance return 401. The configured five-minute cron moved to this deployment, with successful automatic runs at 10:25/10:30/10:35 UTC. Original private assets remain intact. The owned local test servers were stopped, and the checkout was clean before this documentation receipt update.
 
 The 16 October implementation passed **56 TypeScript tests, type checking and a production build**, plus local source-context, case, review, trust-reset and ESC-4 fixtures and compiled desktop/mobile checks. No dependency, schema, role or credential changed. The pre-release live audit verified Claude’s `c69cff1` deployment READY, nineteen tables, 22 private source versions, two real pursuits and zero human approvals. The five-minute mailbox monitor is healthy; Claude’s last recorded hourly wake was 08:01:52 UTC (12:01 Dubai), overdue when checked.
 
