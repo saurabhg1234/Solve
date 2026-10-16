@@ -8,6 +8,7 @@ import { resultSchema, safeOutputPath } from '../lib/result';
 import { portalRequest,downloadFiles,persistOutputs } from '../worker/transport';
 import { contextSchema,reviewResultSchema } from '../lib/review-plan';
 import { nativeContext } from '../lib/native-context';
+import {deliverWork} from './deliver_work';
 import { spawn,type ChildProcess } from 'node:child_process';
 
 const stageJobSchema = z.object({
@@ -142,13 +143,14 @@ async function main() {
   if (action === 'check') return maintenance();
   if (action === 'claim') return claim();
   if (action === 'dispatch') return dispatch();
+  if (action === 'deliver') {if(!path)throw new Error('Supply the private delivery plan');return deliverWork(path);}
   if (!path) throw new Error('Supply the private routine workspace path');
   if (action === 'heartbeat') { await heartbeat((await workspace(path)).job); console.log('Lease renewed.'); return; }
   if (action === 'complete') return complete(path);
   if (action === 'escalations') return escalation(path);
   if (action === 'explain') {if(!plan)throw new Error('Supply an explanation plan');return escalation(path,plan);}
   if (action === 'prepare'||action==='build'||action==='build-rfi'||action==='build-costs'||action==='email-context'||action==='build-email'||action==='build-transcript') return documentTool(path,action,plan);
-  throw new Error('Use check, dispatch, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
+  throw new Error('Use check, deliver, dispatch, claim, heartbeat, prepare, build, build-rfi, build-costs, email-context, build-email, build-transcript, escalations, explain or complete');
 }
 function networkCode(error:unknown){const cause=error instanceof Error?(error as Error&{cause?:{code?:unknown;name?:unknown}}).cause:undefined;const code=cause?.code??cause?.name;return typeof code==='string'&&/^[A-Za-z0-9_]{1,40}$/.test(code)?`, ${code}`:'';}
 main().catch(error => { console.error(error instanceof Error && (error.message.startsWith('Routine endpoint failed')||error.message.startsWith('ZORA_NOTIFICATION_BYPASS')) ? error.message : `Cloud routine failed (${error instanceof Error ? error.name : 'unknown'}${networkCode(error)}); no credential or source values are logged.`); process.exitCode = 1; });

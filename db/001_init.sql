@@ -245,3 +245,22 @@ END $$;
 CREATE INDEX IF NOT EXISTS zora_inbox_untriaged ON zora_inbox(received_at) WHERE triage IS NULL AND case_id IS NULL;
 -- zora:statement-breakpoint
 CREATE INDEX IF NOT EXISTS zora_inbox_conversation ON zora_inbox(conversation_id) WHERE conversation_id IS NOT NULL;
+
+-- zora:statement-breakpoint
+-- Real outputs from work requested in an active native session; never a synthetic stage/QC completion.
+CREATE TABLE IF NOT EXISTS zora_direct_deliveries (
+  id uuid PRIMARY KEY, case_id uuid NOT NULL REFERENCES zora_cases(id) ON DELETE CASCADE,
+  case_version integer NOT NULL, source_revision integer NOT NULL, context_id text NOT NULL,
+  title text NOT NULL, summary text NOT NULL, visibility text NOT NULL CHECK(visibility IN ('client','internal')),
+  manifest jsonb NOT NULL, manifest_hash text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(id,case_id)
+);
+-- zora:statement-breakpoint
+CREATE TABLE IF NOT EXISTS zora_delivery_files (
+  id uuid PRIMARY KEY, delivery_id uuid NOT NULL, case_id uuid NOT NULL,
+  filename text NOT NULL, mime_type text NOT NULL, data bytea NOT NULL, sha256 text NOT NULL,
+  FOREIGN KEY(delivery_id,case_id) REFERENCES zora_direct_deliveries(id,case_id) ON DELETE CASCADE,
+  UNIQUE(delivery_id,filename)
+);
+-- zora:statement-breakpoint
+CREATE INDEX IF NOT EXISTS zora_direct_deliveries_case ON zora_direct_deliveries(case_id,created_at DESC);
