@@ -1,5 +1,7 @@
 # Zora build status — 16 October 2026 (Dubai)
 
+**Later 16 October correction:** Advait confirmed that the description is meeting notes and the uploaded proposal is the existing draft for QC. The transcript-only hold is superseded. W3 pilot instructions now accept notes and treat recording-only work as conditional; 57 tests, type checking and build pass. The guarded case clarification is recorded at version 4 / source revision 3. A six-page diagnostic review is prepared with eight findings, without claiming independent QC or approval. See [NOTES_AND_EXISTING_DRAFTS.md](NOTES_AND_EXISTING_DRAFTS.md).
+
 **Current release — 16 October:** Claude’s main-branch changes were reconciled at `c69cff1`. The source-context/batch-upload/progress milestone addresses Advait’s three reported issues; see [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and [current startup state](ZORA_HANDOFF.md). Older release/count statements below are historical snapshots.
 
 Application code **`8f07b18`** is pushed to main and deployed: **`dpl_D9owaFwv6dMWuqBfY6eVueTb8gmY`**, READY, verified at **2026-10-16T10:37:43.864Z / 14:37 Dubai**. The stable URL serves the new UI strings; unsigned source-context edits, mailbox status and maintenance return 401. The configured five-minute cron moved to this deployment, with successful automatic runs at 10:25/10:30/10:35 UTC. Original private assets remain intact. The owned local test servers were stopped, and the checkout was clean before this documentation receipt update.

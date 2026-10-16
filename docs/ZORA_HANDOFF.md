@@ -25,11 +25,13 @@ The original `invalid paginated history lineage ... missing source rollout` erro
 
 ## Advait's latest email and real requests
 
+**Latest correction — 16 October, 11:21 UTC:** Advait clarified that the request description contains physical-meeting notes and the uploaded proposal is the existing draft he wants reviewed. The transcript-only requirement was wrong. Read [NOTES_AND_EXISTING_DRAFTS.md](NOTES_AND_EXISTING_DRAFTS.md). Meeting notes are valid discovery inputs. The current pursuit is version 4 / source revision 3, with his clarification retained and the obsolete hold superseded. A six-page diagnostic review (eight findings) is prepared privately; formal existing-draft QC orchestration remains unfinished and no independent pass or approval is claimed. The earlier intake history below is retained for audit.
+
 Advait replied **16 October, 09:31 UTC / 13:31 Dubai**, subject **“Re: Zora update: live email intake and automatic agent dispatch”**, with Saurabh already copied. He reported three problems: no per-file explanatory context, unclear multiple-file support, and no useful current stage/agent progress. These are addressed by the 16 October implementation below.
 
 His Pentagon pursuit **`b7719635-8f9d-4d4c-9a36-f8588b013c99`**, “3 way match and transcript PO checker”, was submitted at 09:26 UTC as **W3** with a typed scope and `Pentagon_AI_Agents_on_Tally_Proposal_v2.3.docx`. The real W3-1 stage was claimed and prepared in this Codex context: one source, 271 extracted evidence passages, no extraction holds. Inspection found an **existing solution proposal**, not the discovery transcript required by W3-1. Mentions of Fireflies describe proposed system inputs, not an attached meeting transcript.
 
-Native completion recorded a **blocked** result with one private source-intake workpaper. The specific required input is the original discovery transcript with speakers/timestamps, the recording, or an accessible meeting link. Do not invent a transcript, pretend a proposal is one, silently switch workflows or confirm a different route on the user's behalf. If Advait intended another workflow, its owner must choose/confirm that route. Private job `cde9440b-1592-42cd-afd7-7122bff04395` has a finalised blocked result; this native context has used its one claim and must not take another.
+Native completion recorded a **blocked** result with one private source-intake workpaper. **Superseded interpretation:** the original result requested a discovery transcript, recording or meeting link. Advait has since confirmed that the description itself is meeting notes; do not request a transcript again solely because the meeting was in person. Do not invent a transcript, pretend a proposal is one, silently switch workflows or confirm a different route on the user's behalf. The existing draft must be reviewed against those notes, with formal QC and human gates still distinct from a diagnostic report. Private job `cde9440b-1592-42cd-afd7-7122bff04395` has a finalised blocked result; this native context has used its one claim and must not take another.
 
 The other real pursuit, **`3c050ac6-61b4-4bab-94c0-f63b3fffa87e`**, is Saurabh's W8 Parker follow-up test. Claude completed W8-1 and recorded a W8-2 hold on 15 October. Preserve its recorded results; no human gate has been approved.
 
@@ -70,7 +72,7 @@ Use `scripts/local_graph_fixture.mjs` only for local tests. The 16 October tests
 ## Continue from here
 
 1. Verify the latest deployed main revision and dispatcher health; distinguish mailbox monitoring, scheduled wake, active worker and completed output.
-2. Resume Advait's selected W3 after the missing discovery source is supplied and its owner resumes the stage. The uploaded proposal can remain reference material with an explanatory label.
+2. Continue the existing-draft review path described in NOTES_AND_EXISTING_DRAFTS.md. Advait supplied sufficient meeting notes for the initial review; no transcript is owed. Resolve the actual review findings and the remaining orchestration gap without inventing fresh sessions or approvals.
 3. Continue real source-grounded workflows, independent semantic review and appropriate human gates. Complete changed-source/pre-draft escalation continuation and original-producer resumption without impersonating identities. ESC-4 is implemented; do not re-list it as wholly missing.
 4. Complete all-eight acceptance with real drafts/reviews/demo evidence. Human pricing inputs, role mapping, demo access/expected results/reuse limits and applicable recording/voice licences remain specific external inputs; they do not prevent unrelated engineering.
 

@@ -6,7 +6,7 @@ export function progressSummary(status:CaseStatus,progress:PursuitProgress,now=D
   const active=progress.workers.filter(w=>new Date(w.leaseExpiresAt).getTime()>now);
   if(status==='awaiting_confirmation')return {title:'Ready for your workflow confirmation',detail:'Check the brief and source files, then confirm the workflow to queue the first step.',active:[]};
   if(status==='awaiting_approval')return {title:'Waiting for human review',detail:'The assigned approver needs to review this version and decide before Zora continues.',active:[]};
-  if(status==='blocked')return {title:'Needs input before continuing',detail:'See the missing inputs or review findings below. Add the required information, then resume the step.',active:[]};
+  if(status==='blocked')return {title:'Needs attention before continuing',detail:'See the review findings, required inputs or workflow notes below. Resolve the recorded issue before resuming the step.',active:[]};
   if(status==='released')return {title:'Workflow released',detail:'The required workflow gates are complete. Sending or submitting remains a separate human action.',active:[]};
   if(active.length)return {title:active.some(w=>w.kind==='review')?'Independent review in progress':'Zora is working on this step',detail:'An agent has claimed the work and is maintaining contact. Saved files and review results appear below.',active};
   if(progress.reviewQueued)return {title:'Waiting for independent reviewers',detail:`${progress.reviewQueued} review task(s) are queued for fresh sessions. No reviewer is active at this check.`,active};
