@@ -1,5 +1,7 @@
 # Zora: current startup and handoff
 
+**16 October existing-proposal review update:** the explicit W3/W4 uploaded-draft entry is now implemented and locally verified. Read [EXISTING_PROPOSAL_REVIEW.md](EXISTING_PROPOSAL_REVIEW.md) for its ten-pass diagnostic contract, migration, isolation and cancellation behavior. Production deployment and the real Pentagon queue must be verified separately; earlier statements that the entry itself is unfinished are superseded. Fresh reviewer sessions and all-eight workflow acceptance remain unverified.
+
 Updated **16 October 2026** from repository and live service state. Saurabh resumed development with Codex after Claude's changes. This file supersedes the older branch/runtime instructions in historical notes. Do not import the previous chat's history.
 
 ## Startup checks

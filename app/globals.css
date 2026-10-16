@@ -52,3 +52,11 @@ main{padding:42px 42px 0;max-width:1640px;margin:auto}.page-title{display:flex;j
 .pursuit-progress{background:#eff6ff;border-color:#bfdbfe}.pursuit-progress .files-heading{margin-top:0;flex-wrap:wrap}.pursuit-progress h3{font-size:16px}.progress-title{font-size:19px;display:block;color:var(--ink)}.progress-facts{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid #bfdbfe;padding-top:14px;margin-top:14px}.progress-facts>div{min-width:0}.progress-facts small{display:flex;gap:5px;color:var(--muted);font-size:12px}.progress-facts strong{display:block;font-size:14px;margin:6px 0;overflow-wrap:anywhere}.progress-facts span{font-size:12px;color:var(--muted)}
 .active-worker{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:14px;font-size:13px;overflow-wrap:anywhere}.active-worker small{width:100%;color:var(--muted)}.progress-timing{display:flex;flex-wrap:wrap;gap:7px 15px;font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}
 @media(max-width:600px){.source-batch,.source-context-editor,.pursuit-progress{padding:12px}.source-context-fields .input-row,.progress-facts{grid-template-columns:1fr}.pursuit-files .files-heading{flex-wrap:wrap}.file-row{flex-wrap:wrap}.file-row>div{flex-basis:70%}.progress-title{font-size:17px}.progress-timing span{display:block;width:100%}}
+
+.existing-draft-review{border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0;background:white}
+.existing-draft-review h3{margin:0 0 12px}.existing-draft-review summary{cursor:pointer;font-weight:600}
+.existing-draft-review textarea{display:block;width:100%;margin-top:8px;min-height:120px}
+.existing-review-files{display:grid;gap:12px;margin:16px 0}.existing-review-files label{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,220px);gap:12px;align-items:center}.existing-review-files span{overflow-wrap:anywhere}.existing-review-files select{width:100%}
+@media(max-width:600px){.existing-review-files label{grid-template-columns:1fr}}
+
+.review-snapshot{margin:12px 0;font-size:14px;overflow-wrap:anywhere}.review-snapshot summary{cursor:pointer;font-weight:600}.review-snapshot small{display:block}.review-notes{white-space:pre-wrap}

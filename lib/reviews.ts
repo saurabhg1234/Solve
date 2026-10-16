@@ -6,13 +6,13 @@ import { digest,stagesFor,validateCoverage } from './engine';
 import type { CaseRecord } from './catalogue';
 import type { StageResult } from './result';
 import { inventory,MAX_REVIEW_ELEMENTS,ReviewInputError,type ReviewElement,type ReviewFile } from './review-manifest';
-import { reviewPlan,reviewInstructions,type ReviewResult } from './review-plan';
+import { reviewPlan,reviewInstructions,existingDraftInstructions,type ReviewResult } from './review-plan';
 import { knowledgeHolds } from './knowledge';
 import { CHECKLIST_PACKET_LIMIT,packetRules,rulesFor } from './checklist';
 import { exactIds } from './trust-reset-contract';
 import { parseSourceTranscript,matchTranscript,transcriptHash,TRANSCRIPT_LIMIT,type SourceTranscript } from './source-transcript';
 
-async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string,loop:number){
+export async function queuePasses(db:PoolClient,runId:string,caseId:string,stage:string,loop:number){
   const plan=reviewPlan(stage);if(!plan)throw new HttpError(409,'Independent review plan is missing');
   const passes=[...plan.passes];
   const packet=(await db.query('SELECT packet FROM zora_qc_runs WHERE id=$1',[runId])).rows[0]?.packet;
@@ -90,12 +90,12 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
 export async function leasedReview(db:PoolClient,id:string,leaseId:string){
   const ref=(await db.query('SELECT case_id FROM zora_reviews WHERE id=$1',[id])).rows[0];if(!ref)throw new HttpError(409,'Review lease is unavailable');
   await db.query('SELECT id FROM zora_cases WHERE id=$1 FOR UPDATE',[ref.case_id]);
-  const row=(await db.query("SELECT r.*,q.job_id,q.case_version,q.packet,q.packet_hash,q.source_revision,q.creator_context,q.clean_loops,q.max_loops FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_cases c ON c.id=r.case_id WHERE r.id=$1 AND r.lease_id=$2 AND r.state='leased' AND r.lease_expires_at>now() AND q.state='reviewing' AND q.case_version=c.version AND q.source_revision=c.source_revision FOR UPDATE OF r",[id,leaseId])).rows[0];
+  const row=(await db.query("SELECT r.*,q.job_id,q.purpose,q.case_version,q.packet,q.packet_hash,q.source_revision,q.creator_context,q.clean_loops,q.max_loops FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_cases c ON c.id=r.case_id WHERE r.id=$1 AND r.lease_id=$2 AND r.state='leased' AND r.lease_expires_at>now() AND q.state='reviewing' AND q.case_version=c.version AND q.source_revision=c.source_revision FOR UPDATE OF r",[id,leaseId])).rows[0];
   if(!row)throw new HttpError(409,'Review lease or pursuit revision changed');return row;
 }
 
 export async function claimReview(db:PoolClient,worker:string,contextId:string){
-  const candidate=(await db.query("SELECT c.id FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id WHERE r.case_id=c.id AND q.state='reviewing' AND q.case_version=c.version AND q.creator_context<>$1 AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) AND (r.checker='SOURCE_TRANSCRIPT' OR NOT EXISTS(SELECT 1 FROM zora_reviews prerequisite WHERE prerequisite.run_id=r.run_id AND prerequisite.loop_number=r.loop_number AND prerequisite.checker='SOURCE_TRANSCRIPT' AND prerequisite.state<>'completed'))) AND NOT EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_draft_contexts d WHERE d.case_id=c.id AND d.context_id=$1) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId])).rows[0];
+  const candidate=(await db.query("SELECT c.id FROM zora_cases c WHERE EXISTS(SELECT 1 FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id WHERE r.case_id=c.id AND q.state='reviewing' AND q.case_version=c.version AND q.creator_context IS DISTINCT FROM $1 AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) AND (r.checker='SOURCE_TRANSCRIPT' OR NOT EXISTS(SELECT 1 FROM zora_reviews prerequisite WHERE prerequisite.run_id=r.run_id AND prerequisite.loop_number=r.loop_number AND prerequisite.checker='SOURCE_TRANSCRIPT' AND prerequisite.state<>'completed'))) AND NOT EXISTS(SELECT 1 FROM zora_jobs j WHERE j.case_id=c.id AND j.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_review_contexts x WHERE x.case_id=c.id AND x.context_id=$1) AND NOT EXISTS(SELECT 1 FROM zora_draft_contexts d WHERE d.case_id=c.id AND d.context_id=$1) ORDER BY c.updated_at FOR UPDATE OF c SKIP LOCKED LIMIT 1",[contextId])).rows[0];
   if(!candidate)return null;
   const r=(await db.query("SELECT r.id,r.checker,r.method,r.pass_number,r.loop_number,q.id AS run_id,q.packet,q.packet_hash FROM zora_reviews r JOIN zora_qc_runs q ON q.id=r.run_id JOIN zora_cases c ON c.id=r.case_id WHERE r.case_id=$1 AND q.state='reviewing' AND q.case_version=c.version AND (r.state='queued' OR (r.state='leased' AND r.lease_expires_at<now())) AND (r.checker='SOURCE_TRANSCRIPT' OR NOT EXISTS(SELECT 1 FROM zora_reviews prerequisite WHERE prerequisite.run_id=r.run_id AND prerequisite.loop_number=r.loop_number AND prerequisite.checker='SOURCE_TRANSCRIPT' AND prerequisite.state<>'completed')) ORDER BY r.created_at,r.sequence FOR UPDATE OF r SKIP LOCKED LIMIT 1",[candidate.id])).rows[0];
   if(!r)return null;const leaseId=randomUUID();
@@ -104,7 +104,7 @@ export async function claimReview(db:PoolClient,worker:string,contextId:string){
   await event(db,candidate.id,'qc.claimed',worker,{reviewId:r.id,checker:r.checker,pass:r.pass_number,loop:r.loop_number});
   // No prior results, worker/drafter context, private workpapers or earlier review reports.
   const {elements,...packet}=r.packet;
-  return {kind:'review',id:r.id,leaseId,contextId,runId:r.run_id,checker:r.checker,method:r.method,passNumber:r.pass_number,loopNumber:r.loop_number,packetHash:r.packet_hash,elementCount:elements.length,packet,instructions:reviewInstructions(r.checker,r.method)};
+  return {kind:'review',id:r.id,leaseId,contextId,runId:r.run_id,checker:r.checker,method:r.method,passNumber:r.pass_number,loopNumber:r.loop_number,packetHash:r.packet_hash,elementCount:elements.length,packet,instructions:reviewInstructions(r.checker,r.method)+(r.packet.purpose==='existing_draft'?'\n'+existingDraftInstructions:'')};
 }
 
 export async function completeReview(db:PoolClient,id:string,leaseId:string,contextId:string,result:ReviewResult){
@@ -117,6 +117,7 @@ export async function completeReview(db:PoolClient,id:string,leaseId:string,cont
   const withdrawn=await knowledgeHolds(db,review.case_id);if(withdrawn.length)result={...result,missingInputs:[...result.missingInputs,...withdrawn]};
   await db.query("UPDATE zora_reviews SET state='completed',result=$2,completed_at=now() WHERE id=$1",[id,JSON.stringify(result)]);
   await event(db,review.case_id,'qc.pass_recorded',review.worker_id,{reviewId:id,checker:review.checker,findings:result.findings.length,checked:result.checkedElementIds.length,loop:review.loop_number});
+  if(review.purpose==='existing_draft')return completeExistingDraftReview(db,review);
   // Any problem holds the loop. No vote or model-supplied 'passed' flag can override it.
   const plan=reviewPlan(review.packet.stageId)!;
   if(result.findings.length||result.missingInputs.length){
@@ -158,4 +159,18 @@ async function hold(db:PoolClient,review:any,type:string,reasons:string[]){
   await db.query("UPDATE zora_jobs SET state='blocked',result=jsonb_set(jsonb_set(result,'{status}','\"blocked\"'::jsonb),'{missingInputs}',$2::jsonb),completed_at=now() WHERE id=$1",[review.job_id,JSON.stringify(visibleReasons)]);
   await db.query("UPDATE zora_cases SET status='blocked',version=version+1,updated_at=now() WHERE id=$1",[review.case_id]);
   await event(db,review.case_id,type,review.worker_id,{runId:review.run_id,missingInputs:visibleReasons});
+}
+
+/** Collect every diagnostic lens, including findings; never advance a stage or record approval. */
+async function completeExistingDraftReview(db:PoolClient,review:any){
+  const pending=(await db.query("SELECT count(*)::int AS count FROM zora_reviews WHERE run_id=$1 AND state<>'completed'",[review.run_id])).rows[0].count;
+  if(pending)return {status:'reviewing',remaining:pending};
+  const reports=(await db.query('SELECT result FROM zora_reviews WHERE run_id=$1 ORDER BY sequence',[review.run_id])).rows;
+  const findings=reports.reduce((n,r)=>n+r.result.findings.length,0);
+  const missing=[...new Set<string>(reports.flatMap(r=>r.result.missingInputs))];
+  const hasIssues=findings>0||missing.length>0;
+  await db.query("UPDATE zora_qc_runs SET state=$2,clean_streak=$3,missing_inputs=$4,completed_at=now() WHERE id=$1",[review.run_id,hasIssues?'blocked':'passed',hasIssues?0:1,JSON.stringify(missing)]);
+  await db.query("UPDATE zora_cases SET status='blocked',version=version+1,updated_at=now() WHERE id=$1",[review.case_id]);
+  await event(db,review.case_id,'existing_review.completed',review.worker_id,{runId:review.run_id,findings,missingInputs:missing.length,packetHash:review.packet_hash,humanApprovalRecorded:false,workflowAdvanced:false});
+  return {status:'completed',reviewState:hasIssues?'blocked':'passed',findings,humanApprovalRecorded:false,workflowAdvanced:false};
 }

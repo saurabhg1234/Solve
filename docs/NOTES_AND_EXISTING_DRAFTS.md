@@ -8,7 +8,7 @@ The W3 portal card now says **Meeting-led proposal** and accepts **meeting notes
 
 These are execution instructions, not a new automatic stage-skipping mechanism. Stage order, the original indexed BRD, independent reviewer profiles, human baseline/pricing/release gates and real-session identity constraints are preserved. An existing proposal is a draft to review, not evidence that its own assertions were client-approved. A diagnostic review can begin from notes without being represented as a fresh independent D1–D8 pass.
 
-**The formal existing-draft QC entry is still unfinished.** The current review queue requires stored draft artifacts and an approved source baseline. This release does not manufacture either, insert fake reviewers, skip gates or mark the pilot accepted. Continue implementation of an explicit existing-draft intake/diagnostic-review path, preserving reviewer isolation and later approval requirements. Do not turn this engineering limitation into another request for a transcript.
+**Update: the existing-draft diagnostic entry is implemented.** See [EXISTING_PROPOSAL_REVIEW.md](EXISTING_PROPOSAL_REVIEW.md). It queues ten independent passes on explicitly selected uploaded drafts and notes, without an invented generated artifact or approved baseline. All diagnostic findings are collected; completion never advances or releases the workflow. Real fresh reviewer execution remains dependent on the provider dispatcher. The historical state below describes the earlier intake correction; consult ZORA_HANDOFF.md for the latest live queue state.
 
 ## Pentagon state and work completed
 

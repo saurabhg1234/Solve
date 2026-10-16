@@ -120,6 +120,20 @@ CREATE TABLE IF NOT EXISTS zora_qc_runs (
   missing_inputs jsonb NOT NULL DEFAULT '[]', created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz
 );
 -- zora:statement-breakpoint
+-- Uploaded-draft diagnostics have no generated stage job and cannot advance a workflow.
+ALTER TABLE zora_qc_runs ALTER COLUMN job_id DROP NOT NULL;
+-- zora:statement-breakpoint
+ALTER TABLE zora_qc_runs ALTER COLUMN creator_context DROP NOT NULL;
+-- zora:statement-breakpoint
+ALTER TABLE zora_qc_runs ADD COLUMN IF NOT EXISTS purpose text NOT NULL DEFAULT 'stage';
+-- zora:statement-breakpoint
+ALTER TABLE zora_qc_runs DROP CONSTRAINT IF EXISTS zora_qc_runs_purpose_check;
+-- zora:statement-breakpoint
+ALTER TABLE zora_qc_runs ADD CONSTRAINT zora_qc_runs_purpose_check CHECK (
+  (purpose='stage' AND job_id IS NOT NULL AND creator_context IS NOT NULL) OR
+  (purpose='existing_draft' AND job_id IS NULL)
+);
+-- zora:statement-breakpoint
 CREATE TABLE IF NOT EXISTS zora_reviews (
   id uuid PRIMARY KEY, run_id uuid NOT NULL REFERENCES zora_qc_runs(id), case_id uuid NOT NULL REFERENCES zora_cases(id),
   checker text NOT NULL, pass_number integer NOT NULL, method text NOT NULL, loop_number integer NOT NULL,

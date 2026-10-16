@@ -1,5 +1,7 @@
 # Remaining inputs and decisions
 
+**16 October update:** the existing-proposal diagnostic entry is implemented; no additional transcript or proposal upload is owed for Pentagon. Native fresh-reviewer dispatch remains the unresolved runtime dependency. See [EXISTING_PROPOSAL_REVIEW.md](EXISTING_PROPOSAL_REVIEW.md).
+
 **16 October update:** development has resumed on main. Advait’s three file/progress issues are addressed in [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md). Advait clarified at 15:21 Dubai that the description is physical-meeting notes and the proposal is the draft for QC. No transcript is owed; see NOTES_AND_EXISTING_DRAFTS.md. Claude’s hourly dispatcher last recorded a wake at 12:01 Dubai on 16 October when checked during this release; its provider-side task needs a status check. Earlier no-runtime statements below are historical; use [ZORA_HANDOFF.md](ZORA_HANDOFF.md) for current state.
 
 Updated **16 October 2026 (Dubai)**. Codex development has resumed while preserving Claude’s existing runtime. No new Microsoft or Vercel secret is required. A new workspace still needs secure access to existing bindings/private sources.
