@@ -23,7 +23,7 @@ async function main(){
   async function upload(base:string,bytes:Buffer,metadata:any,worker=false){
     const initial=await call(base,{...metadata,totalBytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')},worker);assert.equal(initial.status,201);
     const r=await fetch(new URL(`${base}/${initial.body.id}`,origin),{method:'PUT',headers:{Origin:origin.origin,'x-zora-offset':'0',...(worker?{Authorization:`Bearer ${s.ZORA_RUNNER_TOKEN}`,'x-zora-lease':metadata.leaseId}:{Cookie:`zora_session=${sessions['tester@mindmapdigital.ai']}`})},body:new Uint8Array(bytes)});assert.equal(r.status,200);
-    const saved=await call(`${base}/${initial.body.id}`,worker?{leaseId:metadata.leaseId}:{},worker);assert.equal(saved.status,200);return initial.body.id;
+    const saved=await call(`${base}/${initial.body.id}`,worker?{leaseId:metadata.leaseId}:{sourceContext:{category:'reference',label:'Fixture source',notes:'Submitter context, not an approval.'}},worker);assert.equal(saved.status,200);return initial.body.id;
   }
   const done={status:'completed',summary:'Synthetic local stage fixture, not a real client result.',missingInputs:[],outputFiles:[] as any[],citations:[],reviewReports:[]};
   async function prepare(policy:boolean,internal=false){
@@ -60,7 +60,7 @@ async function main(){
     for(let n=0;n<8;n++){
       const job=await claim();assert.equal(job.kind,'review');assert.equal(job.packet.caseId,clean.id);assert.ok(!('prior' in job));assert.ok(!JSON.stringify(job).includes('PRIVATE_COST_CANARY'));assert.ok(!JSON.stringify(job).includes('EARLIER_REVIEW_CANARY'));assert.equal(job.packet.files.some((f:any)=>f.id===clean.workpaperId),false);
       if(n===0){
-        reused=job.contextId;
+        reused=job.contextId;assert.equal(job.packet.files.find((f:any)=>f.kind==='sources').source_context.notes,'Submitter context, not an approval.');
         assert.equal((await call(`/api/reviews/${job.id}/files/artifacts/${clean.workpaperId}?leaseId=${job.leaseId}`,undefined,true)).status,403);
         assert.equal((await call(`/api/reviews/${job.id}/heartbeat`,{leaseId:job.leaseId},true)).status,200);
       }

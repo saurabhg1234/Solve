@@ -21,6 +21,6 @@ export interface CaseRecord {
 }
 
 export const statusLabels: Record<CaseStatus, string> = {
-  awaiting_confirmation: 'Confirm workflow', queued: 'Waiting for Codex', running: 'Codex session',
+  awaiting_confirmation: 'Confirm workflow', queued: 'Queued for Zora', running: 'Zora working',
   awaiting_approval: 'Human review', blocked: 'Needs input', released: 'Released',
 };

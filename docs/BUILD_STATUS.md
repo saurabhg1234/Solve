@@ -1,8 +1,16 @@
-# Zora build status — 15 October 2026 (Dubai)
+# Zora build status — 16 October 2026 (Dubai)
+
+**Current work — 16 October:** Claude’s main-branch changes were reconciled at `c69cff1`. The source-context/batch-upload/progress milestone addresses Advait’s three reported issues; see [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and [current startup state](ZORA_HANDOFF.md). Older release/count statements below are historical snapshots.
+
+The 16 October implementation passed **56 TypeScript tests, type checking and a production build**, plus local source-context, case, review, trust-reset and ESC-4 fixtures and compiled desktop/mobile checks. No dependency, schema, role or credential changed. The pre-release live audit verified Claude’s `c69cff1` deployment READY, nineteen tables, 22 private source versions, two real pursuits and zero human approvals. The five-minute mailbox monitor is healthy; Claude’s last recorded hourly wake was 08:01:52 UTC (12:01 Dubai), overdue when checked.
+
+Advait’s real Pentagon W3-1 intake was processed in a genuine native session. Its uploaded file is an existing proposal; the task now holds specifically for the missing discovery transcript, recording or meeting link. A private source-intake report is stored. No email was sent during this resume work.
 
 The deployed application is a tested foundation. It is not a completed solutions agent, and none of W1–W8 has passed full end-to-end acceptance.
 
-**Current live release: a5d99c5**, deployment **dpl_352vJ2KSipPy93LisTnqAxR21ogH**, **READY**, reverified **2026-10-15T04:42:12.188Z** (08:42 Dubai). This release retains the blue/white portal and adds recurring mailbox maintenance and thirteen-file pilot-pack intake. Fresh checks found 22 complete source versions (13 email attachments), zero pursuits and zero human approvals; successful automatic cron heartbeats were recorded at 08:30/08:35/08:40 Dubai. The deployed migration has eighteen application tables. Earlier entries below are historical evidence.
+## Historical release snapshots (before the 16 October resume)
+
+**15 October pre-Claude live release: a5d99c5**, deployment **dpl_352vJ2KSipPy93LisTnqAxR21ogH**, **READY**, reverified **2026-10-15T04:42:12.188Z** (08:42 Dubai). This release retains the blue/white portal and adds recurring mailbox maintenance and thirteen-file pilot-pack intake. Fresh checks found 22 complete source versions (13 email attachments), zero pursuits and zero human approvals; successful automatic cron heartbeats were recorded at 08:30/08:35/08:40 Dubai. The deployed migration has eighteen application tables. Earlier entries below are historical evidence.
 
 **Claude transfer:** [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) is the consolidated continuation guide; root `CLAUDE.md` and README point to it. The complete implementation is on `codex/zora-foundation`, while main remains the original asset upload. This documentation handoff reran and passed **44 TypeScript tests, 21 Python tests, type checking, the production build and live mailbox/deployment/access checks**. No application code, schema, credential, role, original source asset or deployment changed, and no email was sent. Automatic agent dispatch and full W1–W8 acceptance remain unfinished.
 

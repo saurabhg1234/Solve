@@ -1,12 +1,14 @@
 # Zora · Mindmap Digital
 
-**Claude takeover:** start with [CLAUDE.md](CLAUDE.md) and the [comprehensive handoff](docs/CLAUDE_HANDOFF.md). All work is on **`main`**; the former `codex/zora-foundation` branch was merged into it on 15 October 2026. Private credentials/client files are held in the existing services and private workspace, with recovery instructions in the handoff.
+**Current development state:** read [docs/ZORA_HANDOFF.md](docs/ZORA_HANDOFF.md) first. All work is on **`main`**, which includes Claude's 15 October changes. Saurabh resumed development with Codex on 16 October; the existing Claude hourly dispatcher remains the operational runtime. The original [comprehensive handoff](docs/CLAUDE_HANDOFF.md) retains background and dated history. Private credentials/client files stay in the existing services and private workspace.
 
-Zora is Mindmap’s solutions agent. The full pilot scope is W1–W8, with S1 commercials and S2 independent QC. The current reasoning bridge targets **Codex sessions**, with no model API integration. Saurabh has now selected Claude to continue development; production agent-runtime migration is separate unfinished work. Vercel hosts the review portal, Microsoft notification endpoints and a verified five-minute mailbox monitor. **No unattended reasoning-agent dispatcher is deployed.** Earlier native scheduling assumptions are unverified; see [runtime options and gaps](docs/AUTONOMOUS_RUNTIME.md).
+Zora is Mindmap’s solutions agent. The full pilot includes W1–W8, S1 commercials and S2 independent QC. The native bridge supports genuine Codex and Claude cloud-session identities without a model API integration. Vercel hosts the portal, automatic email intake, ESC-4 and the five-minute mailbox monitor. Claude's dispatcher was scheduled and has recorded wakes; its latest health must be checked against actual events. All-eight end-to-end acceptance remains unfinished.
+
+The latest [source-context and progress update](docs/SOURCE_CONTEXT_AND_PROGRESS.md) addresses Advait's feedback: clearly staged multiple-file uploads, per-file labels/notes, and visible queued/active/review/human-gate progress.
 
 This checkout includes a **tested application foundation**, not a completed implementation of every BRD requirement. It includes the blue-and-white portal identity (with magenta retained for Zora emails), request portal, persistent queue/schema, Microsoft sign-in and isolated email monitoring, Codex request packs, human gates, attachment/private file storage, team access and revision/resume. The native bridge persists real files with hashes and now dispatches independent reviewer tasks. The server inventories document elements, isolates reviewer packets, rejects self-review/incomplete coverage and enforces explicit clean-loop policy before human gates. Native source preparation, approved Word/PPT editing, multi-template slide composition, tagged PDF export and separate buyer/internal RFI workbooks are implemented and locally verified. Advait has supplied the CompareIQ Word layout and real pilot packs; their originals are retained as private drafts. Real native-review acceptance, complete ESC/fix automation, consultant-quality document/demo/video production and all-eight acceptance remain pending. See [the review contract](docs/INDEPENDENT_REVIEW.md) and [your remaining actions](docs/YOUR_PENDING_ACTIONS.md).
 
-Human review now retains file-linked feedback and routes ordinary corrections back through required checks and approvals. Document-gate QC escapes are recorded and block approval across revisions; the remaining fresh-drafter ESC sequence is unfinished. See [gate feedback](docs/GATE_FEEDBACK.md).
+Human review now retains file-linked feedback and routes ordinary corrections back through required checks and approvals. Document-gate QC escapes trigger ESC-1 through ESC-4, fresh reviewers and controlled closure at the next human gate. Changed-source and pre-draft escalation continuation remain unfinished. See [gate feedback](docs/GATE_FEEDBACK.md).
 
 The private reusable knowledge library retains source bytes/versions and human reuse decisions, pins selected snapshots to pursuits and holds on withdrawals or integrity failures. Its supplied-asset bootstrap creates drafts only; it does not approve company claims or deliver a proposal.
 
@@ -52,7 +54,8 @@ The database migration is repeatable and does not delete tables. Preserve provid
 ## Project guides
 
 - [Comprehensive Claude handoff and continuation plan](docs/CLAUDE_HANDOFF.md)
-- [Unattended runtime options and missing intake/dispatcher work](docs/AUTONOMOUS_RUNTIME.md)
+- [Current agent dispatcher](docs/AGENT_DISPATCHER.md)
+- [Historical unattended runtime options](docs/AUTONOMOUS_RUNTIME.md)
 - [Product and architecture](docs/ZORA_BLUEPRINT.md)
 - [Microsoft 365 setup and shared mailbox isolation](docs/MICROSOFT_365_SETUP.md)
 - [Environment variables and deployment](docs/ENVIRONMENT_AND_DEPLOYMENT.md)

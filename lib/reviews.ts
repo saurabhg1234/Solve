@@ -39,7 +39,7 @@ export async function beginReview(db:PoolClient,job:any,c:CaseRecord,result:Stag
     targets=available.filter(a=>a.purpose==='draft'&&a.job_id===latest);
   }
   if(!targets.length)return {missingInputs:['Independent QC needs an actual stored draft; label the deliverable or estimate purpose as draft.']};
-  const sources=(await db.query('SELECT id,filename,mime_type,sha256,visibility,octet_length(data)::int AS byte_size FROM zora_sources WHERE case_id=$1 AND active',[c.id])).rows;
+  const sources=(await db.query("SELECT id,filename,mime_type,sha256,visibility,octet_length(data)::int AS byte_size,provenance->'context' AS source_context FROM zora_sources WHERE case_id=$1 AND active",[c.id])).rows;
   const references=available.filter(a=>a.purpose==='reference'||a.purpose==='rfi_review');
   if(!sources.length)return {missingInputs:['Independent QC requires actual source documents, not a drafter summary.']};
   if(plan.passes.some(p=>['D1','D2','UNDERSTANDING','ARCHITECTURE','DOMAIN','EFFORT','COST'].includes(p.checker))&&!references.length)return {missingInputs:['Independent QC requires a selected reference/register/baseline; label that file as reference, separate from reasoning.']};

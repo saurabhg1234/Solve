@@ -8,6 +8,7 @@ import { transaction } from './db';
 import { cleanFilename,FILE_CHUNK,FILE_LIMIT,hashBytes,canReadInternal } from './files';
 import { safeOutputPath } from './result';
 import { parseSourceTranscript,matchTranscript,TRANSCRIPT_LIMIT } from './source-transcript';
+import {sourceContextSchema,type SourceContext} from './source-context';
 
 export const uploadSchema=z.object({filename:z.string().min(1).max(250),mimeType:z.string().regex(/^[a-zA-Z0-9.+-]+\/[a-zA-Z0-9.+-]+(?:;[a-zA-Z0-9= .+-]+)?$/).max(150),totalBytes:z.number().int().positive().max(FILE_LIMIT),sha256:z.string().regex(/^[a-f0-9]{64}$/),visibility:z.enum(['client','internal']).default('internal'),purpose:z.enum(['draft','reference','workpaper','rfi_review','source_transcript']).optional(),path:z.string().max(250).optional(),leaseId:z.uuid().optional(),version:z.number().int().positive().optional()});
 export const sourceUploadSchema=uploadSchema.extend({visibility:z.enum(['client','internal']).default('client')});
@@ -73,7 +74,8 @@ export async function appendUpload(id:string,identity:UploadIdentity,offset:numb
     return {id,nextOffset:offset+bytes.length};
   });
 }
-export async function finishUpload(id:string,identity:UploadIdentity){
+export async function finishUpload(id:string,identity:UploadIdentity,sourceContext?:SourceContext){
+  const context=sourceContext===undefined?undefined:sourceContextSchema.parse(sourceContext);
   return transaction(async db=>{
     const row=await permitted(db,id,identity);
     if(row.state==='completed')return {id,sha256:row.sha256,alreadyStored:true};
@@ -86,7 +88,8 @@ export async function finishUpload(id:string,identity:UploadIdentity){
       if(row.case_version!==c.version)throw new HttpError(409,'The pursuit changed during upload; refresh and upload against the current revision');
       const existing=(await db.query('SELECT visibility FROM zora_sources WHERE case_id=$1 AND sha256=$2',[row.case_id,row.sha256])).rows[0];
       if(existing&&existing.visibility!==row.visibility)throw new HttpError(409,'Identical source bytes already have a different access classification; uploading cannot change it');
-      const added=await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance,visibility) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(case_id,sha256) DO NOTHING RETURNING id',[id,row.case_id,row.filename,row.mime_type,bytes,row.sha256,JSON.stringify({kind:'upload',uploadedBy:identity.user.email}),row.visibility]);
+      if(existing&&context)throw new HttpError(409,'This file is already saved. Use Edit context on the existing source to change its label or notes.');
+      const added=await db.query('INSERT INTO zora_sources(id,case_id,filename,mime_type,data,sha256,provenance,visibility) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(case_id,sha256) DO NOTHING RETURNING id',[id,row.case_id,row.filename,row.mime_type,bytes,row.sha256,JSON.stringify({kind:'upload',uploadedBy:identity.user.email,...(context?{context:{...context,updatedBy:identity.user.email,updatedAt:new Date().toISOString()}}:{})}),row.visibility]);
       version=added.rowCount?(await db.query('UPDATE zora_cases SET version=version+1,source_revision=source_revision+1,updated_at=now() WHERE id=$1 RETURNING version',[row.case_id])).rows[0].version:c.version;
       await event(db,row.case_id,'source.uploaded',identity.user.email,{filename:row.filename,sha256:row.sha256,bytes:row.total_bytes,visibility:row.visibility,duplicate:!added.rowCount});
     }else{

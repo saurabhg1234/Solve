@@ -1,5 +1,7 @@
 # Zora — comprehensive handoff to Claude
 
+**Current-state pointer (16 October):** [ZORA_HANDOFF.md](ZORA_HANDOFF.md) supersedes the original transfer snapshot below. Claude’s changes are merged into main; Codex development has resumed at Saurabh’s request. Intake, ESC-4 and a Claude dispatcher are deployed; individual real stages have run. Read current verification before relying on historical counts or undeployed/no-dispatcher statements.
+
 Prepared **15 October 2026** at Saurabh's explicit request to transfer development to Claude. Times below carry UTC or Dubai (UTC+4) labels. This document is the current entry point; older milestone notes are historical evidence, not necessarily current status.
 
 ## 1. What the user wants
