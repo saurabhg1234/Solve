@@ -66,6 +66,16 @@ CREATE TABLE IF NOT EXISTS zora_mail_signals (
   kind text NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), processed_at timestamptz
 );
 -- zora:statement-breakpoint
+-- Explicitly registered Zora correspondence only; never infer shared-mailbox ownership from body text.
+CREATE TABLE IF NOT EXISTS zora_mail_threads (
+  mailbox text NOT NULL, conversation_id text NOT NULL,
+  case_id uuid NOT NULL REFERENCES zora_cases(id), enabled boolean NOT NULL DEFAULT true,
+  registered_by text NOT NULL, registered_at timestamptz NOT NULL DEFAULT now(),
+  scan_from timestamptz NOT NULL, scan_started_at timestamptz, next_link text,
+  checked_at timestamptz, syncing_until timestamptz, sync_lease uuid,
+  PRIMARY KEY(mailbox,conversation_id)
+);
+-- zora:statement-breakpoint
 ALTER TABLE zora_cases ADD COLUMN IF NOT EXISTS source_revision integer NOT NULL DEFAULT 1;
 -- zora:statement-breakpoint
 ALTER TABLE zora_jobs ADD COLUMN IF NOT EXISTS source_revision integer NOT NULL DEFAULT 1;

@@ -4,6 +4,7 @@ import { renewSubscription,syncMailbox } from '@/lib/microsoft';
 import { database } from '@/lib/db';
 import { autoIntake } from '@/lib/triage';
 import { microsoftConfig } from '@/lib/config';
+import { syncRegisteredThread } from '@/lib/mail-threads';
 export const maxDuration=60;
 async function maintain(request:Request) {
   let authenticated=false;
@@ -11,10 +12,10 @@ async function maintain(request:Request) {
   try {
     const secret=process.env.CRON_SECRET;const supplied=request.headers.get('authorization')?.replace(/^Bearer /,'')||'';
     if(!secret||secret.length<32||!constantTimeEqual(secret,supplied)) throw new HttpError(401,'Maintenance authentication required');
-    authenticated=true;
-    const subscription=await renewSubscription();const sync=await syncMailbox();const intake=await autoIntake();await database().query('DELETE FROM zora_uploads WHERE expires_at<now()');
-    await database().query("INSERT INTO zora_events(case_id,type,actor,data) VALUES(null,'mailbox.maintenance',$1,$2)",[source,JSON.stringify({mailbox:microsoftConfig().mailbox,ok:true,synced:sync.synced,busy:sync.busy,renewed:subscription.renewed,intake:intake.map(r=>r.state)})]);
-    return Response.json({subscription,sync,intake:intake.map(({inboxId,state})=>({inboxId,state}))},{headers:{'Cache-Control':'no-store'}});
+    authenticated=true;const started=Date.now();
+    const subscription=await renewSubscription();const sync=await syncMailbox();const intake=await autoIntake();const threads=Date.now()-started<30000?await syncRegisteredThread():{synced:0,checked:0,deferred:true};await database().query('DELETE FROM zora_uploads WHERE expires_at<now()');
+    await database().query("INSERT INTO zora_events(case_id,type,actor,data) VALUES(null,'mailbox.maintenance',$1,$2)",[source,JSON.stringify({mailbox:microsoftConfig().mailbox,ok:true,synced:sync.synced,busy:sync.busy,threads,renewed:subscription.renewed,intake:intake.map(r=>r.state)})]);
+    return Response.json({subscription,sync,threads,intake:intake.map(({inboxId,state})=>({inboxId,state}))},{headers:{'Cache-Control':'no-store'}});
   } catch(e){
     if(authenticated)try{await database().query("INSERT INTO zora_events(case_id,type,actor,data) VALUES(null,'mailbox.maintenance',$1,$2)",[source,JSON.stringify({mailbox:microsoftConfig().mailbox,ok:false})]);}catch{console.error('Mailbox maintenance failure could not be recorded.');}
     return responseError(e);

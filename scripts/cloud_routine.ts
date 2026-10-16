@@ -36,7 +36,7 @@ async function request(path: string, credential: string, body?: unknown) {
 }
 async function maintenance() {
   const result = await (await request('/api/microsoft/maintenance', 'CRON_SECRET', {})).json();
-  console.log(JSON.stringify({ maintenance: { renewed: result.subscription?.renewed, expires: result.subscription?.expires, synced: result.sync?.synced, busy: result.sync?.busy } }));
+  console.log(JSON.stringify({ maintenance: { renewed: result.subscription?.renewed, expires: result.subscription?.expires, synced: result.sync?.synced, busy: result.sync?.busy, threads:result.threads } }));
 }
 async function workspace(path: string): Promise<{ dir: string; job: Job }> {
   const dir = await realpath(resolve(path));

@@ -1,5 +1,6 @@
 import { requireActor,responseError,HttpError } from '@/lib/auth';
 import { database } from '@/lib/db';
+import { accessCase } from '@/lib/cases';
 
 export async function GET(_request:Request,context:{params:Promise<{id:string}>}) {
   try {
@@ -8,6 +9,7 @@ export async function GET(_request:Request,context:{params:Promise<{id:string}>}
     const {id}=await context.params;
     const row=(await database().query('SELECT id,subject,sender,body_text,received_at,case_id,attachment_notice,triage FROM zora_inbox WHERE id=$1',[id])).rows[0];
     if(!row)throw new HttpError(404,'Email request not found');
+    if(row.case_id)await accessCase(row.case_id,user);
     return Response.json({message:row},{headers:{'Cache-Control':'no-store'}});
   }catch(error){return responseError(error);}
 }
