@@ -52,6 +52,6 @@ Check document/figure counts, source and output hashes, payment arithmetic, figu
 
 ## Reusable implementation
 
-[scripts/visuals](../scripts/visuals/README.md) contains reusable SVG primitives, a local browser renderer and a Word SVG/fallback embedding helper. It contains no client-populated examples. Private builds may use these helpers to implement the standard; they are not a substitute for deciding the correct diagram or visually inspecting the result.
+[scripts/visuals](../scripts/visuals/README.md) contains semantic scene validation, SVG primitives, an offline searchable atlas, a local browser renderer and a Word SVG/fallback embedding helper. Follow the [diagram workflow](DIAGRAM_WORKFLOW.md), which integrates the Cocoon AI and Cathryn Lavery repositories Saurabh selected for Visual V2. Use clear architecture boundaries, distinct decision shapes, orthogonal rounded routes and reserved focal emphasis. It contains no client-populated examples. Private builds may use these helpers to implement the standard; they are not a substitute for deciding the correct diagram or visually inspecting the result.
 
 This standard is persistent repository guidance for future Zora work. Formal source-library approvals, workflow QC and client release remain separate records.

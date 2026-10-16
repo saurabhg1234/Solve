@@ -1,0 +1,18 @@
+{
+  "id": "controlled-handoff",
+  "title": "A controlled hand-off",
+  "description": "A source record is validated before a person authorizes an exact action.",
+  "type": "process",
+  "width": 1000,
+  "height": 320,
+  "nodes": [
+    {"id":"input","x":24,"y":80,"w":256,"h":112,"title":"Source record","body":"Identity and evidence","kind":"source"},
+    {"id":"check","x":372,"y":80,"w":256,"h":112,"title":"Validate","body":"Fields, rules, duplicates"},
+    {"id":"owner","x":720,"y":80,"w":256,"h":112,"title":"Authorize action","body":"Exact payload and scope","kind":"human"}
+  ],
+  "edges": [
+    {"source":"input","target":"check","points":[[280,136],[372,136]],"style":"primary"},
+    {"source":"check","target":"owner","points":[[628,136],[720,136]],"style":"primary"}
+  ],
+  "notes": [{"x":24,"y":240,"text":"Failed checks remain held with an owner; this overview shows the valid path.","size":20,"width":952}]
+}

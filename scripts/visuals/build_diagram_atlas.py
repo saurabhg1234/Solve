@@ -1,0 +1,43 @@
+"""Build an offline, searchable HTML atlas from checked SVG figures and a manifest."""
+from pathlib import Path
+from html import escape
+from xml.etree import ElementTree as ET
+import argparse
+import json
+
+
+def safe_svg(path):
+    raw=path.read_text();root=ET.fromstring(raw)
+    forbidden={'script','foreignObject','iframe','image','use','style','animate','set'}
+    for element in root.iter():
+        if element.tag.split('}')[-1] in forbidden: raise ValueError('Active or externally resolved SVG content')
+        for attr,value in element.attrib.items():
+            name=attr.split('}')[-1].lower()
+            if name.startswith('on') or name in ('href','src','style') or 'url(' in value.lower():
+                raise ValueError('Active/external SVG attribute')
+    if root.tag!='{http://www.w3.org/2000/svg}svg': raise ValueError('Not an SVG')
+    return raw
+
+
+def build(directory,manifest,output,title,subtitle):
+    figures=json.loads(manifest.read_text());nav=[];cards=[]
+    for index,item in enumerate(figures,1):
+        id=item['id']
+        if not id.replace('-','').isalnum(): raise ValueError('Invalid figure id')
+        svg=safe_svg(directory/(id+'.svg'));heading=item.get('title',id)
+        nav.append(f'<a href="#{id}">{index:02d} &nbsp; {escape(heading)}</a>')
+        cards.append(f'''<article id="{id}" data-search="{escape((heading+' '+item['alt']).lower(),quote=True)}">
+<header><div><p class="eyebrow">FIGURE {index:02d} · {escape(item.get('type','solution design')).upper()}</p><h2>{escape(heading)}</h2></div><div class="actions"><button type="button" data-action="svg">SVG</button><button type="button" data-action="png">PNG</button><button type="button" data-action="zoom" aria-pressed="false">Enlarge</button></div></header>
+<div class="canvas" tabindex="0" role="region" aria-label="{escape(heading,quote=True)} diagram; scroll horizontally on narrow screens">{svg}</div><p class="description">{escape(item['alt'])}</p></article>''')
+    css='''*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:#17365d;font:16px/1.5 Arial,sans-serif}a{color:inherit}button,input{font:inherit}button{background:white;border:1px solid #bccbdb;border-radius:6px;padding:7px 12px;color:#17365d;cursor:pointer}button:hover{background:#eaf2fd}button:focus-visible,a:focus-visible,input:focus-visible,.canvas:focus-visible{outline:3px solid #245ea8;outline-offset:3px}.masthead{padding:40px max(24px,calc((100vw - 1500px)/2));background:white;border-top:6px solid #245ea8;border-bottom:1px solid #ccd7e3}.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:#51647a;margin:0 0 8px}h1{font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:0;line-height:1.15}h2{font-size:23px;margin:0;line-height:1.2}.masthead p:last-child{max-width:850px;margin-bottom:0}.layout{display:grid;grid-template-columns:258px minmax(0,1fr);gap:28px;max-width:1548px;padding:28px 24px;margin:auto}aside{align-self:start;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}aside input{width:100%;padding:11px;border:1px solid #bccbdb;border-radius:6px;margin:8px 0 16px}nav a{display:block;text-decoration:none;font-size:14px;padding:8px 4px;border-bottom:1px solid #dbe3ed}nav a:hover{color:#245ea8;background:white}main{min-width:0}article{scroll-margin-top:16px;background:white;border:1px solid #ccd7e3;border-radius:8px;margin-bottom:28px;overflow:hidden}article[hidden],nav a[hidden]{display:none}article header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px;border-bottom:1px solid #e4eaf1}.actions{display:flex;gap:6px}.canvas{max-width:100%;overflow:auto;padding:24px}.canvas svg{display:block;width:100%;min-width:1000px;height:auto}.canvas.enlarged svg{min-width:1400px}.description{padding:0 24px 20px;margin:0;color:#51647a;font-size:15px}.foot{padding:20px 24px;font-size:13px;color:#51647a}#status{font-size:13px;min-height:24px}#empty{padding:24px} @media(max-width:1000px){.layout{display:block}aside{position:static;max-height:none;margin-bottom:24px}nav{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.canvas{padding:12px}article header{flex-wrap:wrap}.masthead{padding:28px 24px}} @media(max-width:500px){nav{grid-template-columns:1fr}.layout{padding:16px}.actions{flex-wrap:wrap}} @media print{body{background:white}aside,.actions,.masthead button,#status,.foot{display:none}.layout{display:block;padding:0}.masthead{padding:16px 0}article{break-before:page;border:0;margin:0;border-radius:0;overflow:visible}article[hidden]{display:block}article header{padding:8px 0}.canvas{overflow:visible;padding:8px 0}.canvas svg,.canvas.enlarged svg{min-width:0;width:100%}.description{padding:0}.eyebrow{color:#17365d}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'''
+    js='''const search=document.querySelector('#search');const articles=[...document.querySelectorAll('article')];search.addEventListener('input',()=>{const query=search.value.trim().toLowerCase();let count=0;for(const article of articles){const hide=!article.dataset.search.includes(query);article.hidden=hide;document.querySelector('nav a[href="#'+article.id+'"]').hidden=hide;if(!hide)count++}document.querySelector('#empty').hidden=count>0});document.querySelector('#print').addEventListener('click',()=>window.print());function save(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}document.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',async()=>{const article=button.closest('article'),svg=article.querySelector('svg');const status=document.querySelector('#status');try{if(button.dataset.action==='zoom'){const on=article.querySelector('.canvas').classList.toggle('enlarged');button.setAttribute('aria-pressed',String(on));button.textContent=on?'Normal size':'Enlarge';return}const blob=new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'});if(button.dataset.action==='svg'){save(blob,article.id+'.svg');status.textContent='SVG download prepared.';return}const url=URL.createObjectURL(blob);try{const image=new Image();image.src=url;await image.decode();const canvas=document.createElement('canvas');canvas.width=Number(svg.getAttribute('width'))*2;canvas.height=Number(svg.getAttribute('height'))*2;canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);const png=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!png)throw Error('PNG unavailable');save(png,article.id+'.png');status.textContent='PNG download prepared.'}finally{URL.revokeObjectURL(url)}}catch(error){status.textContent='Export failed. Use the supplied SVG sources or PDF.'}}));'''
+    document=f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src blob: data:; font-src 'none'; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>{escape(title)}</title><style>{css}</style></head><body><header class="masthead"><p class="eyebrow">MINDMAP DIGITAL · SOLUTION DESIGN</p><h1>{escape(title)}</h1><p>{escape(subtitle)}</p></header><div class="layout"><aside><label for="search"><strong>Explore the diagrams</strong></label><input id="search" type="search" placeholder="Search flows, controls, systems"><button id="print" type="button">Print / save PDF</button><p id="status" role="status" aria-live="polite"></p><nav aria-label="Figures">{''.join(nav)}</nav></aside><main><p id="empty" hidden>No matching diagrams.</p>{''.join(cards)}</main></div><footer class="foot">Designed for offline use. No analytics, external fonts, CDN scripts or model APIs. Editable SVG exports; PNG exports at 2×. Design methods informed by Cocoon AI Process Flow Diagram Generator and Cathryn Lavery Diagram Design (MIT); adapted to Mindmap’s proposal identity.</footer><script>{js}</script></body></html>'''
+    output.write_text(document)
+    return {'figures':len(figures),'bytes':output.stat().st_size}
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('directory',type=Path);parser.add_argument('manifest',type=Path);parser.add_argument('output',type=Path)
+    parser.add_argument('--title',required=True);parser.add_argument('--subtitle',default='Proposed solution · review draft')
+    args=parser.parse_args();print(json.dumps(build(args.directory,args.manifest,args.output,args.title,args.subtitle)))
