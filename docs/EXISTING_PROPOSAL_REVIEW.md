@@ -20,7 +20,7 @@ The owner/admin can cancel an active diagnostic review. Cancellation or a full r
 - `DELETE` on the same route: exact version plus run ID; cancels only the active existing-draft run.
 - Repeatable migration extends `zora_qc_runs` with `purpose` (`stage` or `existing_draft`). Only existing-draft diagnostics may omit `job_id`; a human-started run may omit native creator identity. Normal stage runs still require both. An authorised operator can record their real native context as the creator, excluding self-review.
 - `lib/existing-draft-review.ts` prepares the bounded packet and audit event. It does not claim native work. `lib/reviews.ts` uses the existing fresh-reviewer claim/lease/coverage protocol and a separate diagnostic completion branch.
-- No new secret, external API or table is required. The normal production migration runs before build. The provider dispatcher still has to start actual fresh worker sessions; queuing ten passes does not prove any is running.
+- No new secret, external API or table is required for this review-entry feature. The normal production migration runs before build. Formal queued passes need actual fresh reviewer sessions; queuing them does not prove they are running. Claude is now off, and requested work proceeds in the active session. [Direct deliveries](DIRECT_DELIVERIES.md) separately store real corrected drafts/review notes without claiming formal QC completion.
 
 ## Verification
 

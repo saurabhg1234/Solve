@@ -38,6 +38,7 @@ Report a new actionable request, human gate, failure/missing input or substantiv
 cd /workspace/Solve
 export NODE_USE_ENV_PROXY=1
 npm run routine -- check
+npm run routine -- deliver /private/output-directory/delivery-plan.json # completed on-request files; no QC/approval claim
 npm run routine -- claim
 npm run routine -- heartbeat <private-workspace>
 npm run routine -- prepare <private-workspace>
