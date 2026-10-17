@@ -1,5 +1,7 @@
 # Remaining inputs and decisions
 
+**17 October update:** the requested Pentagon invoice-reconciliation app and two-minute narrated/animated walkthrough are delivered; Advait received the MP4 at 07:31 Dubai with Saurabh/Ganesh copied. No new secret, tool licence, source re-upload or immediate reply is needed for this demo. Actual production tolerances, Tally integration and eventual human acceptance remain separate from the synthetic demonstration. See the current handoff for receipts.
+
 **Latest decision, 16 October:** Claude is off for now. Zora must perform requested work in the active session; **re-enabling or troubleshooting Claude is not pending with Saurabh**. Formal Pentagon QC remains unfinished, but that does not prevent direct requested analysis, corrections or other engineering. The diagnostic entry is implemented; no transcript or proposal re-upload is owed. See [ZORA_HANDOFF.md](ZORA_HANDOFF.md).
 
 Advait’s file/progress issues are addressed in [SOURCE_CONTEXT_AND_PROGRESS.md](SOURCE_CONTEXT_AND_PROGRESS.md) and the later progress/routing fixes. He clarified that the description is physical-meeting notes and the proposal is the draft for QC; see NOTES_AND_EXISTING_DRAFTS.md. His 18:08 Dubai automatic reply says he is on leave, without a return date. The latest substantive delivery was Visual V2 / v2.6 Word/PDF plus the SVG/offline-atlas pack at **21:10:25**, with Saurabh and Ganesh copied; do not resend it or chase the automatic acknowledgement.

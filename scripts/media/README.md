@@ -13,3 +13,7 @@ For each requested film:
 7. Deliver the actual movie, not just a script/storyboard. Retain exact file hashes. Check hosted app access, email recipients, visible owner copy and the saved Sent Items attachment bytes. Distinguish verified sending from recipient acceptance.
 
 Private environment prerequisites currently include `/usr/bin/chromium`, FFmpeg/FFprobe and Playwright at `/opt/codex/cua_node/lib/node_modules/playwright`. Python lives in `/workspace/solve-environment/.venv`; `requirements.txt` pins the added media packages. The model files and generated client recordings must not be committed. Existing document tooling and service secrets stay unchanged.
+
+Run `python scripts/media/check_video.py /private/path/walkthrough.mp4 --duration 120` to check dimensions, H.264/AAC streams, the full decode, duration and audible/unclipped levels. Save its JSON privately alongside the visual review and exact delivery hash. This does not claim human acceptance.
+
+For Playwright recording, its separate FFmpeg helper must also be installed: `node /opt/codex/cua_node/lib/node_modules/playwright/cli.js install ffmpeg`. The system FFmpeg binary handles the final edit/encode.

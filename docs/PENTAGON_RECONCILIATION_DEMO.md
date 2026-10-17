@@ -21,7 +21,7 @@ Demo approval is explicitly a simulated finance role, bound to the current evide
 - `app/demos/pentagon/page.tsx`: existing session and pursuit-access enforcement.
 - `tests/reconciliation-demo.test.ts`: boundary tolerances, duplicate identity, late-receipt replay, no posting before approval, evidence invalidation, partial order consumption and timeout recovery.
 
-Development checks use the existing **local-only** test database/config and a synthetic case fixture. Do not insert test transactions or test approvals into production. Runtime receipts, captures and media are private under `/workspace/solve-environment/pentagon-demo-2026-10-17`. The handoff records the final deployment, video checks and send receipt once delivery is verified.
+Development checks use the existing **local-only** test database/config and a synthetic case fixture. Do not insert test transactions or test approvals into production. Runtime receipts, captures and media are private under `/workspace/solve-environment/pentagon-demo-2026-10-17`. The handoff records the verified deployment, video checks and send receipt. The demo and exactly two-minute Full HD MP4 were delivered to Advait on 17 October at 03:31 UTC, with Saurabh and Ganesh copied. The portal stores the guide/subtitles/movie hash; the actual MP4 is attached to that email.
 
 ## Walkthrough
 

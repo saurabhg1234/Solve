@@ -4,6 +4,8 @@
 
 Zora is Mindmap’s solutions agent. The full pilot includes W1–W8, S1 commercials and S2 independent QC. The native bridge supports genuine Codex and Claude cloud-session identities without a model API integration. Vercel hosts the portal, automatic email intake, ESC-4 and the five-minute mailbox monitor. Mail collection continues independently; requested AI work must be performed in the active session. All-eight end-to-end acceptance remains unfinished, including ten queued Pentagon checks that have not run.
 
+**Pentagon demo and walkthrough delivered, 17 October:** the [Agent 5 demonstration](docs/PENTAGON_RECONCILIATION_DEMO.md) is deployed at `/demos/pentagon` under existing pursuit access, with source evidence, exceptions, demo approval and simulated Tally recovery. The two-minute narrated/animated Full HD walkthrough was emailed to Advait with Saurabh/Ganesh copied. These are synthetic demonstrations; live Tally integration and formal W6/W7 acceptance are separate.
+
 The latest [source-context and progress update](docs/SOURCE_CONTEXT_AND_PROGRESS.md) addresses Advait's feedback: clearly staged multiple-file uploads, per-file labels/notes, and visible queued/active/review/human-gate progress.
 
 Proposal creation follows the [Mindmap visual design standard](docs/PROPOSAL_DESIGN_STANDARD.md), learned from Saurabh's manual reference: substantive architecture and process diagrams, readable layouts, and full-page rendering checks. [Reusable SVG/Word helpers](scripts/visuals/README.md) keep vector artwork and its source editable.
