@@ -1,5 +1,11 @@
 # Zora: current startup and handoff
 
+## Pentagon Agent 5 demo and walkthrough — active build, 17 October
+
+Saurabh requested an invoice reconciliation demo and a two-minute recorded walkthrough on the same Pentagon request. The app now lives at `/demos/pentagon` with existing session/pursuit access checks, seven synthetic invoice scenarios, source evidence, explicit demo approval, simulated posting/timeout recovery and CSV audit export. The Completed work section links to the demo. Scope and boundaries are in [PENTAGON_RECONCILIATION_DEMO.md](PENTAGON_RECONCILIATION_DEMO.md).
+
+Local verification: **72 TypeScript tests passed**, including 12 new reconciliation tests; typecheck and production build passed. Browser checks cover price holds, late receipts, duplicate block, source dialogs, approval, timeout/read-back, audit export, reset, mobile overflow and unsigned/nonmember access. The film is being produced from the working app with local narration, captions and motion graphics; private outputs are `/workspace/solve-environment/pentagon-demo-2026-10-17`. **This checkpoint does not claim deployed delivery or an email send yet.** The completed deliverable/receipt entry will replace it once verified. No workflow status, formal review or approval record was changed.
+
 ## Current Pentagon presentation — v3.1 company section and closing, 17 October, 06:07 Dubai
 
 **Use presentation v3.1; the Word proposal/PDF remain v3.0.** Saurabh requested generic Mindmap slides covering what the company does, its geographic spread and customers, plus a proper ending. The presentation now has **29 slides**: the original About slide, four new company slides immediately after it, the preserved solution narrative and eight-agent appendix, then a final branded **Thank you / Let's build** slide with both logos and Saurabh's contact details.
