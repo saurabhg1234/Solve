@@ -36,5 +36,22 @@ class ClientPreflightTests(unittest.TestCase):
   s.shapes.add_textbox(0,PptInches(1),PptInches(5),PptInches(1)).text='About Mindmap Digital'
   p.slides.add_slide(p.slide_layouts[6]);f=self.root/'deck.pptx';p.save(f)
   r=inspect(None,f,*self.assets[:2]);self.assertIn('PowerPoint slide 2: Mindmap logo missing',r['errors'])
+ def company_deck(self,reorder_close=False,omit=None):
+  p=Presentation()
+  titles=['About Mindmap Digital','What we do','Our global footprint','Our customers','Thank you | www.mindmapdigital.ai']
+  for i,title in enumerate(titles):
+   if title==omit:continue
+   s=p.slides.add_slide(p.slide_layouts[6]);s.shapes.add_picture(str(self.assets[0]),0,0,width=PptInches(1))
+   if i==0:
+    for j,f in enumerate(self.assets[1:],1):s.shapes.add_picture(str(f),PptInches(j),0,width=PptInches(1))
+   s.shapes.add_textbox(0,PptInches(1),PptInches(8),PptInches(1)).text=title
+  if reorder_close:
+   order=p.slides._sldIdLst;last=order[-1];order.remove(last);order.insert(1,last)
+  f=self.root/'company.pptx';p.save(f);return f
+ def test_complete_company_deck_passes(self):self.assertTrue(inspect(None,self.company_deck(),*self.assets[:2])['passed'])
+ def test_missing_company_presence_is_rejected(self):
+  r=inspect(None,self.company_deck(omit='Our global footprint'),*self.assets[:2]);self.assertIn('PowerPoint: company geographic presence section missing',r['errors'])
+ def test_close_must_be_last_in_actual_slide_order(self):
+  r=inspect(None,self.company_deck(reorder_close=True),*self.assets[:2]);self.assertIn('PowerPoint: final closing slide missing',r['errors'])
 
 if __name__=='__main__':unittest.main()

@@ -33,6 +33,16 @@ def image_hashes(z,part,root):
   result.append(digest(z.read(path)))
  return result
 
+def ordered_slides(z):
+ """Follow presentation order, which can differ from slide file numbering."""
+ rels={r.attrib['Id']:r.attrib for r in ET.fromstring(z.read('ppt/_rels/presentation.xml.rels'))}
+ result=[]
+ for el in ET.fromstring(z.read('ppt/presentation.xml')).iter(f'{{{P}}}sldId'):
+  rel=rels[el.get(f'{{{R}}}id')]
+  if rel.get('TargetMode')=='External':raise ValueError('External slide relationship')
+  target=rel['Target'];result.append(target.lstrip('/') if target.startswith('/') else posixpath.normpath(posixpath.join('ppt',target)))
+ return result
+
 def inspect(word,slides,brand,client):
  errors=[];result={'checks':'Office packaging and client-language preflight; not independent QC or visual approval'}
  bh,ch=digest(brand.read_bytes()),digest(client.read_bytes())
@@ -71,7 +81,7 @@ def inspect(word,slides,brand,client):
    result['word']={'sections':len(sections),'coverImages':len(cover_images),'svgFigures':sum(n.startswith('word/media/') and n.endswith('.svg') for n in z.namelist())}
  if slides:
   with ZipFile(slides) as z:
-   parts=sorted((n for n in z.namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml',n)),key=lambda n:int(re.search(r'(\d+)\.xml$',n)[1]))
+   parts=ordered_slides(z)
    alltext=[];connectors=0
    for i,part in enumerate(parts):
     root=ET.fromstring(z.read(part));images=image_hashes(z,part,root);value=text(root);alltext.append(value);language(value,part)
@@ -80,6 +90,12 @@ def inspect(word,slides,brand,client):
      need(ch in images,'PowerPoint cover: client logo missing');need(any(h not in (bh,ch) for h in images),'PowerPoint cover: cover graphic missing')
     connectors+=len(list(root.iter(f'{{{P}}}cxnSp')))
    need(bool(re.search(r'about\s+mindmap',' '.join(alltext),re.I)),'PowerPoint: About Mindmap section missing')
+   combined=' '.join(alltext)
+   for label,pattern in [('services',r'what we do|our capabilities|services (?:and|&) practices'),('geographic presence',r'global footprint|geographic presence|our presence|where we work'),('customers',r'our customers|selected customers|enterprise customers')]:
+    need(bool(re.search(pattern,combined,re.I)),f'PowerPoint: company {label} section missing')
+   closing=alltext[-1] if alltext else ''
+   need(bool(re.search(r'thank you|let[’\']s (?:build|work|connect)',closing,re.I)),'PowerPoint: final closing slide missing')
+   need('mindmapdigital.ai' in closing.lower(),'PowerPoint: verified company contact/site missing from final slide')
    for n in z.namelist():
     if re.fullmatch(r'ppt/notesSlides/notesSlide\d+\.xml',n):language(text(ET.fromstring(z.read(n))),n)
    need(not any(n.startswith('ppt/comments/') for n in z.namelist()),'PowerPoint: review comments must be removed')

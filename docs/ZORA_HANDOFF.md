@@ -1,8 +1,32 @@
 # Zora: current startup and handoff
 
-## Current Pentagon deliverable — client-facing v3.0, 17 October, 05:54 Dubai
+## Current Pentagon presentation — v3.1 company section and closing, 17 October, 06:07 Dubai
 
-**Use the v3.0 Word/PDF and PowerPoint/PDF below.** Saurabh requires every Word proposal to have a relevant designed cover graphic, both official logos and a title, Mindmap branding at the top of every page, an About Mindmap section, varied visual grammars (especially Cathryn Lavery's methods), and direct client prose without internal authoring/source/revision/QC commentary. The prior visual documents did not meet those expectations. These are now standing requirements in the design standard, AGENTS.md, native document instructions and local diagram skill.
+**Use presentation v3.1; the Word proposal/PDF remain v3.0.** Saurabh requested generic Mindmap slides covering what the company does, its geographic spread and customers, plus a proper ending. The presentation now has **29 slides**: the original About slide, four new company slides immediately after it, the preserved solution narrative and eight-agent appendix, then a final branded **Thank you / Let's build** slide with both logos and Saurabh's contact details.
+
+New slides: **3 — What we do; 4 — Engineering practices; 5 — Our global footprint; 6 — Our customers; 29 — Closing/contact.** The company facts come from the supplied October business deck (SHA `4cc6771215d3da1739176b3fe92414984583a4a0bdcba21870d9a5a6d41bbf26`), especially pages 2, 7, 11–15, 17 and 19. The customer logo grid uses the exact rendered page-17 image through a native PowerPoint crop; its bytes are unmodified. The current/past customer and no-endorsement qualification is preserved. No named outcome case study, broad production-model claim, certification or new project support commitment was added.
+
+Production files verified **02:06:25 UTC / 06:06:25 Dubai**:
+
+| File | Delivery ID | File ID | SHA-256 |
+| --- | --- | --- | --- |
+| `Pentagon_Intelligent_Operations_Presentation_v3.1.pptx` | `869d916f-b89b-43e0-972f-041b06607125` | `271a44f6-0d25-4a03-85bb-c71c597a11f0` | `69928cebe6e24c49cfe054fd0db10093c3d345378c5a3cb3970b64906946ec7b` |
+| `Pentagon_Intelligent_Operations_Presentation_v3.1.pdf` | `726601be-a881-4534-b5da-1a8f95c6b379` | `6c8fe8ac-b032-4e40-9545-5fcf37faa1a0` | `aafb9c089be2820cd73505e319a333eea606dc315db0730e4eea159ec358e8ff` |
+
+Both authenticated production downloads matched the checked local files; unsigned requests returned 401. The previous v3.0 deck, all Word/PDF outputs and source files remain intact. The new decks are in the Pentagon pursuit's Completed work section.
+
+**Sent to Advait at 02:07:01 UTC / 06:07:01 Dubai**, Cc **Saurabh and Ganesh**, with both v3.1 files. Sent Items, magenta identity, recipients and attachment hashes verified. Message ID ends **`ALxiTnQAA`**, audit event **668**; receipt `/workspace/solve-environment/advait-zora-v31-company-delivery-receipt-2026-10-17.json`. **Do not resend.** The 02:03:58 UTC thread check found no new messages since the v3.0 delivery; no immediate response was requested during leave. Acceptance is not claimed.
+
+The recurring workflow is updated in [MINDMAP_COMPANY_SLIDES.md](MINDMAP_COMPANY_SLIDES.md), the proposal design standard, AGENTS.md, native-document instructions and the local diagram skill. Future proposal decks need the company section and a final closing/contact slide **after any appendix**. The reusable preflight now checks services/presence/customers and final closing/contact in actual presentation order, rather than assuming slide filenames are in order. **Nine focused preflight tests passed**, including a missing-company-section case and a reordered closing-slide regression. This task did not change the runtime web application or schema.
+
+Validation: all five new slides visually inspected; all 24 original slide bodies are pixel-identical above the footer to the inspected v3.0 deck. All 29 slide numbers, header logos and text bounds passed, with zero text-fit warnings. Commercials and all eight agent details are preserved. Private records and outputs: `/workspace/solve-environment/pentagon-company-2026-10-17` (`company-source.json`, `document-checks.json`, `slide-preservation-checks.json`, `client-preflight.json`, `client-manifest.json`, production/email receipts). Builders: `.zora/build-pentagon-company-slides.py`, `.zora/render-pentagon-company.py`, `.zora/check-pentagon-company-slides.py`. **Do not regenerate over delivered files.**
+
+The original Pentagon case remains **version 5 / source revision 3**, ten queued original reviews, zero completed independent reviews and zero approvals. This company-slide revision is completed and delivered; it does not change the broader pilot or formal-review state described below.
+
+
+## Pentagon Word v3.0 and prior presentation v3.0, 17 October, 05:54 Dubai
+
+**The v3.0 Word/PDF remain current; the presentation is superseded by v3.1 above.** Saurabh requires every Word proposal to have a relevant designed cover graphic, both official logos and a title, Mindmap branding at the top of every page, an About Mindmap section, varied visual grammars (especially Cathryn Lavery's methods), and direct client prose without internal authoring/source/revision/QC commentary. The prior visual documents did not meet those expectations. These are now standing requirements in the design standard, AGENTS.md, native document instructions and local diagram skill.
 
 Delivered **23-page Word proposal with 19 vector figures** and **24-slide editable PowerPoint** (16 main slides + eight agent-detail slides), each with a PDF companion. Both use official Mindmap and Pentagon logos and a new operational cover illustration. The Word has repeating logo headers; every slide has the Mindmap logo. About Mindmap draws on the supplied October business deck and official company material. Internal narration was removed from the client documents while business qualifications, scope boundaries, estimated costs and acceptance criteria remain. Implementation **INR 38,00,000**, AMC **INR 7,60,000/year**, GST exclusion and **40/20/20/10/10** payment stages are retained.
 

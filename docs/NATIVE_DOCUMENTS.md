@@ -4,6 +4,8 @@ Before proposal generation, read [the Mindmap visual design standard](PROPOSAL_D
 
 The 17 October client-facing requirements add cover artwork, both official logos, the Mindmap logo on every page, About Mindmap and removal of internal drafting commentary. When requested, supply an editable PowerPoint narrative with its PDF companion. Run the client proposal preflight in `scripts/visuals` and inspect every rendered page/slide. Source hashes, tool provenance and QC status belong in the private build record, outside the client proposal.
 
+Proposal decks also include the sourced company section and final closing/contact slide described in [MINDMAP_COMPANY_SLIDES.md](MINDMAP_COMPANY_SLIDES.md). Place the close after any appendix. Preflight follows actual slide order and checks for company services, geographic presence, customers and the final close; source accuracy and visual fit still require direct review.
+
 For architecture and process figures, follow the [diagram workflow](DIAGRAM_WORKFLOW.md): choose the semantic type, check explicit routes and ports, preserve vector exports, and supply an offline atlas for substantial figure packs. The reusable implementation adapts the two diagram repositories selected by Saurabh without model APIs or a scheduled dispatcher.
 
 These helpers run inside the current claimed Codex task. They never call a model API or create another model session. Codex reads and reasons about the actual sources, writes a bounded build plan, inspects the resulting files and submits them to independent QC and human gates. The helpers format and extract; they do not establish factual accuracy or approval.
