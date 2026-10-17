@@ -4,9 +4,25 @@ Saurabh's 16 October 2026 feedback establishes the manual Pentagon v2.3 proposal
 
 Read this file before creating or revising a proposal. A newer task-specific user reference takes priority. Keep client originals, extracted artwork and populated deliverables in private storage, outside Git. The current source and delivery receipts are in [ZORA_HANDOFF.md](ZORA_HANDOFF.md).
 
+## Client-facing proposal requirements — 17 October 2026
+
+Saurabh's latest direction applies to **every Word proposal**, including revisions. Deliver a finished client-facing document, with these elements:
+
+- A designed cover with a beautiful, relevant image or illustration, the proposal title, the official Mindmap logo and the official client logo. A small process chart alone is not the cover image. Preserve logo proportions and original artwork; use verified assets from supplied materials or the official company site.
+- The Mindmap logo at the top of **every page**. The cover may carry it in the cover layout; subsequent pages need a real repeating header image. Check section changes and first/even-page header settings after PDF export.
+- An **About Mindmap Digital** section grounded in the current business deck and official company material. Select capabilities relevant to the engagement. Do not invent customer endorsements, certifications, performance claims or delivery guarantees.
+- Direct client prose. Remove internal commentary such as “the notes indicate”, “the supplied manual”, “this revision”, “review draft”, source hashes, authoring tools, AI-generation disclosures and internal QC/dispatcher status. Keep those records in the private handoff. AI may naturally be discussed when it is the proposed solution. Business assumptions, scope boundaries, estimated costs and acceptance criteria still belong in the proposal when relevant.
+- Varied visuals chosen for meaning, with particular attention to Cathryn Lavery's diagram-design methods. Use a sequence for message timing, a lifecycle for states, an evidence comparison for matching, a tree for traceability, swimlanes for responsibilities, and a Gantt for delivery. Do not render every concept as the same card chain or swimlane. A feedback loop must represent a real repeatable action.
+
+When PowerPoint is requested, produce the actual editable presentation and a PDF companion. Use a presentation narrative: **cover → About Mindmap → client priorities → proposed solution → agent/capability portfolio → business journeys → architecture and controls → implementation → commercials → next steps**. Put detailed agent diagrams in an appendix. Adapt diagrams to landscape reading size instead of pasting Word pages as slide images. Prefer native PowerPoint text, shapes, connectors, timelines and matrices; preserve the supplied template/theme where appropriate without carrying over another client's content or notes.
+
+For slides, target 18–24 pt body labels and 28–36 pt headings; compact chart axes or short metadata may be smaller. Calculate wrapped heading/body heights separately. Inspect covers for image/title overlap and card headings for overflow. Official logos and cover artwork can be raster images; charts and process visuals should remain editable where practical.
+
+Run `scripts/visuals/client_proposal_preflight.py` against the finished Office files and the exact official logo files. It checks embedded logo identity, cover artwork, repeating Word headers, slide branding, About Mindmap, unresolved Word revisions/comments and common internal-language leaks. It does **not** assess relevance, rendering quality, complete source accuracy or approval. Render and inspect every final page/slide as well.
+
 ## The expected visual language
 
-- White pages, navy headings and lane labels, restrained orange section rules, generous margins and consistent typography. The website's palette and Zora's magenta email identity do not override a supplied proposal design.
+- White pages, navy/blue headings, restrained teal and semantic accents, generous margins and consistent typography. Orange can denote a decision or exception. The website's palette and Zora's magenta email identity do not override a supplied proposal design.
 - Colour conveys meaning: teal for inputs/capture, indigo for agent steps, blue for orchestration/data, purple for model or sales/service elements, orange for decisions and human actions, green for verified results, grey for operations. Use a visible legend when a diagram needs it.
 - Use simple line icons, aligned cards, explicit connectors and grouped layers. Decoration and stock imagery cannot substitute for process or architecture diagrams.
 - Explain the business outcome before technical detail. Each figure answers a concrete question, has a caption and connects to nearby prose.
@@ -26,7 +42,7 @@ Read this file before creating or revising a proposal. A newer task-specific use
 ## Layout rules
 
 1. Preserve useful diagrams when correcting a proposal. If a figure is dense, simplify, split or give it more page space. Removing all visuals is not a readability fix.
-2. Use one substantial agent swimlane per page when two would make the labels too small. A longer readable document is preferable to shrinking important figures.
+2. Use one substantial agent visual per page when two would make the labels too small. Select its grammar from the question being answered; a swimlane is one option. A longer readable document is preferable to shrinking important figures.
 3. Target 10–11 pt body text, 9–11 pt figure content and at least 8.5 pt for short figure labels at the **final printed size**. Captions/footer metadata may be smaller. Judge the exported document, not the full-resolution artwork alone.
 4. Keep icon style, card corners, spacing, connector weight and heading hierarchy consistent. Text must fit its box; no label should be hidden under a later row, rule or arrow.
 5. Prefer vector SVG artwork with a PNG fallback in Word. Verify that PDF export preserves vector paths and searchable diagram text. Supply vector sources when useful. Word body text and tables remain editable; SVG figures are edited through their vector sources.
